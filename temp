@@ -1,0 +1,493 @@
+## 您能否更详细地解释不同 QoS 设置的用途？
+
+当然可以。以下是对 ROS 2 中不同 QoS 设置的详细解释：
+
+1. `history`：这个设置决定了在节点之间传递消息时，消息会被保存多长时间。有两种策略：
+
+   - `KEEP_LAST`：仅保留最近的 N 个消息。当新消息到达且队列已满时，最早的消息将被丢弃。这种策略有助于节省内存，尤其是在消息产生速度很快的情况下。
+   - `KEEP_ALL`：保留所有消息直到资源耗尽。在某些情况下，您可能希望确保所有消息都被保存，以便订阅者可以处理所有数据。但这可能导致内存使用量过高，尤其是当消息产生速度快并且订阅者处理速度慢时。
+
+2. `reliability`：这个设置决定了节点之间传递消息时的可靠性级别。有两种策略：
+
+   - `RELIABLE`：确保消息传递。这种策略意味着发布者和订阅者将通过确认和重传机制来确保消息的可靠传递。这在需要确保消息不丢失的情况下很有用，但可能导致更高的网络延迟和资源使用。
+   - `BEST_EFFORT`：尽力而为。这种策略意味着如果消息在传递过程中丢失，将不会进行重传。这在实时性较高、丢失个别消息可接受的情况下很有用。
+
+3. `durability`：这个设置决定了发布者在节点之间传递消息时，消息的持久性级别。有两种策略：
+
+   - `TRANSIENT_LOCAL`：订阅者将接收到在其订阅之前发布的消息。这对于确保订阅者获取所有相关数据很有用，尤其是在订阅者可能启动得晚于发布者的情况下。
+   - `VOLATILE`：订阅者只接收在其订阅之后发布的消息。这在实时性较高、订阅者无需处理在订阅之前发布的消息的情况下很有用。
+
+4. `liveliness`：这个设置决定了节点活跃度的检测方式。有三种策略：
+
+   - `AUTOMATIC`：ROS 2 会自动检测节点活跃度。这意味着节点不需要显式地声明它们的活跃状态。这在大多数情况下足够使用，且不需要额外的配置。
+   - `MANUAL_BY_NODE`：节点需要手动管理其活跃状态。这意味着发布者必须显式地声明它们的活跃状态。这在需要更精细的控制活跃度检测的情况下很有用。
+   - `MANUAL_BY_TOPIC`：手动管理活跃度，但每个话题需要单独声明活跃状态。这允许您为特定话题设置不同的活跃度检测策略。
+
+5. `liveliness_lease_duration`：这个设置定义了在节点被认为不活跃之前的时间周期。这对于自动或手动活跃度检测策略非常重要。如果在指定的时间内没有收到任何声明活跃度的信号，该节点将被认为不活跃。
+
+6. `ownership`：这个设置决定了发布者在节点之间传递消息时的所有权策略。有两种策略：
+
+   - `SHARED`：多个发布者可以同时发布到同一主题。这在许多常见的 ROS2 应用中是默认和最常见的策略。
+   - `EXCLUSIVE`：只有一个发布者可以发布到同一主题。这在需要确保特定发布者有优先权发布消息的情况下很有用。此策略通常需要与`ownership_strength`一起使用。
+
+7. `ownership_strength`：这个设置定义了在使用`EXCLUSIVE`所有权策略时，发布者的优先级。具有较高所有权强度的发布者将优先于具有较低所有权强度的发布者。这允许您在需要时对发布者进行优先级排序。
+
+总之，QoS 设置允许您根据特定的应用需求和场景来优化 ROS 2 中的节点间通信。理解这些设置及其用途有助于您根据实际需要调整它们，以获得更好的通信性能和资源管理。
+
+## 如何设置不同服务失效判断标准，实现多级容错？
+
+在 ROS 2 中，实现多级容错需要在不同层次上设置失效判断标准。这通常涉及到以下几个方面：
+
+1. **QoS 设置**：通过调整不同的 QoS 策略，可以在通信层面为发布者和订阅者提供一定程度的容错能力。例如，通过设置`RELIABLE`可靠性策略，可以确保关键消息的传输。然而，这种方法并不能直接提供多级容错。
+
+2. **节点监控和活跃度检测**：使用活跃度检测策略（如`AUTOMATIC`、`MANUAL_BY_NODE`或`MANUAL_BY_TOPIC`）以及活跃度租期，可以监控节点的运行状况并在节点失效时触发回调。这可以帮助您识别失效的节点并采取相应的补救措施，例如重新启动节点或切换到备用节点。
+
+3. **服务调用超时**：在调用服务时，可以设置超时值，以便在服务未在规定时间内响应时，调用者可以执行其他操作，例如尝试另一个服务或执行回退策略。
+
+4. **错误处理和异常捕获**：在节点的代码中，确保适当处理错误和异常，以避免单个错误导致整个节点崩溃。这可以通过使用 try-catch 语句或检查错误返回值来实现。在捕获到异常或错误时，可以执行回退策略或启动备用组件。
+
+要实现多级容错，您可以组合这些方法，为每个服务和组件设置不同的失效判断标准。例如，对于关键服务，可以设置更严格的失效判断标准和更高级别的 QoS 策略；而对于非关键服务，可以设置较低级别的 QoS 策略和较宽松的失效判断标准。
+
+以下是一个简单的实现多级容错的示例：
+
+1. 设置高优先级服务的 QoS 策略为`RELIABLE`可靠性和`TRANSIENT_LOCAL`持久性。
+2. 设置低优先级服务的 QoS 策略为`BEST_EFFORT`可靠性和`VOLATILE`持久性。
+3. 在调用高优先级服务时，设置较短的超时值。如果超时发生，尝试备用服务或执行回退策略。
+4. 在调用低优先级服务时，设置较长的超时值。如果超时发生，可以选择忽略错误或尝试重新调用服务。
+5. 使用活跃度检测策略和活跃度租期来监控服务的运行状况。如果检测到服务失效，可以尝试重新启动服务或切换到备用服务。
+6. 在节点代码中，确保适当处理错误和异常，避免单个错误导致整个节点崩溃。
+
+通过在不同层次上设置失效判断标准并组合这些方法，您可以实现多级容错，从而提高整个系统的鲁棒性和可靠性。
+
+## 完整考虑你上面的全部提议，在 ros2 中给出完整的示例代码。使用 C++语言编写示例代码，注意对于 pub 和 sub 是不同的进程，分别为独立的 node
+
+以下是一个使用 C++编写的 ROS 2 多级容错示例。在这个示例中，我们将创建一个发布者节点（高优先级和低优先级）和一个订阅者节点，以及一个服务节点和一个客户端节点。注意，这个示例仅用于演示如何在不同节点中应用上述提议，实际应用时可能需要根据具体需求进行调整。
+
+**1. 创建消息类型**
+
+首先，我们需要定义一个自定义消息类型。在你的包中新建一个`msg`文件夹，并创建一个名为`ExampleData.msg`的文件，其中包含以下内容：
+
+```
+string data
+```
+
+**2. 创建发布者节点**
+
+创建一个名为`multi_level_publisher.cpp`的文件，其中包含以下内容：
+
+```cpp
+#include <chrono>
+#include <memory>
+#include "rclcpp/rclcpp.hpp"
+#include "example_interfaces/msg/example_data.hpp"
+
+using namespace std::chrono_literals;
+
+class HighPriorityPublisher : public rclcpp::Node
+{
+public:
+  HighPriorityPublisher()
+  : Node("high_priority_publisher")
+  {
+    publisher_ = this->create_publisher<example_interfaces::msg::ExampleData>("high_priority_topic", 10);
+    timer_ = this->create_wall_timer(500ms, std::bind(&HighPriorityPublisher::publish_message, this));
+  }
+
+private:
+  void publish_message()
+  {
+    auto message = example_interfaces::msg::ExampleData();
+    message.data = "High priority data.";
+    RCLCPP_INFO(this->get_logger(), "Publishing: '%s'", message.data.c_str());
+    publisher_->publish(message);
+  }
+
+  rclcpp::Publisher<example_interfaces::msg::ExampleData>::SharedPtr publisher_;
+  rclcpp::TimerBase::SharedPtr timer_;
+};
+
+class LowPriorityPublisher : public rclcpp::Node
+{
+public:
+  LowPriorityPublisher()
+  : Node("low_priority_publisher")
+  {
+    publisher_ = this->create_publisher<example_interfaces::msg::ExampleData>("low_priority_topic", 10);
+    timer_ = this->create_wall_timer(1000ms, std::bind(&LowPriorityPublisher::publish_message, this));
+  }
+
+private:
+  void publish_message()
+  {
+    auto message = example_interfaces::msg::ExampleData();
+    message.data = "Low priority data.";
+    RCLCPP_INFO(this->get_logger(), "Publishing: '%s'", message.data.c_str());
+    publisher_->publish(message);
+  }
+
+  rclcpp::Publisher<example_interfaces::msg::ExampleData>::SharedPtr publisher_;
+  rclcpp::TimerBase::SharedPtr timer_;
+};
+
+int main(int argc, char *argv[])
+{
+  rclcpp::init(argc, argv);
+  rclcpp::executors::MultiThreadedExecutor executor;
+  auto high_priority_pub_node = std::make_shared<HighPriorityPublisher>();
+  auto low_priority_pub_node = std::make_shared<LowPriorityPublisher>();
+
+  executor.add_node(high_priority_pub_node);
+  executor.add_node(low_priority_pub_node);
+  executor.spin();
+
+  rclcpp::shutdown();
+  return 0;
+}
+```
+
+**3. 创建订阅者节点**
+
+创建一个名为`multi_level_subscriber.cpp`的文件，其中包含以下内容：
+
+```cpp
+#include <memory>
+#include "rclcpp/rclcpp.hpp"
+#include "example_interfaces/msg/example_data.hpp"
+
+class HighPrioritySubscriber : public rclcpp::Node
+{
+public:
+  HighPrioritySubscriber()
+  : Node("high_priority_subscriber")
+  {
+    auto qos = rclcpp::QoS(rclcpp::QoSInitialization::from_rmw(rmw_qos_profile_default));
+    qos.reliability(rclcpp::ReliabilityPolicy::Reliable);
+    subscriber_ = this->create_subscription<example_interfaces::msg::ExampleData>(
+      "high_priority_topic", qos, std::bind(&HighPrioritySubscriber::message_callback, this, std::placeholders::_1));
+  }
+
+private:
+  void message_callback(const example_interfaces::msg::ExampleData::SharedPtr msg) const
+  {
+    RCLCPP_INFO(this->get_logger(), "Received high priority message: '%s'", msg->data.c_str());
+  }
+
+  rclcpp::Subscription<example_interfaces::msg::ExampleData>::SharedPtr subscriber_;
+};
+
+class LowPrioritySubscriber : public rclcpp::Node
+{
+public:
+  LowPrioritySubscriber()
+  : Node("low_priority_subscriber")
+  {
+    auto qos = rclcpp::QoS(rclcpp::QoSInitialization::from_rmw(rmw_qos_profile_default));
+    qos.reliability(rclcpp::ReliabilityPolicy::BestEffort);
+    subscriber_ = this->create_subscription<example_interfaces::msg::ExampleData>(
+      "low_priority_topic", qos, std::bind(&LowPrioritySubscriber::message_callback, this, std::placeholders::_1));
+  }
+
+private:
+  void message_callback(const example_interfaces::msg::ExampleData::SharedPtr msg) const
+  {
+    RCLCPP_INFO(this->get_logger(), "Received low priority message: '%s'", msg->data.c_str());
+  }
+
+  rclcpp::Subscription<example_interfaces::msg::ExampleData>::SharedPtr subscriber_;
+};
+
+int main(int argc, char *argv[])
+{
+  rclcpp::init(argc, argv);
+  rclcpp::executors::MultiThreadedExecutor executor;
+  auto high_priority_sub_node = std::make_shared<HighPrioritySubscriber>();
+  auto low_priority_sub_node = std::make_shared<LowPrioritySubscriber>();
+
+  executor.add_node(high_priority_sub_node);
+  executor.add_node(low_priority_sub_node);
+  executor.spin();
+
+  rclcpp::shutdown();
+  return 0;
+}
+```
+
+**4. 创建服务节点**
+
+创建一个名为`multi_level_service.cpp`的文件，其中包含以下内容：
+
+```cpp
+#include <memory>
+#include "rclcpp/rclcpp.hpp"
+#include "example_interfaces/srv/add_two_ints.hpp"
+
+class MultiLevelService : public rclcpp::Node
+{
+public:
+  MultiLevelService()
+  : Node("multi_level_service")
+  {
+    service_ = this->create_service<example_interfaces::srv::AddTwoInts>(
+      "add_two_ints",
+      std::bind(&MultiLevelService::handle_service, this, std::placeholders::_1, std::placeholders::_2));
+  }
+
+private:
+  void handle_service(
+    const std::shared_ptr<example_interfaces::srv::AddTwoInts::Request> request,
+    std::shared_ptr<example_interfaces::srv::AddTwoInts::Response> response)
+  {
+    response->sum = request->a + request->b;
+    RCLCPP_INFO(this->get_logger(), "Incoming request\na: %ld" " b: %ld", request->a, request->b);
+  }
+
+  rclcpp::Service<example_interfaces::srv::AddTwoInts>::SharedPtr service_;
+};
+
+int main(int argc, char *argv[])
+{
+  rclcpp::init(argc, argv);
+  rclcpp::spin(std::make_shared<MultiLevelService>());
+  rclcpp::shutdown();
+  return 0;
+}
+```
+
+**5. 创建客户端节点**
+
+创建一个名为`multi_level_client.cpp`的文件，其中包含以下内容：
+
+```cpp
+#include <chrono>
+#include <cinttypes>
+#include <memory>
+#include "rclcpp/rclcpp.hpp"
+#include "example_interfaces/srv/add_two_ints.hpp"
+
+using namespace std::chrono_literals;
+
+class MultiLevelClient : public rclcpp::Node
+{
+public:
+  MultiLevelClient()
+  : Node("multi_level_client")
+  {
+    client_ = this->create_client<example_interfaces::srv::AddTwoInts>("add_two_ints");
+    timer_ = this->create_wall_timer(2000ms, std::bind(&MultiLevelClient::send_request, this));
+  }
+
+private:
+  void send_request()
+  {
+    auto request = std::make_shared<example_interfaces::srv::AddTwoInts::Request>();
+    request->a = 2;
+    request->b = 3;
+
+    while (!client_->wait_for_service(1s)) {
+      if (!rclcpp::ok()) {
+        RCLCPP_ERROR(this->get_logger(), "Interrupted while waiting for the service. Exiting.");
+        return;
+      }
+      RCLCPP_INFO(this->get_logger(), "Service not available, waiting and trying again...");
+    }
+
+    auto result = client_->async_send_request(request);
+    if (rclcpp::spin_until_future_complete(shared_from_this(), result) ==
+      rclcpp::executor::FutureReturnCode::SUCCESS)
+    {
+      RCLCPP_INFO(this->get_logger(), "Sum: %ld", result.get()->sum);
+    } else {
+      RCLCPP_ERROR(this->get_logger(), "Failed to call service");
+    }
+  }
+
+  rclcpp::Client<example_interfaces::srv::AddTwoInts>::SharedPtr client_;
+  rclcpp::TimerBase::SharedPtr timer_;
+};
+
+int main(int argc, char *argv[])
+{
+  rclcpp::init(argc, argv);
+  rclcpp::spin(std::make_shared<MultiLevelClient>());
+  rclcpp::shutdown();
+  return 0;
+}
+```
+
+**6. 编译并运行节点**
+
+为了编译这些节点，你需要在你的 ROS 2 包中的`CMakeLists.txt`文件中添加相应的可执行文件和依赖项。接下来，在不同的终端中运行发布者、订阅者
+
+#
+
+## 在 cyclone dds 中 condition 和 listener 的区别
+
+在 Cyclone DDS 中，`condition` 和 `listener` 是两种用于处理事件通知的不同机制。它们都允许用户在特定事件发生时执行自定义代码，但它们的实现方式和使用场景有所不同。
+
+**Condition（条件）**
+
+Condition 是一种在 DDS 中表示事件的对象，通常用于等待事件发生。在 Cyclone DDS 中，通常使用 WaitSet 来管理一组条件。当至少一个条件满足时，WaitSet 会解除阻塞。这种机制允许用户编写自定义的事件循环，处理不同类型的事件。
+
+常见的 Condition 类型包括：
+
+- StatusCondition：与实体（如 DataReader 或 DataWriter）关联的状态。
+- GuardCondition：允许用户手动触发事件。
+- ReadCondition：当 DataReader 中的数据满足特定状态时触发。
+- QueryCondition：当 DataReader 中的数据满足特定过滤条件时触发。
+
+**Listener（监听器）**
+
+Listener 是一个回调函数的集合，可以用于自动处理 DDS 中的事件。当与实体（如 DomainParticipant、DataReader 或 DataWriter）关联时，监听器会自动在特定事件发生时执行相应的回调函数。
+
+监听器通常用于处理异步事件，例如：
+
+- 数据可用事件：当新数据可供读取时触发。
+- 数据丢失事件：当已知的数据丢失时触发。
+- Liveliness（活跃度）事件：当实体的活跃度状态发生变化时触发。
+- Deadline（截止时间）事件：当某个实体未在截止时间内完成操作时触发。
+
+**区别**
+
+- Condition 通常用于编写自定义的事件循环，需要用户在 WaitSet 中手动等待事件发生。Listener 则是基于回调的异步处理机制，无需用户手动等待。
+- Condition 提供了更精细的控制，允许用户处理不同类型的事件。Listener 是一种更简单的方法，适用于特定类型的事件处理。
+- Condition 可能需要更多的编码工作，因为用户需要管理 WaitSet 和条件。Listener 则相对容易实现，只需将回调函数与实体关联即可。
+
+总之，Condition 和 Listener 都是 Cyclone DDS 中处理事件的方法，但它们针对不同的使用场景和需求。根据具体需求，可以选择适合的机制来处理事件。
+
+## 这里提到的 attach 是如何实现的，是一个数组存储吗
+
+## 如果两个 reader 都订阅同一个 topic，而且都是 take 数据的，会怎么处理
+
+两个 reader 都是有单独的 rhc
+
+## 修改 cyclone dds 优先级翻转问题
+
+1. 增加一个 monitor
+2. 考虑使用 mutex 实现优先级继承
+
+cyclonedds 中还存在许多其他的锁的使用，是否会有影响
+
+#
+
+## node_interface
+
+ROS 2（Robot Operating System 2）是一个用于构建机器人应用程序的开源软件框架。在 ROS 2 中，`node_interface` 是一个抽象的基类，它定义了节点（Node）的基本功能。节点是 ROS 2 系统中的一个独立的功能单元，它可以发布、订阅、提供和请求消息。
+
+`node_interface` 定义了节点需要实现的一组接口。这些接口包括：
+
+1. **创建和销毁 Publishers 和 Subscribers**：节点可以创建和销毁发布者（Publishers）和订阅者（Subscribers）。发布者用于将消息发送到指定的主题上，而订阅者用于接收来自主题的消息。
+
+2. **创建和销毁 Services**：节点可以创建和销毁服务（Services）。服务是一个用于请求-响应通信的机制，节点可以通过服务提供请求处理功能，或者向其他节点请求服务。
+
+3. **创建和销毁 Timers**：节点可以创建和销毁定时器（Timers）。定时器可以用于周期性地执行任务，例如定期发布消息或调用服务。
+
+4. **管理参数**：节点可以存储和管理参数（Parameters）。参数是用于配置节点行为的键-值对。例如，机器人的速度上限可以作为一个参数存储在对应的节点中。
+
+5. **管理节点生命周期**：节点可以具有不同的生命周期状态，如未配置、配置、激活、非激活和关闭。`node_interface` 允许管理节点的生命周期状态，例如将节点从未配置状态转换为配置状态。
+
+实际使用中，开发者可以通过继承 `node_interface` 并实现所需的功能来创建自定义节点。这样，不同的节点可以根据需要实现不同的功能，而 `node_interface` 保证所有节点都具有一致的基本接口。
+
+总之，ROS 2 中的 `node_interface` 提供了一个抽象基类，定义了节点的核心功能。通过实现这个接口，开发者可以创建具有自定义功能的节点，同时保持与 ROS 2 系统的兼容性。
+
+> [!NOTE]
+> 这里有提到 node_interface 是 ros2 中对于 node 的抽象，其中就涉及到“管理节点的生命周期”
+
+## 创建自定义节点
+
+要创建一个自定义节点，您需要首先安装 ROS 2 并设置好开发环境。接下来，按照以下步骤创建一个自定义节点：
+
+1. **创建一个 ROS 2 包**：创建一个新的 ROS 2 包，用于存放您的自定义节点。假设您的包名为 `my_custom_node_pkg`，可以使用以下命令创建一个新包：
+
+```bash
+ros2 pkg create --build-type ament_cmake my_custom_node_pkg
+```
+
+这将在当前目录下创建一个名为 `my_custom_node_pkg` 的文件夹，其中包含一些基本文件，如 `CMakeLists.txt` 和 `package.xml`。
+
+2. **编写自定义节点的代码**：在 `my_custom_node_pkg` 文件夹中，创建一个名为 `src` 的子文件夹（如果尚不存在），并在其中创建一个新的源文件，例如 `my_custom_node.cpp`。编写您的自定义节点代码，例如：
+
+```cpp
+#include "rclcpp/rclcpp.hpp"
+
+class MyCustomNode : public rclcpp::Node
+{
+public:
+  MyCustomNode() : Node("my_custom_node")
+  {
+    // 在这里实现您的自定义功能，如创建发布者、订阅者或服务。
+  }
+};
+
+int main(int argc, char **argv)
+{
+  rclcpp::init(argc, argv);
+  auto node = std::make_shared<MyCustomNode>();
+  rclcpp::spin(node);
+  rclcpp::shutdown();
+  return 0;
+}
+```
+
+在这个例子中，我们创建了一个名为 `MyCustomNode` 的类，该类继承自 `rclcpp::Node`。在构造函数中，我们可以实现自定义功能，如创建发布者、订阅者或服务。
+
+3. **修改 CMakeLists.txt**：更新 `CMakeLists.txt` 文件以编译您的自定义节点。在 `CMakeLists.txt` 中，找到 `add_executable()` 和 `ament_target_dependencies()` 函数调用，并将它们替换为下面的内容：
+
+```cmake
+add_executable(my_custom_node src/my_custom_node.cpp)
+ament_target_dependencies(my_custom_node rclcpp)
+```
+
+这将告诉 CMake 编译 `my_custom_node.cpp` 源文件，并链接 `rclcpp` 库。
+
+4. **编译和运行自定义节点**：使用以下命令编译您的包：
+
+```bash
+cd ~/ros2_ws  # 转到包含您的包的工作空间
+colcon build --packages-select my_custom_node_pkg
+```
+
+确保在您的 ROS 2 工作空间中激活环境，然后使用以下命令运行自定义节点：
+
+```bash
+ros2 run my_custom_node_pkg my_custom_node
+```
+
+您的自定义节点现在应该已经启动并运行。您可以继续在 `MyCustomNode` 类中实现所需的功能，如发布、订阅消息或提供服务。
+
+## 可以详细解释一下 在 ros2 中 Transient Local 这个 qos 策略的意义和作用吗
+
+在 ROS 2 中，QoS（Quality of Service，服务质量）策略用于定义发布者和订阅者之间消息交流的行为。`Transient Local` 是一种 QoS 策略，它主要关注消息的持久性，并影响在订阅者连接到发布者之前发布的消息的处理方式。
+
+`Transient Local` 策略下，发布者会在本地存储一些先前发布的消息。当新的订阅者连接到发布者时，这些本地存储的消息会被发送给新的订阅者。这使得新的订阅者能够接收到在它连接之前发送的消息。这对于需要获取最近历史消息的订阅者非常有用。
+
+以下是 `Transient Local` QoS 策略的一些关键特性：
+
+1. **消息持久性**：发布者会在本地存储一定数量的消息，以便在订阅者连接时发送给它们。这有助于确保订阅者能够接收到它们连接之前发布的消息。
+
+2. **历史深度**：您可以设置发布者保留消息的深度。深度越大，表示存储的历史消息越多。这可以通过 `history_depth` 属性配置。
+
+3. **延迟连接的订阅者**：对于新连接的订阅者，它们将**接收到发布者存储的最近历史消息**。这有助于订阅者在连接后立即获取所需的信息。
+
+要在 ROS 2 中使用 `Transient Local` QoS 策略，您需要在创建发布者和订阅者时指定适当的 QoS 配置。例如，在 C++ 中：
+
+```cpp
+#include "rclcpp/rclcpp.hpp"
+#include "std_msgs/msg/string.hpp"
+
+// ...
+
+// 创建具有 Transient Local QoS 策略的发布者
+auto qos = rclcpp::QoS(rclcpp::QoSInitialization::from_rmw(rmw_qos_profile_transient_local));
+qos.history_depth(10);  // 设置历史深度为 10
+auto publisher = this->create_publisher<std_msgs::msg::String>("my_topic", qos);
+
+// 创建具有 Transient Local QoS 策略的订阅者
+auto subscriber = this->create_subscription<std_msgs::msg::String>(
+  "my_topic",
+  qos,
+  [this](const std_msgs::msg::String::SharedPtr msg) {
+    // 处理接收到的消息
+  });
+```
+
+`Transient Local` QoS 策略特别适用于那些在订阅者连接时需要获取最近历史消息的场景。例如，一个订阅者需要获取机器人的最近位置信息。通过使用 `Transient Local` QoS 策略，即使订阅者在位置信息发布之后才连接，它仍然能够接收到最近的位置消息。
