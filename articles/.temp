@@ -1,0 +1,71 @@
+translate by baidu@2023-05-26 15:22:34
+---
+---
+
+layout: default
+
+> 布局：默认
+
+title: ROS 2 Quality of Service policies
+
+> 标题：ROS 2服务质量政策
+
+permalink: articles/qos.html
+
+> 永久链接：文章/qos.html
+
+abstract:
+
+> 摘要：
+
+  This article describes the approach to provide QoS (Quality of Service) policies for ROS 2.
+
+> 本文描述了为ROS2提供QoS（服务质量）策略的方法。
+
+published: true
+
+> 已发布：true
+
+author: '[Esteve Fernandez](https://github.com/esteve)'
+
+> 作者：'[Esteve Fernandez](https://github.com/esteve)'
+
+date_written: 2015-10
+
+> 书写日期：2015-10
+
+last_modified: 2019-05
+
+> 上次修改时间：2019-05
+---
+
+
+{:toc}
+
+> ｛：toc｝
+
+<div class="alert alert-warning" markdown="1">
+
+  This is a work in progress.
+
+> 这是一项正在进行的工作。
+
+  Please check for existing issues/pull requests for related discussion or open new issues/pull requests to propose changes.
+
+> 请检查现有问题/撤回请求以进行相关讨论，或打开新问题/撤回要求以提出更改。
+</div>
+
+# {{ page.title }}
+
+<div class="abstract" markdown="1">
+
+{{ page.abstract }}
+
+> ｛｛page.abstract｝｝
+</div>
+
+
+Authors: {{ page.author }}
+
+> 作者：｛｛page.author｝｝
+
