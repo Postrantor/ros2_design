@@ -1,30 +1,17 @@
 ---
-layout: default
-title: ROS 2 Launch XML Format
-permalink: articles/roslaunch_xml.html
-abstract:
-  The XML format for declarative launch descriptions in the ROS 2 launch system.
-author: '[Michel Hidalgo](https://github.com/hidmic)'
-date_written: 2019-09
-last_modified: 2021-06
-published: true
+    layout: default
+    title: ROS 2 Launch XML Format
+    permalink: articles/roslaunch_xml.html
+    abstract:
+      The XML format for declarative launch descriptions in the ROS 2 launch system.
+    author: '[Michel Hidalgo](https://github.com/hidmic)'
+    date_written: 2019-09
+    last_modified: 2021-06
+    published: true
+    Authors: {{ page.author }}
+    Date Written: {{ page.date_written }}
+    Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
 ---
-
-- This will become a table of contents (this text will be scraped).
-{:toc}
-
-# {{ page.title }}
-
-<div class="abstract" markdown="1">
-{{ page.abstract }}
-</div>
-
-Authors: {{ page.author }}
-
-Date Written: {{ page.date_written }}
-
-Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
-
 
 # ROS 2 Launch XML Format v0.1.0
 
@@ -45,7 +32,7 @@ YAML is currently supported too, and other markup languages could be added.
 ### Schema Definition
 
 ```xml
-{% include_relative specs/launch.0.1.1.xsd %}
+    {% include_relative specs/launch.0.1.1.xsd %}
 ```
 
 ### Tags Semantics
@@ -70,11 +57,11 @@ The included launch file description is not necessarily written in this format n
 ##### Examples
 
 ```xml
-<include file="/opt/my_launch_file.py"/>
-<include file="$(find-pkg-share my_pkg)/launch/some_launch_file.xml"/>
-<include file="/opt/my_other_launch_file.xml">
-  <arg name="some_argument" value="dummy_value"/>
-</include>
+    <include file="/opt/my_launch_file.py"/>
+    <include file="$(find-pkg-share my_pkg)/launch/some_launch_file.xml"/>
+    <include file="/opt/my_other_launch_file.xml">
+      <arg name="some_argument" value="dummy_value"/>
+    </include>
 ```
 
 #### `<group>` Tag
@@ -86,10 +73,10 @@ The `<group>` tag allows for launch actions' grouping as well as optional launch
 ##### Examples
 
 ```xml
-<group scoped="true">
-  <node pkg="a_ros_package" name="dummy0" namespace="my_ns" exec="dummy_node"/>
-  <node pkg="a_ros_package" name="dummy1" exec="dummy_node"/>
-</group>
+    <group scoped="true">
+      <node pkg="a_ros_package" name="dummy0" namespace="my_ns" exec="dummy_node"/>
+      <node pkg="a_ros_package" name="dummy1" exec="dummy_node"/>
+    </group>
 ```
 
 #### `<let>` Tag
@@ -101,8 +88,8 @@ The `<let>` tags allows for definition of scoped launch file configuration varia
 ##### Examples
 
 ```xml
-<let name="foo" value="$(env BAR)"/>
-<let name="baz" value="false"/>
+    <let name="foo" value="$(env BAR)"/>
+    <let name="baz" value="false"/>
 ```
 
 #### `<arg>` Tag
@@ -116,8 +103,8 @@ Arguments are limited to the scope of their definition and thus have to be expli
 ##### Examples
 
 ```xml
-<arg name="publish_frequency" default="10"/>
-<arg name="output_path" description="Output path for some processing pipeline"/>
+    <arg name="publish_frequency" default="10"/>
+    <arg name="output_path" description="Output path for some processing pipeline"/>
 ```
 
 #### `<executable>` Tag
@@ -129,7 +116,7 @@ The `<executable>` tag allows for executing any executable as a local OS process
 ##### Examples
 
 ```xml
-<executable cmd="ls -las" cwd="/home" launch-prefix="time" output="screen"/>
+    <executable cmd="ls -las" cwd="/home" launch-prefix="time" output="screen"/>
 ```
 
 #### `<node>` Tag
@@ -141,10 +128,10 @@ The `<node>` tag allows for executing a ROS node as a local OS process.
 ##### Examples
 
 ```xml
-<node pkg="ros_demos" exec="publisher">
-  <param name="publish_frequency" value="10"/>
-  <remap from="generic_topic_name" to="my_topic"/>
-</node>
+    <node pkg="ros_demos" exec="publisher">
+      <param name="publish_frequency" value="10"/>
+      <remap from="generic_topic_name" to="my_topic"/>
+    </node>
 ```
 
 #### `<param>` Tag

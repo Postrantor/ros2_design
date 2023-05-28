@@ -1,27 +1,16 @@
 ---
-layout: default
-title: Proposal for Implementation of Real-time Systems in ROS 2
-permalink: articles/realtime_proposal.html
-abstract: Proposal for a test-driven approach to the real-time performance requirement in ROS 2.
-published: true
-author: Jackie Kay
-date_written: 2016-01
-last_modified: 2016-01
+    layout: default
+    title: Proposal for Implementation of Real-time Systems in ROS 2
+    permalink: articles/realtime_proposal.html
+    abstract: Proposal for a test-driven approach to the real-time performance requirement in ROS 2.
+    published: true
+    author: Jackie Kay
+    date_written: 2016-01
+    last_modified: 2016-01
+    Authors: {{ page.author }}
+    Date Written: {{ page.date_written }}
+    Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
 ---
-
-{:toc}
-
-# {{ page.title }}
-
-<div class="abstract" markdown="1">
-{{ page.abstract }}
-</div>
-
-Authors: {{ page.author }}
-
-Date Written: {{ page.date_written }}
-
-Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
 
 ## Requirements and Implementation of Real-Time Systems
 

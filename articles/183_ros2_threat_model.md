@@ -1,177 +1,132 @@
 ---
-layout: default
-title: ROS 2 Robotic Systems Threat Model
-permalink: articles/ros2_threat_model.html
-abstract:
-  This document describes security concerns robotic systems built using ROS 2
-  may face.
-  The first section describes potential threats to ROS 2 systems.
-  The second section describes potential attacks and mitigations on a reference
-  platform (TurtleBot 3).
-  The third covers potential attacks, mitigations and some preliminary results in an industrial
-  reference platform (MARA modular robot).
-author: >
-  [Thomas Moulard](https://github.com/thomas-moulard),
-  [Juan Hortala](https://github.com/juanrh)
-  [Xabi Perez](https://github.com/XabierPB)
-  [Gorka Olalde](https://github.com/olaldiko)
-  [Borja Erice](https://github.com/borkenerice)
-  [Odei Olalde](https://github.com/o-olalde)
-  [David Mayoral](https://github.com/dmayoral)
-date_written: 2019-03
-last_modified: 2021-01
-published: true
-categories: Security
+    layout: default
+    title: ROS 2 Robotic Systems Threat Model
+    permalink: articles/ros2_threat_model.html
+    abstract:
+      This document describes security concerns robotic systems built using ROS 2
+      may face.
+      The first section describes potential threats to ROS 2 systems.
+      The second section describes potential attacks and mitigations on a reference
+      platform (TurtleBot 3).
+      The third covers potential attacks, mitigations and some preliminary results in an industrial
+      reference platform (MARA modular robot).
+    author: >
+      [Thomas Moulard](https://github.com/thomas-moulard),
+      [Juan Hortala](https://github.com/juanrh)
+      [Xabi Perez](https://github.com/XabierPB)
+      [Gorka Olalde](https://github.com/olaldiko)
+      [Borja Erice](https://github.com/borkenerice)
+      [Odei Olalde](https://github.com/o-olalde)
+      [David Mayoral](https://github.com/dmayoral)
+    date_written: 2019-03
+    last_modified: 2021-01
+    published: true
+    categories: Security
+    Authors: {{ page.author }}
+    Date Written: {{ page.date_written }}
+    Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
 ---
-
-{:toc}
-
-{::options parse_block_html="true" /}
-
-<style>
-table {
-    table-layout: fixed;
-    width: 100%;
-}
-
-th {
-    width: 11em;
-}
-</style>
-
-# {{ page.title }}
-
-Authors: {{ page.author }}
-
-Date Written: {{ page.date_written }}
-
-Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
 
 This is a **DRAFT DOCUMENT**.
 
 <div class="alert alert-warning" markdown="1">
 **Disclaimer**:
 
-* This document is not exhaustive.
+- This document is not exhaustive.
   Mitigating all attacks in this document does not ensure any robotic product is secure.
-* This document is a live document.
+- This document is a live document.
   It will continue to evolve as we implement and mitigate attacks against reference platforms.
 
 </div>
 
 ## Table of Contents
 
-* [{{ page.title }}](#pagetitle)
-  * [Table of Contents](#table-of-contents)
-  * [Document Scope](#document-scope)
-  * [Robotic Systems Threats Overview](#robotic-systems-threats-overview)
-    * [Defining Robotic Systems Threats](#defining-robotic-systems-threats)
-    * [Robot Application Actors, Assets, and Entry Points](#robot-application-actors-assets-and-entry-points)
-      * [Robot Application Actors](#robot-application-actors)
-      * [Assets](#assets)
-      * [Entry Points](#entry-points)
-    * [Robot Application Components and Trust Boundaries](#robot-application-components-and-trust-boundaries)
-    * [Threat Analysis and Modeling](#threat-analysis-and-modeling)
-    * [Including a new robot into the threat model](#including-a-new-robot-into-the-threat-model)
-  * [Threat Analysis for the `TurtleBot 3` Robotic Platform](#threat-analysis-for-the-turtlebot-3-robotic-platform)
-    * [System description](#system-description)
-    * [Architecture Dataflow diagram](#architecture-dataflow-diagram)
-      * [Assets](#assets-1)
-        * [Hardware](#hardware)
-        * [Processes](#processes)
-        * [Software Dependencies](#software-dependencies)
-        * [External Actors](#external-actors)
-        * [Robot Data Assets](#robot-data-assets)
-      * [Entry points](#entry-points)
-      * [Use case scenarios](#use-case-scenarios)
-      * [Threat model](#threat-model)
-      * [Threat Diagram: An attacker deploys a malicious node on the robot](#threat-diagram-an-attacker-deploys-a-malicious-node-on-the-robot)
-      * [Attack Tree](#attack-tree)
-    * [Threat Model Validation Strategy](#threat-model-validation-strategy)
-  * [Threat Analysis for the `MARA` Robotic Platform](#threat-analysis-for-the-mara-robotic-platform)
-    * [System description](#system-description-1)
-    * [Architecture Dataflow diagram](#architecture-dataflow-diagram-1)
-      * [Assets](#assets-2)
-        * [Hardware](#hardware-1)
-        * [Network](#network)
-        * [Software processes](#software-processes)
-        * [Software dependencies](#software-dependencies)
-        * [External Actors](#external-actors-1)
-        * [Robot Data assets](#robot-data-assets)
-      * [Use case scenarios](#use-case-scenarios-1)
-      * [Entry points](#entry-points-1)
-      * [Trust Boundaries for MARA in `pick & place` application](#trust-boundaries-for-mara-in-pick--place-application)
-    * [Threat Model](#threat-model)
-      * [Attack Trees](#attack-trees)
-      * [Physical vector attack tree](#physical-vector-attack-tree)
-      * [ROS 2 API vector attack tree](#ros2-api-vector-attack-tree)
-      * [H-ROS API vector attack tree](#h-ros-api-vector-attack-tree)
-      * [Code repository compromise vector attack tree](#code-repository-compromise-vector-attack-tree)
-    * [Threat Model Validation Strategy](#threat-model-validation-strategy-1)
-    * [Security Assessment preliminary results](#security-assessment-preliminary-results)
-      * [Introduction](#introduction)
-      * [Results](#results)
-        * [Findings](#findings)
-  * [References](#references)
+- [Table of Contents](#table-of-contents)
+- [Document Scope](#document-scope)
+- [Robotic Systems Threats Overview](#robotic-systems-threats-overview)
+  - [Defining Robotic Systems Threats](#defining-robotic-systems-threats)
+  - [Robot Application Actors, Assets, and Entry Points](#robot-application-actors-assets-and-entry-points)
+    - [Robot Application Actors](#robot-application-actors)
+    - [Assets](#assets)
+    - [Entry Points](#entry-points)
+  - [Robot Application Components and Trust Boundaries](#robot-application-components-and-trust-boundaries)
+  - [Threat Analysis and Modeling](#threat-analysis-and-modeling)
+  - [Including a new robot into the threat model](#including-a-new-robot-into-the-threat-model)
+- [Threat Analysis for the `TurtleBot 3` Robotic Platform](#threat-analysis-for-the-turtlebot-3-robotic-platform)
+  - [System description](#system-description)
+  - [Architecture Dataflow diagram](#architecture-dataflow-diagram)
+    - [Assets](#assets-1)
+      - [Hardware](#hardware)
+      - [Processes](#processes)
+      - [Software Dependencies](#software-dependencies)
+      - [External Actors](#external-actors)
+      - [Robot Data Assets](#robot-data-assets)
+      - [Robot Compute Assets](#robot-compute-assets)
+    - [Entry points](#entry-points-1)
+    - [Use case scenarios](#use-case-scenarios)
+    - [Threat model](#threat-model)
+    - [Threat Diagram: An attacker deploys a malicious node on the robot](#threat-diagram-an-attacker-deploys-a-malicious-node-on-the-robot)
+    - [Attack Tree](#attack-tree)
+  - [Threat Model Validation Strategy](#threat-model-validation-strategy)
+- [Threat Analysis for the `MARA` Robotic Platform](#threat-analysis-for-the-mara-robotic-platform)
+  - [System description](#system-description-1)
+  - [Architecture Dataflow diagram](#architecture-dataflow-diagram-1)
+    - [Assets](#assets-2)
+      - [Hardware](#hardware-1)
+      - [Network](#network)
+      - [Software processes](#software-processes)
+      - [Software dependencies](#software-dependencies-1)
+      - [External Actors](#external-actors-1)
+      - [Robot Data assets](#robot-data-assets-1)
+    - [Use case scenarios](#use-case-scenarios-1)
+    - [Entry points](#entry-points-2)
+    - [Trust Boundaries for MARA in `pick & place` application](#trust-boundaries-for-mara-in-pick--place-application)
+  - [Threat Model](#threat-model-1)
+    - [Attack Trees](#attack-trees)
+    - [Physical vector attack tree](#physical-vector-attack-tree)
+    - [ROS 2 API vector attack tree](#ros-2-api-vector-attack-tree)
+    - [H-ROS API vector attack tree](#h-ros-api-vector-attack-tree)
+    - [Code repository compromise vector attack tree](#code-repository-compromise-vector-attack-tree)
+  - [Threat Model Validation Strategy](#threat-model-validation-strategy-1)
+  - [Security Assessment preliminary results](#security-assessment-preliminary-results)
+    - [Introduction](#introduction)
+    - [Results](#results)
+      - [Findings](#findings)
+- [References](#references)
 
 ## Document Scope
 
-This document describes potential threats for ROS 2 robotic systems.
-The document is divided into two parts:
+This document describes potential threats for ROS 2 robotic systems. The document is divided into two parts:
 
 1. Robotic Systems Threats Overview
-1. Threat Analysis for the TurtleBot 3 Robotic Platform
-1. Threat Analysis for the MARA Robotic Platform
+2. Threat Analysis for the TurtleBot 3 Robotic Platform
+3. Threat Analysis for the MARA Robotic Platform
 
-The first section lists and describes threats from a theoretical point of view.
-Explanations in this section should hold for any robot built using a
-component-oriented architecture.
-The second section instantiates those threats on a widely-available reference platform, the
-TurtleBot 3.
-Mitigating threats on this platform enables us to demonstrate the viability of our recommendations.
+The first section lists and describes threats from a theoretical point of view. Explanations in this section should hold for any robot built using a component-oriented architecture. The second section instantiates those threats on a widely-available reference platform, the TurtleBot 3. Mitigating threats on this platform enables us to demonstrate the viability of our recommendations.
 
 ## Robotic Systems Threats Overview
 
 <div class="alert alert-info" markdown="1">
-This section is intentionally independent from ROS as robotic systems
-share common threats and potential vulnerabilities.
-For instance, this section describes "robotic components" while the next section will mention
-"ROS 2 nodes".
+This section is intentionally independent from ROS as robotic systems share common threats and potential vulnerabilities. For instance, this section describes "robotic components" while the next section will mention "ROS 2 nodes".
 </div>
 
 ### Defining Robotic Systems Threats
 
-We will consider as a robotic system one or more general-purpose computers
-connected to one or more actuators or sensors.
-An actuator is defined as any device producing physical motion.
-A sensor is defined as any device capturing or recording a physical property.
+We will consider as a robotic system one or more general-purpose computers connected to one or more actuators or sensors. An actuator is defined as any device producing physical motion. A sensor is defined as any device capturing or recording a physical property.
 
 ### Robot Application Actors, Assets, and Entry Points
 
 This section defines actors, assets, and entry points for this threat model.
 
-**Actors** are humans or external systems interacting with the robot.
-Considering which actors interact with the robot is helpful to determine how the system
-can be compromised.
-For instance, actors may be able to give commands to the robot which may be abused to attack the
-system.
+**Actors** are humans or external systems interacting with the robot. Considering which actors interact with the robot is helpful to determine how the system can be compromised. For instance, actors may be able to give commands to the robot which may be abused to attack the system.
 
-**Assets** represent any user, resource (e.g. disk space), or property (e.g. physical
-safety of users) of the system that should be defended against attackers.
-Properties of assets can be related to achieving the business goals of the robot.
-For example, sensor data is a resource/asset of the system and the privacy of that
-data is a system property and a business goal.
+**Assets** represent any user, resource (e.g. disk space), or property (e.g. physical safety of users) of the system that should be defended against attackers. Properties of assets can be related to achieving the business goals of the robot. For example, sensor data is a resource/asset of the system and the privacy of that data is a system property and a business goal.
 
-**Entry points** represent how the system is interacting with the world (communication
-channels, API, sensors, etc.).
+**Entry points** represent how the system is interacting with the world (communication channels, API, sensors, etc.).
 
 #### Robot Application Actors
 
-Actors are divided into multiple categories based on whether or not they are
-physically present next to the robot (could the robot harm them?), are they
-human or not and are they a "power user" or not.
-A power user is defined as someone who is knowledgeable and executes tasks which are normally
-not done by end-users (build and debug new software, deploy code, etc.).
+Actors are divided into multiple categories based on whether or not they are physically present next to the robot (could the robot harm them?), are they human or not and are they a "power user" or not. A power user is defined as someone who is knowledgeable and executes tasks which are normally not done by end-users (build and debug new software, deploy code, etc.).
 
 <div class="table">
 <table class="table">
@@ -233,10 +188,7 @@ not done by end-users (build and debug new software, deploy code, etc.).
 
 #### Assets
 
-Assets are categorized in privacy (robot private data should not
-be accessible by attackers), integrity (robot behavior should not be modified
-by attacks) and availability (robot should continue to operate even under
-attack).
+Assets are categorized in privacy (robot private data should not be accessible by attackers), integrity (robot behavior should not be modified by attacks) and availability (robot should continue to operate even under attack).
 
 <div class="table">
 <table class="table">
@@ -300,8 +252,7 @@ attack).
 
 #### Entry Points
 
-Entry points describe the system attack surface area (how do actors interact
-with the system?).
+Entry points describe the system attack surface area (how do actors interact with the system?).
 
 <div class="table">
 <table class="table">
@@ -345,106 +296,44 @@ with the system?).
 
 ### Robot Application Components and Trust Boundaries
 
-The system is divided into hardware (embedded general-purpose computer,
-sensors, actuators), multiple components
-(usually processes) running on multiple computers (trusted or non-trusted
-components) and data stores (embedded or in the cloud).
+The system is divided into hardware (embedded general-purpose computer, sensors, actuators), multiple components (usually processes) running on multiple computers (trusted or non-trusted components) and data stores (embedded or in the cloud).
 
-While the computers may run well-controlled, trusted software (trusted
-components), other off-the-shelf robotics components (non-trusted) nodes may be
-included in the application.
-Third-party components may be malicious (extract private data, install a root-kit, etc.) or their
-QA validation process may not be as extensive as in-house software.
-Third-party components releasing process create additional security threats (third-party component
-may be compromised during their distribution).
+While the computers may run well-controlled, trusted software (trusted components), other off-the-shelf robotics components (non-trusted) nodes may be included in the application. Third-party components may be malicious (extract private data, install a root-kit, etc.) or their QA validation process may not be as extensive as in-house software. Third-party components releasing process create additional security threats (third-party component may be compromised during their distribution).
 
-A trusted robotic component is defined as a node developed, built, tested and
-deployed by the robotic application owner or vetted partners.
-As the process is owned end-to-end by a single organization, we can assume that the node will
-respect its specifications and will not, for instance, try to extract and leak private information.
-While carefully controlled engineering processes can reduce the risk of malicious behavior
-(accidentally or voluntarily), it cannot completely eliminate it.
-Trusted nodes can still leak private data, etc.
+A trusted robotic component is defined as a node developed, built, tested and deployed by the robotic application owner or vetted partners. As the process is owned end-to-end by a single organization, we can assume that the node will respect its specifications and will not, for instance, try to extract and leak private information. While carefully controlled engineering processes can reduce the risk of malicious behavior (accidentally or voluntarily), it cannot completely eliminate it. Trusted nodes can still leak private data, etc.
 
-Trusted nodes should not trust non-trusted nodes.
-It is likely that more than one non-trusted component is embedded in any given robotic application.
-It is important for non-trusted components to not trust each other as one malicious non-trusted
-node may try to compromise another non-trusted node.
+Trusted nodes should not trust non-trusted nodes. It is likely that more than one non-trusted component is embedded in any given robotic application. It is important for non-trusted components to not trust each other as one malicious non-trusted node may try to compromise another non-trusted node.
 
-An example of a trusted component could be an in-house (or carefully vetted) IMU
-driver node.
-This component may communicate through unsafe channels with other
-driver nodes to reduce sensor data fusion latency.
-Trusting components is never ideal but it may be acceptable if the software is well-controlled.
+An example of a trusted component could be an in-house (or carefully vetted) IMU driver node. This component may communicate through unsafe channels with other driver nodes to reduce sensor data fusion latency. Trusting components is never ideal but it may be acceptable if the software is well-controlled.
 
-On the opposite, a non-trusted node can be a third-party object tracker.
-Deploying this node without adequate sandboxing could impact:
+On the opposite, a non-trusted node can be a third-party object tracker. Deploying this node without adequate sandboxing could impact:
 
-* User privacy: the node is streaming back user video without their consent
-* User safety: the robot is following the object detected by the tracker and its
-  speed is proportional to the object distance.
-  The malicious tracker estimates
-  the object position very far away on purpose to trick the robot into suddenly
-  accelerating and hurting the user.
-* System availability: the node may try to consume all available computing
-  resources (CPU, memory, disk) and prevent the robot from performing correctly.
-* System Integrity: the robot is following the object detected by the tracker.
-  The attacker can tele-operate the robot by controlling the estimated position
-  of the tracked object (detect an object on the left to make the robot move to
-  the left, etc.).
+- User privacy: the node is streaming back user video without their consent
+- User safety: the robot is following the object detected by the tracker and its speed is proportional to the object distance. The malicious tracker estimates the object position very far away on purpose to trick the robot into suddenly accelerating and hurting the user.
+- System availability: the node may try to consume all available computing resources (CPU, memory, disk) and prevent the robot from performing correctly.
+- System Integrity: the robot is following the object detected by the tracker. The attacker can tele-operate the robot by controlling the estimated position of the tracked object (detect an object on the left to make the robot move to the left, etc.).
 
-Nodes may also communicate with the local filesystem, cloud services or data stores.
-Those services or data stores can be compromised and should not be automatically trusted.
-For instance, URDF robot models are usually stored in the robot file system.
-This model stores robot joint limits.
-If the robot file system is compromised, those limits could be removed which would enable an
-attacker to destroy the robot.
+Nodes may also communicate with the local filesystem, cloud services or data stores. Those services or data stores can be compromised and should not be automatically trusted. For instance, URDF robot models are usually stored in the robot file system. This model stores robot joint limits. If the robot file system is compromised, those limits could be removed which would enable an attacker to destroy the robot.
 
-Finally, users may try to rely on sensors to inject malicious data into the
-system ([Akhtar, Naveed, and Ajmal Mian. “Threat of Adversarial Attacks on
-Deep Learning in Computer Vision: A Survey.”][akhtar_threat_2018]).
+Finally, users may try to rely on sensors to inject malicious data into the system ([Akhtar, Naveed, and Ajmal Mian. “Threat of Adversarial Attacks on Deep Learning in Computer Vision: A Survey.”][akhtar_threat_2018]).
 
-The diagram below illustrates an example application with different trust zones
-(trust boundaries showed with dashed green lines).
-The number and scope of trust zones is depending on the application.
+The diagram below illustrates an example application with different trust zones (trust boundaries showed with dashed green lines). The number and scope of trust zones is depending on the application.
 
-![Robot System Threat Model](ros2_threat_model/RobotSystemThreatModel.png)
-[Diagram Source](ros2_threat_model/RobotSystemThreatModel.json)
-(edited with [Threat Dragon][threat_dragon])
+    ![Robot System Threat Model](ros2_threat_model/RobotSystemThreatModel.png)
+    [Diagram Source](ros2_threat_model/RobotSystemThreatModel.json)
+    (edited with [Threat Dragon][threat_dragon])
 
 ### Threat Analysis and Modeling
 
-The table below lists all *generic* threats which may impact a
-robotic application.
+The table below lists all _generic_ threats which may impact a robotic application.
 
-Threat categorization is based on the [STRIDE][wikipedia_stride]
- (Spoofing / Tampering / Repudiation / Integrity / Denial of service
- / Elevation of privileges) model.
-Risk assessment relies on [DREAD][wikipedia_dread] (Damage / Reproducibility /
- Exploitability / Affected users / Discoverability).
+Threat categorization is based on the [STRIDE][wikipedia_stride] (Spoofing / Tampering / Repudiation / Integrity / Denial of service / Elevation of privileges) model. Risk assessment relies on [DREAD][wikipedia_dread] (Damage / Reproducibility / Exploitability / Affected users / Discoverability).
 
-In the following table, the "Threat Category (STRIDE)" columns indicate the categories to which a
-threat belongs.
-If the "Spoofing" column is marked with a check sign (✓), it means that this threat can be used to
-spoof a component of the system.
-If it cannot be used to spoof a component, a cross sign will be present instead (✘).
+In the following table, the "Threat Category (STRIDE)" columns indicate the categories to which a threat belongs. If the "Spoofing" column is marked with a check sign (✓), it means that this threat can be used to spoof a component of the system. If it cannot be used to spoof a component, a cross sign will be present instead (✘).
 
-The "Threat Risk Assessment (DREAD)" columns contain a score indicating how easy or likely it is
-for a particular threat to be exploited.
-The allowed score values are 1 (not at risk), 2 (may be at risk) or 3 (at risk, needs to
-be mitigated).
-For instance, in the damage column a 1 would mean "exploitation of the threat would cause minimum
-damages", 2 "exploitation of the threat would cause significant damages" and 3 "exploitation of
-the threat would cause massive damages".
-The "total score" is computed by adding the score of each column.
-The higher the score, the more critical the threat.
+The "Threat Risk Assessment (DREAD)" columns contain a score indicating how easy or likely it is for a particular threat to be exploited. The allowed score values are 1 (not at risk), 2 (may be at risk) or 3 (at risk, needs to be mitigated). For instance, in the damage column a 1 would mean "exploitation of the threat would cause minimum damages", 2 "exploitation of the threat would cause significant damages" and 3 "exploitation of the threat would cause massive damages". The "total score" is computed by adding the score of each column. The higher the score, the more critical the threat.
 
-Impacted assets, entry points and business goals columns indicate whether an asset, entry point or
-business goal is impacted by a given threat.
-A check sign (✓) means impacted, a cross sign (✘) means not impacted.
-A triangle (▲) means "impacted indirectly or under certain conditions".
-For instance, compromising the robot kernel may not be enough to steal user data but it makes
-stealing data much easier.
+Impacted assets, entry points and business goals columns indicate whether an asset, entry point or business goal is impacted by a given threat. A check sign (✓) means impacted, a cross sign (✘) means not impacted. A triangle (▲) means "impacted indirectly or under certain conditions". For instance, compromising the robot kernel may not be enough to steal user data but it makes stealing data much easier.
 
 <div class="table" markdown="1">
   <table class="table">
@@ -2177,52 +2066,47 @@ robot.</td>
 The following steps are recommended in order to extend this document with additional threat models:
 
 1. Determine the robot evaluation scenario.
-   This will include:
-  * System description and specifications
-  * Data assets
+    This will include:
+
+- System description and specifications
+- Data assets
+
 1. Define the robot environment:
-  * External actors
-  * Entry points
-  * Use cases
+
+- External actors
+- Entry points
+- Use cases
+
 1. Design security boundary and architectural schemas for the robotic application.
 1. Evaluate and prioritize entry points
-  * Make use of the RSF[rsf] to find applicable weaknesses on the robot.
-  * Take existing documentation as help for finding applicable entry points.
-1. Evaluate existing threats based on general threat table and add new ones to the specific threat
-   table.
-  * Evaluate new threats with DREAD[wikipedia_dread] and STRIDE[wikipedia_stride] methodologies.
-1. Design hypothetical attack trees for each of the entry points, detailing the affected resources
-   on the process.
+
+- Make use of the RSF[rsf] to find applicable weaknesses on the robot.
+- Take existing documentation as help for finding applicable entry points.
+
+1. Evaluate existing threats based on general threat table and add new ones to the specific threat table.
+
+- Evaluate new threats with DREAD[wikipedia_dread] and STRIDE[wikipedia_stride] methodologies.
+
+1. Design hypothetical attack trees for each of the entry points, detailing the affected resources on the process.
 1. Create a Pull Request and submit the changes to the ros2/design repository.
 
 ## Threat Analysis for the `TurtleBot 3` Robotic Platform
 
 ### System description
 
-The application considered in this section is tele-operation of a Turtlebot 3 robot using an Xbox
-controller.
+The application considered in this section is tele-operation of a Turtlebot 3 robot using an Xbox controller.
 
-The robot considered in this section is a [TurtleBot 3 Burger][tb3_burger].
-It is a small educational robot embedding an IMU and a Lidar, two motors /
-wheels, and a chassis that hosts a battery, a Pi Raspberry Pi 3 Model B+ Single
-Board Computer, and a OpenCR 1.0 Arduino compatible board that interacts with the sensors.
-The robot computer runs two nodes:
+The robot considered in this section is a [TurtleBot 3 Burger][tb3_burger]. It is a small educational robot embedding an IMU and a Lidar, two motors / wheels, and a chassis that hosts a battery, a Pi Raspberry Pi 3 Model B+ Single Board Computer, and a OpenCR 1.0 Arduino compatible board that interacts with the sensors. The robot computer runs two nodes:
 
-* [`turtlebot3_node`][turtlebot3_node] forwarding sensor data and actuator control commands,
-* [`raspicam2_node`][raspicam2_node] which is forwarding camera data
+- [`turtlebot3_node`][turtlebot3_node] forwarding sensor data and actuator control commands,
+- [`raspicam2_node`][raspicam2_node] which is forwarding camera data
 
-We also make the assumption that the robot is running a ROS 2 port of the AWS
-[CloudWatch sample application][cw_sample_app]).
-A ROS 2 version of this component is not yet available, but it will help us demonstrate the threats
-related to connecting a robot to a cloud service.
+We also make the assumption that the robot is running a ROS 2 port of the AWS [CloudWatch sample application][cw_sample_app]). A ROS 2 version of this component is not yet available, but it will help us demonstrate the threats related to connecting a robot to a cloud service.
 
-For the purpose of demonstrating the threats associated with distributing a ROS
-graph among multiple hosts, an Xbox controller is connected to a secondary
-computer (“remote host”).
-The secondary computer runs two additional nodes:
+For the purpose of demonstrating the threats associated with distributing a ROS graph among multiple hosts, an Xbox controller is connected to a secondary computer (“remote host”). The secondary computer runs two additional nodes:
 
-* [`joy_node`][joy_node] is forwarding joystick input as ROS 2 messages,
-* [`teleop_twist_joy`][teleop_twist_joy] is converting ROS 2 joystick messages to control commands.
+- [`joy_node`][joy_node] is forwarding joystick input as ROS 2 messages,
+- [`teleop_twist_joy`][teleop_twist_joy] is converting ROS 2 joystick messages to control commands.
 
 Finally, the robot data is accessed by a test engineer through a “field testing” computer.
 
@@ -2235,83 +2119,68 @@ Finally, the robot data is accessed by a test engineer through a “field testin
 
 ##### Hardware
 
-* [TurtleBot 3 Burger][tb3_burger] is a small, [ROS-enabled][ros_wiki_tb]
+- [TurtleBot 3 Burger][tb3_burger] is a small, [ROS-enabled][ros_wiki_tb]
   robot for education purposes.
-  * Compute resources
-    * Raspberry PI 3 host: OS Raspbian Stretch with ROS 2 Crystal running
+  - Compute resources
+    - Raspberry PI 3 host: OS Raspbian Stretch with ROS 2 Crystal running
       natively (without Docker), running as root.
-    * OpenCR board: using ROS 2 firmware as described in the TurtleBot3 ROS 2 setup instructions.
-  * [Hardware components][tb3_burger]) include:
-    * The Lidar is connected to the Raspberry PI through USB.
-    * A Raspberry PI camera module is connected to the Raspberry PI 3
+    - OpenCR board: using ROS 2 firmware as described in the TurtleBot3 ROS 2 setup instructions.
+  - [Hardware components][tb3_burger]) include:
+    - The Lidar is connected to the Raspberry PI through USB.
+    - A Raspberry PI camera module is connected to the Raspberry PI 3
       through its Camera Serial Interface (CSI).
-* Field testing host: conventional laptop running OS Ubuntu 18.04, no ROS installed.
+- Field testing host: conventional laptop running OS Ubuntu 18.04, no ROS installed.
   Running as a sudoer user.
-* Remote Host: any conventional server running OS Ubuntu 18.04 with ROS 2 Crystal.
-* CI host: any conventional server running OS Ubuntu 18.04.
+- Remote Host: any conventional server running OS Ubuntu 18.04 with ROS 2 Crystal.
+- CI host: any conventional server running OS Ubuntu 18.04.
 
-* WLAN: a wifi local area network without security enabled, open for anyone to
+- WLAN: a wifi local area network without security enabled, open for anyone to
   connect
-* Corporate private network: a secure corporate wide-area network, that spans multiple cities.
+- Corporate private network: a secure corporate wide-area network, that spans multiple cities.
   Only authenticated user with suitable credentials can connect to the network, and good security
   practices like password rotation are in place.
 
 ##### Processes
 
-* Onboard TurtleBot3 Raspberry Pi
-  * `turtlebot3_node`
-  * CloudWatch nodes (hypothetical as it has not been yet ported to ROS 2)
-    * `cloudwatch_metrics_collector`: subscribes to a the /metrics topic where
+- Onboard TurtleBot3 Raspberry Pi
+  - `turtlebot3_node`
+  - CloudWatch nodes (hypothetical as it has not been yet ported to ROS 2)
+    - `cloudwatch_metrics_collector`: subscribes to a the /metrics topic where
       other nodes publish MetricList messages that specify CloudWatch
       metrics data, and sends the corresponding metric data to CloudWatch
       metrics using the PutMetricsData API.
-    * `cloudwatch_logger`: subscribes to a configured list of topics, and
+    - `cloudwatch_logger`: subscribes to a configured list of topics, and
       publishes all messages found in that topic to a configured log group
       and log stream, using the CloudWatch metrics API.
-  * Monitoring Nodes
-    * `monitor_speed`: subscribes to the topic /odom, and for each received
+  - Monitoring Nodes
+    - `monitor_speed`: subscribes to the topic /odom, and for each received
       odometry message, extract the linear and angular speed, build a
       MetricList message with those values, and publishes that message to
       data to the /metrics topic.
-    * `health_metric_collector`: collects system metrics (free RAM, total RAM,
+    - `health_metric_collector`: collects system metrics (free RAM, total RAM,
       total CPU usage, per core CPU usage, uptime, number of processes) and
       publishes it as a MetricList message to the /metrics topic.
-  * [`raspicam2_node`][raspicam2_node] a node publishing Raspberry Pi Camera
+  - [`raspicam2_node`][raspicam2_node] a node publishing Raspberry Pi Camera
     Module data to ROS 2.
-* An XRCE Agent runs on the Raspberry, and is used by a DDS-XRCE client running
-  on the [OpenCR 1.0 board][opencr_1_0], that publishes IMU sensor data to ROS
-  topics, and controls the wheels of the TurtleBot based on the
-  [teleoperation][tb3_teleop] messages published as ROS topics.
-  This channel uses serial communication.
-* A Lidar driver process running on the Raspberry interfaces with the Lidar, and
-  uses a DDS-XRCE client to publish data over UDP to an XRCE agent also running on
-  the Raspberry Pi.
-  The agent sends the sensor data to several ROS topics.
-* An SSH client process is running in the field testing host, connecting to the
+- An XRCE Agent runs on the Raspberry, and is used by a DDS-XRCE client running on the [OpenCR 1.0 board][opencr_1_0], that publishes IMU sensor data to ROS topics, and controls the wheels of the TurtleBot based on the [teleoperation][tb3_teleop] messages published as ROS topics. This channel uses serial communication.
+- A Lidar driver process running on the Raspberry interfaces with the Lidar, and uses a DDS-XRCE client to publish data over UDP to an XRCE agent also running on the Raspberry Pi. The agent sends the sensor data to several ROS topics.
+- An SSH client process is running in the field testing host, connecting to the
   Raspberry PI for diagnostic and debugging.
-* A software update agent process is running on the Raspberry PI, OpenCR board,
-  and navigation hosts.
-  The agent polls for updates a code deployment service process running on the CI host, that
-  responds with a list of packages and versions, and a new version of each package when an update
-  is required.
-* The CI pipeline process on the CI host is a Jenkins instance that is polling a code repository
-  for new revisions of a number of ROS packages.
-  Each time a new revision is detected it rebuilds all the affected packages, packs the binary
-  artifacts into several deployment packages, and eventually sends the package
-  updates to the update agent when polled.
+- A software update agent process is running on the Raspberry PI, OpenCR board, and navigation hosts. The agent polls for updates a code deployment service process running on the CI host, that responds with a list of packages and versions, and a new version of each package when an update is required.
+- The CI pipeline process on the CI host is a Jenkins instance that is polling a code repository for new revisions of a number of ROS packages. Each time a new revision is detected it rebuilds all the affected packages, packs the binary artifacts into several deployment packages, and eventually sends the package updates to the update agent when polled.
 
 ##### Software Dependencies
 
-* OS / Kernel
-  * Ubuntu 18.04
-* Software
-  * ROS 2 Core Libraries
-  * ROS 2 Nodes: [`joy_node`][joy_node], [`turtlebot3_node`][turtlebot3_node],
+- OS / Kernel
+  - Ubuntu 18.04
+- Software
+  - ROS 2 Core Libraries
+  - ROS 2 Nodes: [`joy_node`][joy_node], [`turtlebot3_node`][turtlebot3_node],
     [`rospicam2_node`][raspicam2_node], [`teleop_twist_joy`][teleop_twist_joy]
-  * ROS 2 system dependencies as defined by rosdep:
-    * RMW implementation: we assume the RMW implementation is
+  - ROS 2 system dependencies as defined by rosdep:
+    - RMW implementation: we assume the RMW implementation is
       [`rmw_fastrtps`][rmw_fastrtps].
-    * The threat model describes attack with the security enabled or disabled.
+    - The threat model describes attack with the security enabled or disabled.
       If the security is enabled, [the security plugins][fastrtps_security] are assumed to be
       configured and enabled.
 
@@ -2320,111 +2189,110 @@ dependencies.
 
 ##### External Actors
 
-* A test engineer is testing the robot.
-* A user operates the robot with the joystick.
-* A business analyst periodically checks dashboards with performance
-  information for the robot in the AWS Cloudwatch web console.
+- A test engineer is testing the robot.
+- A user operates the robot with the joystick.
+- A business analyst periodically checks dashboards with performance information for the robot in the AWS Cloudwatch web console.
 
 ##### Robot Data Assets
 
-* Topic Message
-  * Private Data
-    * Camera image messages
-    * Logging messages (might describe camera data)
-    * CloudWatch metrics and logs messages (could contain Intellectual
+- Topic Message
+  - Private Data
+    - Camera image messages
+    - Logging messages (might describe camera data)
+    - CloudWatch metrics and logs messages (could contain Intellectual
       Property such as which algorithms are implemented in a particular
       node).
-      * Restricted Data
-    * Robot Speed and Orientation.
+      - Restricted Data
+    - Robot Speed and Orientation.
       Some understanding of the current robot task may be reconstructed from those messages..
-* AWS CloudWatch data
-  * Metrics, logs, and aggregated dashboard are all private data, as they
+- AWS CloudWatch data
+  - Metrics, logs, and aggregated dashboard are all private data, as they
     are different serializations of the corresponding topics.
-* Raspberry Pi System and ROS logs on Raspberry PI
-  * Private data just like CloudWatch logs.
-* AWS credentials on all hosts
-  * Secret data, provide access to APIs and other compute assets on the AWS
+- Raspberry Pi System and ROS logs on Raspberry PI
+  - Private data just like CloudWatch logs.
+- AWS credentials on all hosts
+  - Secret data, provide access to APIs and other compute assets on the AWS
     cloud.
-* SSH credentials on all hosts
-  * Secret data, provide access to other hosts.
-* Robot embedded algorithm (e.g. `teleop_twist_joy`)
-  * Secret data.
+- SSH credentials on all hosts
+  - Secret data, provide access to other hosts.
+- Robot embedded algorithm (e.g. `teleop_twist_joy`)
+  - Secret data.
     Intellectual Property (IP) theft is a critical issue for nodes which are either easy to
     decompile or written in an interpreted language.
 
 ##### Robot Compute Assets
 
-* AWS CloudWatch APIs and all other AWS resources accessible from the AWS
+- AWS CloudWatch APIs and all other AWS resources accessible from the AWS
   credentials present in all the hosts.
-* Robot Topics
-  * `/cmd_vel` could be abused to damage the robot or hurt users.
+- Robot Topics
+  - `/cmd_vel` could be abused to damage the robot or hurt users.
 
 #### Entry points
 
-* Communication Channels
-  * DDS / ROS Topics
-    * Topics can be listened or written to by any actor:
+- Communication Channels
+  - DDS / ROS Topics
+    - Topics can be listened or written to by any actor:
       1. Connected to a network where DDS packets are routed to,
       1. Have necessary permissions (read / write) if SROS is enabled.
-    * When SROS is enabled, attackers may try to compromise the CA authority
+    - When SROS is enabled, attackers may try to compromise the CA authority
       or the private keys to generate or intercept private keys as well as
       emitting malicious certificates to allow spoofing.
-    * USB connection is used for communication between Raspberry Pi and OpenCR board
+    - USB connection is used for communication between Raspberry Pi and OpenCR board
       and LIDAR sensor.
-  * SSH
-    * SSH access is possible to anyone on the same LAN or WAN (if port-forwarding is enabled).
+  - SSH
+    - SSH access is possible to anyone on the same LAN or WAN (if port-forwarding is enabled).
       Many images are setup with a default username and password with administrative
       capabilities (e.g. sudoer).
-    * SSH access can be compromised by modifying the robot
-* Deployed Software
-  * ROS nodes are compiled either by a third-party (OSRF build-farm) or by the application
+    - SSH access can be compromised by modifying the robot
+- Deployed Software
+  - ROS nodes are compiled either by a third-party (OSRF build-farm) or by the application
     developer.
     It can be compiled directly on the robot or copied from a developer workstation using scp or
     rsync.
-  * An attacker compromising the build-farm or the developer workstation could
+  - An attacker compromising the build-farm or the developer workstation could
     introduce a vulnerability in a binary which would then be deployed to the
     robot.
-* Data Store (local filesystem)
-  * Robot Data
-    * System and ROS logs are stored on the Raspberry Pi filesystem.
-    * Robot system is subject to physical attack (physically removing the
+- Data Store (local filesystem)
+  - Robot Data
+    - System and ROS logs are stored on the Raspberry Pi filesystem.
+    - Robot system is subject to physical attack (physically removing the
       disk from the robot to read its data).
-  * Remote Host Data
-    * Machines running additional ROS nodes will also contain log files.
-    * Remote hosts is subject to physical attack.
+  - Remote Host Data
+    - Machines running additional ROS nodes will also contain log files.
+    - Remote hosts is subject to physical attack.
       Additionally, this host may not be as secured as the robot host.
-  * Cloud Data
-    * AWS CloudWatch data is accessible from public AWS API endpoints, if
+  - Cloud Data
+    - AWS CloudWatch data is accessible from public AWS API endpoints, if
       credentials are available for the corresponding AWS account.
-    * AWS CloudWatch can be credentials can allow attackers to access other
+    - AWS CloudWatch can be credentials can allow attackers to access other
       cloud resources depending on how the account has been configured.
-  * Secret Management
-    * DDS / ROS Topics
-      * If SROS is enabled, private keys are stored on the local filesystem.
-    * SSH
-      * SSH credentials are stored on the robot filesystem.
-      * Private SSH keys are stored in any computer allowed to log into the
+  - Secret Management
+    - DDS / ROS Topics
+      - If SROS is enabled, private keys are stored on the local filesystem.
+    - SSH
+      - SSH credentials are stored on the robot filesystem.
+      - Private SSH keys are stored in any computer allowed to log into the
         robot where public/private keys are relied on for authentication
         purposes.
-    * AWS Credentials
-      * AWS credentials are stored on the robot file system.
+    - AWS Credentials
+      - AWS credentials are stored on the robot file system.
 
 #### Use case scenarios
 
-* Development, Testing and Validation
-  * An engineer develops code or runs tests on the robot.
+- Development, Testing and Validation
+  - An engineer develops code or runs tests on the robot.
     They may:
-    * Restart the robot
-    * Restart the ROS graph
-    * Physically interact with the robot
-    * Log into the robot using SSH
-    * Check AWS console for metrics and log
-* End-User
-  * A user tele-operates the robot.
+    - Restart the robot
+    - Restart the ROS graph
+    - Physically interact with the robot
+    - Log into the robot using SSH
+    - Check AWS console for metrics and log
+- End-User
+  - A user tele-operates the robot.
     They may:
-    * Start the robot.
-    * Control the joystick.
-  * A business analyst may access AWS CloudWatch data on the console to assess
+    - Start the robot.
+    - Control the joystick.
+  - A business analyst may access AWS CloudWatch data on the console to assess
     the robot performance.
 
 #### Threat model
@@ -3510,18 +3378,19 @@ the future.
 1. Setup a TurtleBot with the exact software described in the TurtleBot3 section
    of this document.
 1. Penetration Testing
- * Attacks described in the spreadsheet should be implemented.
-   For instance, a malicious <code>joy_node</code> could be implemented to try to
-   disrupt the robot operations.
-  * Once the vulnerability has been exploited, the exploit should be released
-    to the community so that the results can be reproduced.
-  * Whether the attack has been successful or not, this document should be
-    updated accordingly.
-  * If the attack was successful, a mitigation strategy should be implemented.
-    It can either be done through improving ROS 2 core packages or it can be
-    a platform-specific solution.
-    In the second case, the mitigation will serve as an example to publish best practices for the
-    development of secure robotic applications.
+
+- Attacks described in the spreadsheet should be implemented.
+  For instance, a malicious <code>joy_node</code> could be implemented to try to
+  disrupt the robot operations.
+- Once the vulnerability has been exploited, the exploit should be released
+  to the community so that the results can be reproduced.
+- Whether the attack has been successful or not, this document should be
+  updated accordingly.
+- If the attack was successful, a mitigation strategy should be implemented.
+  It can either be done through improving ROS 2 core packages or it can be
+  a platform-specific solution.
+  In the second case, the mitigation will serve as an example to publish best practices for the
+  development of secure robotic applications.
 
 Over time, new reference platforms may be introduced in addition to
 the TurtleBot 3 to define new attacks and allow other types of mitigations
@@ -3559,25 +3428,27 @@ No information is provided about how ROS 2 nodes are distributed on each module.
 Each joint offers the following ROS 2 API capabilities as described in
 their [documentation (MARA joint)][mara_joint_ros2_api]:
 
-* **Topics**
-  * `GoalRotaryServo.msg` model allows to control the position, velocity or/and effort (generated from [models/actuator/servo/topics/goal.xml](https://github.com/AcutronicRobotics/HRIM/blob/master/models/actuator/servo/topics/goal.xml), see [HRIM][hrim] for more).
-  * `StateRotaryServo.msg` publishes the status of the motor.
-  * `Power.msg` publishes the power consumption.
-  * `Status.msg`  informs about the resources that are consumed by the H-ROS SoM,
-  * `StateCommunication.msg` is created to inform about the state of the device network.
+- **Topics**
 
-* **Services**
-  * `ID.srv` publishes the general identity of the component.
-  * `Simulation3D.srv` and `SimulationURDF.srv` send the URDF and the 3D model of the modular component.
-  * `SpecsCommunication.srv` is a HRIM service which reports the specs of the device network.
-  * `SpecsRotaryServo.srv` is a HRIM message which reports the main features of the device.
-  * `EnableDisable.srv` disables or enables the servo motor.
-  * `ClearFault.srv` sends a request to clear any fault in the servo motor.
-  * `Stop.srv` requests to stop any ongoing movement.
-  * `OpenCloseBrake.srv` opens or closes the servo motor brake.
+  - `GoalRotaryServo.msg` model allows to control the position, velocity or/and effort (generated from [models/actuator/servo/topics/goal.xml](https://github.com/AcutronicRobotics/HRIM/blob/master/models/actuator/servo/topics/goal.xml), see [HRIM][hrim] for more).
+  - `StateRotaryServo.msg` publishes the status of the motor.
+  - `Power.msg` publishes the power consumption.
+  - `Status.msg` informs about the resources that are consumed by the H-ROS SoM,
+  - `StateCommunication.msg` is created to inform about the state of the device network.
 
-* **Actions**:
-  * `GoalJointTrajectory` allows to move the joint using a trajectory msg.
+- **Services**
+
+  - `ID.srv` publishes the general identity of the component.
+  - `Simulation3D.srv` and `SimulationURDF.srv` send the URDF and the 3D model of the modular component.
+  - `SpecsCommunication.srv` is a HRIM service which reports the specs of the device network.
+  - `SpecsRotaryServo.srv` is a HRIM message which reports the main features of the device.
+  - `EnableDisable.srv` disables or enables the servo motor.
+  - `ClearFault.srv` sends a request to clear any fault in the servo motor.
+  - `Stop.srv` requests to stop any ongoing movement.
+  - `OpenCloseBrake.srv` opens or closes the servo motor brake.
+
+- **Actions**:
+  - `GoalJointTrajectory` allows to move the joint using a trajectory msg.
 
 Such API gets translated into the following abstractions:
 
@@ -3612,23 +3483,23 @@ Such API gets translated into the following abstractions:
 
 <br>
 
-| Parameters            | Name                                                     |
-| --------------------- | -------------------------------------------------------- |
-| ecat_interface | Ethercat interface |
-| reduction_ratio | Factor to calculate the position of the motor |
-| position_factor | Factor to calculate the position of the motor |
-| torque_factor | Factor to calculate the torque of the motor |
-| count_zeros_axis1 | Axis 1 absolute value of the encoder for the zero position |
-| count_zeros_axis2 | Axis 2 absolute value of the encoder for the zero position |
-| enable_logging| Enable/Disable logging |
-| axis1_min_position | Axis 1 minimum position in radians |
-| axis1_max_position | Axis 1 maximum position in radians |
-| axis1_max_velocity | Axis 1 maximum velocity in radians/s |
-| axis1_max_acceleration | Axis 1 maximum acceleration in radians/s^2 |
-| axis2_min_position | Axis 2 minimum position in radians |
-| axis2_max_position | Axis 2 maximum position in radians |
-| axis2_max_velocity | Axis 2 maximum velocity in radians/s |
-| axis2_max_acceleration | Axis 2 maximum acceleration in radians/s^2 |
+| Parameters             | Name                                                        |
+| ---------------------- | ----------------------------------------------------------- |
+| ecat_interface         | Ethercat interface                                          |
+| reduction_ratio        | Factor to calculate the position of the motor               |
+| position_factor        | Factor to calculate the position of the motor               |
+| torque_factor          | Factor to calculate the torque of the motor                 |
+| count_zeros_axis1      | Axis 1 absolute value of the encoder for the zero position  |
+| count_zeros_axis2      | Axis 2 absolute value of the encoder for the zero position  |
+| enable_logging         | Enable/Disable logging                                      |
+| axis1_min_position     | Axis 1 minimum position in radians                          |
+| axis1_max_position     | Axis 1 maximum position in radians                          |
+| axis1_max_velocity     | Axis 1 maximum velocity in radians/s                        |
+| axis1_max_acceleration | Axis 1 maximum acceleration in radians/s^2                  |
+| axis2_min_position     | Axis 2 minimum position in radians                          |
+| axis2_max_position     | Axis 2 maximum position in radians                          |
+| axis2_max_velocity     | Axis 2 maximum velocity in radians/s                        |
+| axis2_max_acceleration | Axis 2 maximum acceleration in radians/s^2                  |
 
 <br>
 
@@ -3652,106 +3523,107 @@ The external actors and Data assests are described independently.
 
 ##### Hardware
 
-* 1x [**MARA modular robot**][mara_robot] is a modular manipulator, ROS 2 enabled robot for
+- 1x [**MARA modular robot**][mara_robot] is a modular manipulator, ROS 2 enabled robot for
   industrial automation purposes.
-  * **Robot modules**
-    * 3 x [Han's Robot Modular Joints][hans_modular_joint]: 2 DoF electrical motors that include
+  - **Robot modules**
+    - 3 x [Han's Robot Modular Joints][hans_modular_joint]: 2 DoF electrical motors that include
       precise encoders and an electro-mechanical breaking system for safety purposes.
       Available in a variety of different torque and size combinations, going from 2.8 kg to 17 kg
       weight and from 9.4 Nm to 156 Nm rated torque.
-      * Mechanical connector: [H-ROS connector A][hros_connector_A]
-      * Power input: 48 Vdc
-      * Communication: H-ROS robot communication bus
-        * Link layer: 2 x Gigabit (1 Gbps) TSN Ethernet network interface
-        * Middleware: Data Distribution Service (DDS)
-      * On-board computation: Dual core ARM® Cortex-A9
-      * Operating System: Real-Time Linux
-      * ROS 2 version: Crystal Clemmys
-      * Information model: [HRIM][hrim] Coliza
-      * Security:
-        * DDS crypto, authentication and access control plugins
-    * 1 x [Robotiq Modular Grippers][robotiq_modular_gripper]: ROS 2 enabled industrial end-of-arm-tooling.
-      * Mechanical connector: [H-ROS connector A][hros_connector_A]
-      * Power input: 48 Vdc
-      * Communication: H-ROS robot communication bus
-        * Link layer: 2 x Gigabit (1 Gbps) TSN Ethernet network interface
-        * Middleware: Data Distribution Service (DDS)
-      * On-board computation: Dual core ARM® Cortex-A9
-      * Operating System: Real-Time Linux
-      * ROS 2 version: Crystal Clemmys
-      * Information model: [HRIM][hrim] Coliza
-      * Security:
-        * DDS crypto, authentication and access control plugins
-* 1 x [**Industrial PC**: ORC][orc] include:
-  * CPU: Intel i7 @ 3.70GHz (6 cores)
-  * RAM: Physical 16 GB DDR4 2133 MHz
-  * Storage: 256 GB M.2 SSD interface PCIExpress 3.0
-  * Communication: H-ROS robot communication bus
-    * Link layer: 2 x Gigabit (1 Gbps) TSN Ethernet network interface
-    * Middleware: Data Distribution Service (DDS)
-  * Operating System: Real-Time Linux
-  * ROS 2 version: Crystal Clemmys
-  * Information model: [HRIM][hrim] Coliza
-  * Security:
-    * DDS crypto, authentication and access control plugins
-* 1 x **Update Server: OTA**
-  * Virtual Machine running on AWS EC2
-    * Operating System: Ubuntu 18.04.2 LTS
-    * Software: Mender OTA server
+      - Mechanical connector: [H-ROS connector A][hros_connector_A]
+      - Power input: 48 Vdc
+      - Communication: H-ROS robot communication bus
+        - Link layer: 2 x Gigabit (1 Gbps) TSN Ethernet network interface
+        - Middleware: Data Distribution Service (DDS)
+      - On-board computation: Dual core ARM® Cortex-A9
+      - Operating System: Real-Time Linux
+      - ROS 2 version: Crystal Clemmys
+      - Information model: [HRIM][hrim] Coliza
+      - Security:
+        - DDS crypto, authentication and access control plugins
+    - 1 x [Robotiq Modular Grippers][robotiq_modular_gripper]: ROS 2 enabled industrial end-of-arm-tooling.
+      - Mechanical connector: [H-ROS connector A][hros_connector_A]
+      - Power input: 48 Vdc
+      - Communication: H-ROS robot communication bus
+        - Link layer: 2 x Gigabit (1 Gbps) TSN Ethernet network interface
+        - Middleware: Data Distribution Service (DDS)
+      - On-board computation: Dual core ARM® Cortex-A9
+      - Operating System: Real-Time Linux
+      - ROS 2 version: Crystal Clemmys
+      - Information model: [HRIM][hrim] Coliza
+      - Security:
+        - DDS crypto, authentication and access control plugins
+- 1 x [**Industrial PC**: ORC][orc] include:
+  - CPU: Intel i7 @ 3.70GHz (6 cores)
+  - RAM: Physical 16 GB DDR4 2133 MHz
+  - Storage: 256 GB M.2 SSD interface PCIExpress 3.0
+  - Communication: H-ROS robot communication bus
+    - Link layer: 2 x Gigabit (1 Gbps) TSN Ethernet network interface
+    - Middleware: Data Distribution Service (DDS)
+  - Operating System: Real-Time Linux
+  - ROS 2 version: Crystal Clemmys
+  - Information model: [HRIM][hrim] Coliza
+  - Security:
+    - DDS crypto, authentication and access control plugins
+- 1 x **Update Server: OTA**
+  - Virtual Machine running on AWS EC2
+    - Operating System: Ubuntu 18.04.2 LTS
+    - Software: Mender OTA server
 
 ##### Network
 
 1. **Ethernet time sensitive (TSN) internal network**: Interconnection of modular joints in the
-  MARA Robot is performed over a daisy chained Ethernet TSN channel.
-  Each module acts as a switch, forming the internal network of the robot.
+   MARA Robot is performed over a daisy chained Ethernet TSN channel.
+   Each module acts as a switch, forming the internal network of the robot.
 1. **Manufacturer (Acutronic Robotics) corporate private network**: A secure corporate wide-area
- network, that spans multiple cities.
- Only authenticated user with suitable credentials can connect to the network, and good security
- practices like password rotation are in place.
- This network is used to develop and deploy updates in the robotic systems.
- Managed by the original manufacturer.
+   network, that spans multiple cities.
+   Only authenticated user with suitable credentials can connect to the network, and good security
+   practices like password rotation are in place.
+   This network is used to develop and deploy updates in the robotic systems.
+   Managed by the original manufacturer.
 1. **End-user corporate private network**: A secure corporate wide-area network, that spans
- multiple cities.
- Only authenticated user with suitable credentials can connect to the network, and good security
- practices like password rotation are in place.
+   multiple cities.
+   Only authenticated user with suitable credentials can connect to the network, and good security
+   practices like password rotation are in place.
 1. **Cloud network**: A VPC network residing in a public cloud platform, containing multiple
-  servers.
-  The network follows good security practices, like implementation of security applicances,
-  user password rotation and multi-factor authentication.
-  Only allowed users can access the network.
-  The OTA service is open to the internet.
-  Uses of the cloud network:
-  * Manufacturer (Acutronic Robotics) uploads OTA artifacts from their
-    `Manufacturer corporate private network` to the Cloud Network.
-  * Robotic Systems on the `End-user corporate private network` fetch those artifacts from the
-    Cloud Network.
-  * Robotic Systems on the  `End-user corporate private network` send telemetry data for
-    predictive maintenance to Cloud Network.
+   servers.
+   The network follows good security practices, like implementation of security applicances,
+   user password rotation and multi-factor authentication.
+   Only allowed users can access the network.
+   The OTA service is open to the internet.
+   Uses of the cloud network:
+
+- Manufacturer (Acutronic Robotics) uploads OTA artifacts from their
+  `Manufacturer corporate private network` to the Cloud Network.
+- Robotic Systems on the `End-user corporate private network` fetch those artifacts from the
+  Cloud Network.
+- Robotic Systems on the `End-user corporate private network` send telemetry data for
+  predictive maintenance to Cloud Network.
 
 ##### Software processes
 
 In this section all the processes running on the robotic system in scope are detailed.
 
-* **Onboard Modular Joints**
-  * `hros_servomotor_hans_lifecyle_node` this node is in charge of controlling the motors inside
+- **Onboard Modular Joints**
+  - `hros_servomotor_hans_lifecyle_node` this node is in charge of controlling the motors inside
     the H-ROS SoM.
     This nodes exposes some services, actions and topics described below.
     This node publishes joint states, joint velocities and joint efforts.
     It provides a topic for servoing the modular joint and an action that will be waiting for a
     trajectory.
-  * `hros_servomotor_hans_generic_node` a node which contains several generic services and topics
+  - `hros_servomotor_hans_generic_node` a node which contains several generic services and topics
     with information about the modular joint, such as `power` measurement readings: voltage and
     current, `status` about the H-ROS SoM like cpu load or network stats, specifications about
     `communication` and `cpu`, the `URDF` or even the mesh file of the modular joint.
-  * Mender (OTA client) runs inside the H-ROS SoM.
+  - Mender (OTA client) runs inside the H-ROS SoM.
     When an update is launched, the client downloads this version and it gets installed and
     available when the device is rebooted.
-* **Onboard Modular Gripper**: *Undisclosed*.
-* **Onboard Industrial PC**:
-  * MoveIt! motion planning framework.
-  * Manufacturing process control applications.
-  * Robot teleoperation utilities.
-  * **ROS 1 / ROS 2 bridges**: These bridges are needed to be able to run MoveIT! which is not yet
+- **Onboard Modular Gripper**: _Undisclosed_.
+- **Onboard Industrial PC**:
+  - MoveIt! motion planning framework.
+  - Manufacturing process control applications.
+  - Robot teleoperation utilities.
+  - **ROS 1 / ROS 2 bridges**: These bridges are needed to be able to run MoveIT! which is not yet
     ported to ROS 2. Right now there is an
     [effort in the community](https://acutronicrobotics.com/news/ros-2-moveit-robotic-motion-planning/)
     to port this tool to ROS 2.
@@ -3761,12 +3633,12 @@ In this section all the processes running on the robotic system in scope are det
 In this section all the relevant third party software dependencies used within the different
 components among the scope of this threat model are listed.
 
-* Linux OS / Kernel
-* ROS 2 core libraries
-* H-ROS core libraries and packages
-* ROS 2 system dependencies as defined by rosdep:
-  * RMW implementation: In the H-ROS API there is the chance to choose the DDS implementation.
-  * The threat model describes attacks with the security enabled and disabled.
+- Linux OS / Kernel
+- ROS 2 core libraries
+- H-ROS core libraries and packages
+- ROS 2 system dependencies as defined by rosdep:
+  - RMW implementation: In the H-ROS API there is the chance to choose the DDS implementation.
+  - The threat model describes attacks with the security enabled and disabled.
     If the security is enabled, the security plugins are assumed to be configured and enabled.
 
 See [Mara ROS 2 Tutorials](https://acutronicrobotics.com/docs/products/robots/mara/tutorials) to
@@ -3776,60 +3648,60 @@ find more details about software dependencies.
 
 All the actors interacting with the robotic system are here gathered.
 
-* End users
-  * Robotics user: Interacts with the robot for performing work labour tasks.
-  * Robotics operator: Performs maintenance tasks on the robot and integrates the robot with the industrial network.
-  * Robotics researcher: Develops new applications and algorithms for the robot.
-* Manufacturer
-  * Robotics engineer: Develops new updates and features for the robot itself.
+- End users
+  - Robotics user: Interacts with the robot for performing work labour tasks.
+  - Robotics operator: Performs maintenance tasks on the robot and integrates the robot with the industrial network.
+  - Robotics researcher: Develops new applications and algorithms for the robot.
+- Manufacturer
+  - Robotics engineer: Develops new updates and features for the robot itself.
     Performs in-site robot setup and maintainance tasks.
 
 ##### Robot Data assets
 
 In this section all the assets storing information within the system are displayed.
 
-* ROS 2 network (topic, actions, services information)
-  * Private Data
-    * Logging messages
-      * Restricted Data
-    * Robot Speed and Orientation.
+- ROS 2 network (topic, actions, services information)
+  - Private Data
+    - Logging messages
+      - Restricted Data
+    - Robot Speed and Orientation.
       Some understanding of the current robot task may be reconstructed from those messages.
-* H-ROS API
-  * Configuration and status data of hardware.
-* Modules (joints and gripper)
-  * ROS logs on each module.
+- H-ROS API
+  - Configuration and status data of hardware.
+- Modules (joints and gripper)
+  - ROS logs on each module.
     Private data, metrics and configuration information that could lead to GDPR issues or
     disclosure of current robot tasks.
-  * Module embedded software (drivers, operating system, configuration, etc.)
-    * Secret data.
+  - Module embedded software (drivers, operating system, configuration, etc.)
+    - Secret data.
       Intellectual Property (IP) theft is a critical issue here.
-  * Credentials.
+  - Credentials.
     CI/CD, enterprise assets, SROS certificates.
-* ORC Industrial PC
-  * Public information.
+- ORC Industrial PC
+  - Public information.
     Motion planning algorithms for driving the robot (MoveIt! motion planning framework).
-  * Configuration data.
+  - Configuration data.
     Private information with safety implications.
     Includes configuration for managing the robot.
-  * Programmed routines.
+  - Programmed routines.
     Private information with safety implications.
-  * Credentials.
+  - Credentials.
     CI/CD, enterprise assets, SROS certificates.
-* CI/CD and OTA subsystem
-  * Configuration data.
-  * Credentials
-  * Firmware files and source code.
+- CI/CD and OTA subsystem
+  - Configuration data.
+  - Credentials
+  - Firmware files and source code.
     Intellectual property, both end-user and manufacturer.
-* Robot Data
-  * System and ROS logs are stored on each joint module's filesystem.
-  * Robot system is subject to physical attacks (physically removing the disk from the robot to read its data).
-* Cloud Data
-  * Different versions of the software are stored on the OTA server.
-* Secret Management
-  * DDS / ROS Topics
-    * If SROS is enabled, private keys are stored on the local filesystem of each module.
-* Mender OTA
-  * Mender OTA client certificates are stored on the robot file system.
+- Robot Data
+  - System and ROS logs are stored on each joint module's filesystem.
+  - Robot system is subject to physical attacks (physically removing the disk from the robot to read its data).
+- Cloud Data
+  - Different versions of the software are stored on the OTA server.
+- Secret Management
+  - DDS / ROS Topics
+    - If SROS is enabled, private keys are stored on the local filesystem of each module.
+- Mender OTA
+  - Mender OTA client certificates are stored on the robot file system.
 
 #### Use case scenarios
 
@@ -3838,75 +3710,75 @@ environment while performing a `pick & place` activity.
 For this use case all possible external actor have been included.
 The actions they can perform on the robotic system have been limited to the following ones:
 
-* **End-Users**: From the End-user perspective, the functions considered are the ones needed for
+- **End-Users**: From the End-user perspective, the functions considered are the ones needed for
   a factory line to work.
   Among this functions, there are the ones keeping the robot working and being productive.
   On an industrial environment, this group of external actors are the ones making use of the robot
   on their facilities.
-  * **Robotics Researcher**: Development, testing and validation
-    * A research engineer develops a pick and place task with the robot.
+  - **Robotics Researcher**: Development, testing and validation
+    - A research engineer develops a pick and place task with the robot.
       They may:
-      * Restart the robot
-      * Restart the ROS graph
-      * Physically interact with the robot
-      * Receive software updates from OTA
-      * Check for updates
-      * Configure ORC control functionalities
-  * **Robotic User**: Collaborative tasks
-    * Start the robot
-    * Control the robot
-    * Work alongside the robot
-  * **Robotics Operator**: Automation of industrial tasks
-    * An industrial operator uses the robot in a factory.
+      - Restart the robot
+      - Restart the ROS graph
+      - Physically interact with the robot
+      - Receive software updates from OTA
+      - Check for updates
+      - Configure ORC control functionalities
+  - **Robotic User**: Collaborative tasks
+    - Start the robot
+    - Control the robot
+    - Work alongside the robot
+  - **Robotics Operator**: Automation of industrial tasks
+    - An industrial operator uses the robot in a factory.
       They may:
-      * Start the robot
-      * Control the robot
-      * Configure the robot
-      * Include the robot into the industrial network
-      * Check for updates
-      * Configure and interact with the ORC
-* **Manufacturer**: From the manufacturer perspective, the application considered is the
+      - Start the robot
+      - Control the robot
+      - Configure the robot
+      - Include the robot into the industrial network
+      - Check for updates
+      - Configure and interact with the ORC
+- **Manufacturer**: From the manufacturer perspective, the application considered is the
   development of the MARA robotic platform, using an automated system for deployment of updates,
   following a CI/CD system.
   These are the actors who create and maintain the robotic system itself.
-  * **Robotics Engineer**: Development, testing and validation
-    * Development of new functionality and improvements for the MARA robot.
-      * Develop new software for the H-ROS SoM
-      * Update OS and system libraries
-      * Update ROS 2 subsystem and control nodes
-      * Deployment of new updates to the robots and management of the fleet
-      * In-Place robot maintenance
+  - **Robotics Engineer**: Development, testing and validation
+    - Development of new functionality and improvements for the MARA robot.
+      - Develop new software for the H-ROS SoM
+      - Update OS and system libraries
+      - Update ROS 2 subsystem and control nodes
+      - Deployment of new updates to the robots and management of the fleet
+      - In-Place robot maintenance
 
 #### Entry points
 
 The following section outlines the possible entry points an attacker could use as attack vectors
 to render the MARA vulnerable.
 
-* **Physical Channels**
-  * Exposed debug ports.
-  * Internal field bus.
-  * Hidden development test points.
-* **Communication Channels**
-  * DDS / ROS 2 Topics
-    * Topics can be listened or written to by any actor:
+- **Physical Channels**
+  - Exposed debug ports.
+  - Internal field bus.
+  - Hidden development test points.
+- **Communication Channels**
+  - DDS / ROS 2 Topics
+    - Topics can be listened or written to by any actor:
       1. Connected to a network where DDS packets are routed to.
       1. Have necessary permissions (read / write) if SROS is enabled.
-    * When SROS is enabled, attackers may try to compromise the CA authority or the private keys
+    - When SROS is enabled, attackers may try to compromise the CA authority or the private keys
       to generate or intercept private keys as well as emitting malicious certificates to allow
       spoofing.
-  * H-ROS API
-    * H-ROS API access is possible to anyone on the same LAN or WAN (if port forwarding is enabled).
-    * When authentication (in the H-ROS API) is enabled, attackers may try to vulnerate it.
-  * Mender OTA
-    * Updates are pushed from the server.
-    * Updates could be intercepted and modified before reaching the robot.
-* **Deployed Software**
-  * ROS nodes running on hardware are compiled by the manufacturer and deployed directly.
+  - H-ROS API
+    - H-ROS API access is possible to anyone on the same LAN or WAN (if port forwarding is enabled).
+    - When authentication (in the H-ROS API) is enabled, attackers may try to vulnerate it.
+  - Mender OTA
+    - Updates are pushed from the server.
+    - Updates could be intercepted and modified before reaching the robot.
+- **Deployed Software**
+  - ROS nodes running on hardware are compiled by the manufacturer and deployed directly.
     An attacker may tamper the software running in the hardware by compromising the OTA services.
-  * An attacker compromising the developer workstation could
+  - An attacker compromising the developer workstation could
     introduce a vulnerability in a binary which would then be deployed to the
     robot.
-  * MoveIt! motion planning library may contain exploitable vulnerabilities.
+  - MoveIt! motion planning library may contain exploitable vulnerabilities.
 
 #### Trust Boundaries for MARA in `pick & place` application
 
@@ -3927,11 +3799,11 @@ The number and scope of trust zones is depending on the infrastructure behind.
 
 The trust zones ilustrated above are the following:
 
-* **Firmware Updates:** This zone is where the manufacturer develops the different firmware versions for each robot.
-* **OTA System:** This zone is where the firmwares are stored for the robots to download.
-* **MARA Robot:** All the robots' componentents and internal comunications are gathered in this zone.
-* **Industrial PC (ORC):** The industrial PC itself is been considered a zone itself because it manages the software the end-user develops and sends it to the robot.
-* **Software control:** This zone is where the end user develops software for the robot where the tasks to be performed are defined.
+- **Firmware Updates:** This zone is where the manufacturer develops the different firmware versions for each robot.
+- **OTA System:** This zone is where the firmwares are stored for the robots to download.
+- **MARA Robot:** All the robots' componentents and internal comunications are gathered in this zone.
+- **Industrial PC (ORC):** The industrial PC itself is been considered a zone itself because it manages the software the end-user develops and sends it to the robot.
+- **Software control:** This zone is where the end user develops software for the robot where the tasks to be performed are defined.
 
 ### Threat Model
 
@@ -4848,23 +4720,24 @@ in the future.
 1. Setup a MARA with the exact software described in the Components MARA section
    of this document.
 1. Penetration Testing
-  * Attacks described in the spreadsheet should be implemented.
-    For instance, a malicious <code>hros_actuator_servomotor_XXXXXXXXXXXX</code> could be
-    implemented to try to disrupt the robot operations.
-  * Once the vulnerability has been exploited, the exploit should be released to the community
-    so that the results can be reproduced.
-  * Whether the attack has been successful or not, this document should be updated accordingly.
-  * If the attack was successful, a mitigation strategy should be implemented.
-    It can either be done through improving ROS 2 core packages or it can be a
-    platform-specific solution.
-    In the second case, the mitigation will serve as an example to publish best practices for
-    the development of secure robotic applications.
-  * For trainning purposes, an online playground ([RCTF][rctf]) exists to challenge
-    roboticists to learn and discover robot vulnerabilities.
-  * For an overall evaluation of the robots' security measures, the Robot Security
-    Framework ([RSF][rsf]) will be used.
-    This validation has to be don e after the assessment is completed in order to have a
-    realistic results.
+
+- Attacks described in the spreadsheet should be implemented.
+  For instance, a malicious <code>hros_actuator_servomotor_XXXXXXXXXXXX</code> could be
+  implemented to try to disrupt the robot operations.
+- Once the vulnerability has been exploited, the exploit should be released to the community
+  so that the results can be reproduced.
+- Whether the attack has been successful or not, this document should be updated accordingly.
+- If the attack was successful, a mitigation strategy should be implemented.
+  It can either be done through improving ROS 2 core packages or it can be a
+  platform-specific solution.
+  In the second case, the mitigation will serve as an example to publish best practices for
+  the development of secure robotic applications.
+- For trainning purposes, an online playground ([RCTF][rctf]) exists to challenge
+  roboticists to learn and discover robot vulnerabilities.
+- For an overall evaluation of the robots' security measures, the Robot Security
+  Framework ([RSF][rsf]) will be used.
+  This validation has to be don e after the assessment is completed in order to have a
+  realistic results.
 
 ### Security Assessment preliminary results
 
@@ -4911,11 +4784,11 @@ Every evaluated aspect is defined in a vector, having its weight at the final sc
 All assessment findings from the MARA are classified by technical severity.
 The following list explains how Alias Robotics rates vulnerabilities by their severity.
 
-* **Critical**: Scores between 9 and 10
-* **High**: Scores between 7 and 8.9
-* **Medium**: Scores between 4 and 6.9
-* **Low**: Scores between 0.1 and 3.9
-* **Informational**: Scores 0.0
+- **Critical**: Scores between 9 and 10
+- **High**: Scores between 7 and 8.9
+- **Medium**: Scores between 4 and 6.9
+- **Low**: Scores between 0.1 and 3.9
+- **Informational**: Scores 0.0
 
 ![Signing Service Mitigation](ros2_threat_model/vulns.png)
 
@@ -5245,7 +5118,7 @@ The ones fixed by Acutronic Robotics are disclosed below using the following for
    Learning in Computer Vision: A Survey.” ArXiv:1801.00553 [Cs],
    January 2, 2018. <http://arxiv.org/abs/1801.00553>.
 1. V. Mayoral Vilches, E. Gil-Uriarte, I. Zamalloa Ugarte, G. Olalde Mendia, R. Izquierdo Pisón, L.
-   Alzola Kirschgens, A. Bilbao Calvo, A. Hernández     Cordero, L. Apa, and C. Cerrudo, “Towards an
+   Alzola Kirschgens, A. Bilbao Calvo, A. Hernández Cordero, L. Apa, and C. Cerrudo, “Towards an
    open standard for assessing the severity of robot security vulnerabilities, the Robot
    Vulnerability Scoring System (RVSS),” ArXiv:807.10357 [Cs], Jul. 2018.
    <https://arxiv.org/abs/1807.10357>

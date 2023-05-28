@@ -1,30 +1,18 @@
 ---
-layout: default
-title: Unicode Support
-permalink: articles/wide_strings.html
-abstract:
-  This article describes how ROS 2 will support sending multi-byte character data using the [Unicode](https://en.wikipedia.org/wiki/Unicode) standard.
-  It also describes how such data will be sent over the ROS 1 bridge.
-author: '[Chris Lalancette](https://github.com/clalancette)'
-date_written: 2019-05
-last_modified: 2020-07
-published: true
+    layout: default
+    title: Unicode Support
+    permalink: articles/wide_strings.html
+    abstract:
+      This article describes how ROS 2 will support sending multi-byte character data using the [Unicode](https://en.wikipedia.org/wiki/Unicode) standard.
+      It also describes how such data will be sent over the ROS 1 bridge.
+    author: '[Chris Lalancette](https://github.com/clalancette)'
+    date_written: 2019-05
+    last_modified: 2020-07
+  published: true
+    Authors: {{ page.author }}
+    Date Written: {{ page.date_written }}
+    Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
 ---
-
-- This will become a table of contents (this text will be scraped).
-{:toc}
-
-# {{ page.title }}
-
-<div class="abstract" markdown="1">
-{{ page.abstract }}
-</div>
-
-Authors: {{ page.author }}
-
-Date Written: {{ page.date_written }}
-
-Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
 
 ## Background
 
@@ -36,11 +24,11 @@ See the [topic and service name](/articles/topic_and_service_names.html) design 
 
 The following links have more information about multi-byte characters and the history of character encodings.
 
-* [http://kunststube.net/encoding/](http://kunststube.net/encoding/)
-* [http://stackoverflow.com/questions/4588302/why-isnt-wchar-t-widely-used-in-code-for-linux-related-platforms](http://stackoverflow.com/questions/4588302/why-isnt-wchar-t-widely-used-in-code-for-linux-related-platforms)
-* [http://www.diveintopython3.net/strings.html](http://www.diveintopython3.net/strings.html)
-* [http://stackoverflow.com/questions/402283/stdwstring-vs-stdstring](http://stackoverflow.com/questions/402283/stdwstring-vs-stdstring)
-* [https://utf8everywhere.org/](http://utf8everywhere.org/)
+    * [http://kunststube.net/encoding/](http://kunststube.net/encoding/)
+    * [http://stackoverflow.com/questions/4588302/why-isnt-wchar-t-widely-used-in-code-for-linux-related-platforms](http://stackoverflow.com/questions/4588302/why-isnt-wchar-t-widely-used-in-code-for-linux-related-platforms)
+    * [http://www.diveintopython3.net/strings.html](http://www.diveintopython3.net/strings.html)
+    * [http://stackoverflow.com/questions/402283/stdwstring-vs-stdstring](http://stackoverflow.com/questions/402283/stdwstring-vs-stdstring)
+    * [https://utf8everywhere.org/](http://utf8everywhere.org/)
 
 
 ## Unicode Characters in Strings
@@ -128,24 +116,24 @@ Bytes of a known encoding should be converted to a `str` using [bytes.decode](ht
 **Example**
 
 ```python
-import rclpy
-from test_msgs.msg import WStrings
-
-
-if __name__ == '__main__':
-    rclpy.init()
-
-    node = rclpy.create_node('talker')
-
-    chatter_pub = node.create_publisher(WStrings, 'chatter', 1)
-
-    msg = WStrings()
-    msg.wstring_value = 'Hello Wörld'
-    print('Publishing: "{0}"'.format(msg.wstring_value))
-    chatter_pub.publish(msg)
-    node.destroy_node()
-    rclpy.shutdown()
-
+    import rclpy
+    from test_msgs.msg import WStrings
+    
+    
+    if __name__ == '__main__':
+        rclpy.init()
+    
+        node = rclpy.create_node('talker')
+    
+        chatter_pub = node.create_publisher(WStrings, 'chatter', 1)
+    
+        msg = WStrings()
+        msg.wstring_value = 'Hello Wörld'
+        print('Publishing: "{0}"'.format(msg.wstring_value))
+        chatter_pub.publish(msg)
+        node.destroy_node()
+      rclpy.shutdown()
+  
 ```
 
 ### C++
@@ -155,34 +143,34 @@ Instead ROS 2 will use `char16_t` for characters of wide strings, and `std::u16s
 
 **Example**
 
-```
-/*
-* Note that C++ source files containing unicode characters must begin with a byte order mark: https://en.wikipedia.org/wiki/Byte_order_mark .
-* Failure to do so can result in an incorrect encoding of the characters on Windows.
-* For an example, see https://github.com/ros2/system_tests/pull/362#issue-277436162
-*/
-#include <cstdio>
-#include <memory>
-#include <string>
-
-#include "rclcpp/rclcpp.hpp"
-
-#include "test_msgs/msg/w_strings.hpp"
-
-int main(int argc, char * argv[])
-{
-  rclcpp::init(argc, argv);
-
-  auto node = std::make_shared<rclcpp::Node>("talker");
-
-  auto chatter_pub = node->create_publisher<test_msgs::msg::WStrings>("chatter", 10);
-
-  test_msgs::msg::WStrings msg;
-  std::u16string hello(u"Hello Wörld");
-  msg.wstring_value = hello;
-  chatter_pub->publish(msg);
-  rclcpp::spin_some(node);
-
-  return 0;
-}
+```cpp
+    /*
+    * Note that C++ source files containing unicode characters must begin with a byte order mark: https://en.wikipedia.org/wiki/Byte_order_mark .
+    * Failure to do so can result in an incorrect encoding of the characters on Windows.
+    * For an example, see https://github.com/ros2/system_tests/pull/362#issue-277436162
+    */
+    #include <cstdio>
+    #include <memory>
+    #include <string>
+    
+    #include "rclcpp/rclcpp.hpp"
+    
+    #include "test_msgs/msg/w_strings.hpp"
+    
+    int main(int argc, char * argv[])
+    {
+      rclcpp::init(argc, argv);
+    
+      auto node = std::make_shared<rclcpp::Node>("talker");
+    
+      auto chatter_pub = node->create_publisher<test_msgs::msg::WStrings>("chatter", 10);
+    
+      test_msgs::msg::WStrings msg;
+      std::u16string hello(u"Hello Wörld");
+      msg.wstring_value = hello;
+      chatter_pub->publish(msg);
+      rclcpp::spin_some(node);
+    
+      return 0;
+    }
 ```

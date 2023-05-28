@@ -1,29 +1,17 @@
 ---
-layout: default
-title: ROS 2 Launch System
-permalink: articles/roslaunch.html
-abstract:
-  The launch system in ROS is responsible for helping the user describe the configuration of their system and then execute it as described. The configuration of the system includes what programs to run, where to run them, what arguments to pass them, and ROS specific conventions which make it easy to reuse components throughout the system by giving them each different configurations. Also, because the launch system is the process (or the set of processes) which executes the user's processes, it is responsible for monitoring the state of the processes it launched, as well as reporting and/or reacting to changes in the state of those processes.
-author: '[William Woodall](https://github.com/wjwwood)'
-date_written: 2019-09
-last_modified: 2019-09
-published: true
+    layout: default
+    title: ROS 2 Launch System
+    permalink: articles/roslaunch.html
+    abstract:
+      The launch system in ROS is responsible for helping the user describe the configuration of their system and then execute it as described. The configuration of the system includes what programs to run, where to run them, what arguments to pass them, and ROS specific conventions which make it easy to reuse components throughout the system by giving them each different configurations. Also, because the launch system is the process (or the set of processes) which executes the user's processes, it is responsible for monitoring the state of the processes it launched, as well as reporting and/or reacting to changes in the state of those processes.
+    author: '[William Woodall](https://github.com/wjwwood)'
+    date_written: 2019-09
+    last_modified: 2019-09
+    published: true
+    Authors: {{ page.author }}
+    Date Written: {{ page.date_written }}
+    Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
 ---
-
-- This will become a table of contents (this text will be scraped).
-{:toc}
-
-# {{ page.title }}
-
-<div class="abstract" markdown="1">
-{{ page.abstract }}
-</div>
-
-Authors: {{ page.author }}
-
-Date Written: {{ page.date_written }}
-
-Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
 
 ## Context
 
@@ -33,7 +21,7 @@ This article describes the launch system for ROS 2, and as the successor to the 
 
 From the description of `roslaunch` from the wiki ([https://wiki.ros.org/roslaunch](https://wiki.ros.org/roslaunch)):
 
-> roslaunch is a tool for easily launching multiple ROS nodes locally and remotely via SSH, as well as setting parameters on the Parameter Server. It includes options to automatically respawn processes that have already died. roslaunch takes in one or more XML configuration files (with the .launch extension) that specify the parameters to set and nodes to launch, as well as the machines that they should be run on.
+roslaunch is a tool for easily launching multiple ROS nodes locally and remotely via SSH, as well as setting parameters on the Parameter Server. It includes options to automatically respawn processes that have already died. roslaunch takes in one or more XML configuration files (with the .launch extension) that specify the parameters to set and nodes to launch, as well as the machines that they should be run on.
 
 This description lays out the main roles of `roslaunch` from ROS 1 as:
 
@@ -45,15 +33,15 @@ This description lays out the main roles of `roslaunch` from ROS 1 as:
 
 Further more the wiki goes on to say ([https://wiki.ros.org/roslaunch/Architecture](https://wiki.ros.org/roslaunch/Architecture)):
 
-> roslaunch was designed to fit the ROS architecture of complexity via composition: write a simple system first, then combine it with other simple systems to make more complex systems. In roslaunch, this is expressed through several mechanisms:
+roslaunch was designed to fit the ROS architecture of complexity via composition: write a simple system first, then combine it with other simple systems to make more complex systems. In roslaunch, this is expressed through several mechanisms:
 
-> 1. `<include>`s: you can easily include other .launch files and also assign them a namespace so that their names do not confict with yours.
+1. `<include>`s: you can easily include other .launch files and also assign them a namespace so that their names do not confict with yours.
 
-> 2. `<group>`s: you can group together a collection of nodes to give them the same name remappings.
+2. `<group>`s: you can group together a collection of nodes to give them the same name remappings.
 
-> 3. aliased `<machine>`s: you can separate machine definitions and node definitions into separate .launch files and use aliases to define which machines get used at runtime. This allows you to reuse the same node definitions for multiple robots. For example, instead of saying that a laser_assembler runs on 'foo.willowgarage.com', you can say that it runs on the 'tilt-laser' machine. The machine definitions then take care of which host is the 'tilt-laser' machine.
+3. aliased `<machine>`s: you can separate machine definitions and node definitions into separate .launch files and use aliases to define which machines get used at runtime. This allows you to reuse the same node definitions for multiple robots. For example, instead of saying that a laser_assembler runs on 'foo.willowgarage.com', you can say that it runs on the 'tilt-laser' machine. The machine definitions then take care of which host is the 'tilt-laser' machine.
 
-> roslaunch also contains a variety of tools to help you write your .launch files as portably as possible. You can use the `<env>` tag to specify environment variables that need to be set for a particular machine or node. The $(find pkg) syntax let you specify file paths relative to a ROS package, instead of specifying their location on a particular machine. You can also use the $(env ENVIRONMENT_VARIABLE) syntax within include tags to load in .launch files based on environment variables (e.g. MACHINE_NAME).
+roslaunch also contains a variety of tools to help you write your .launch files as portably as possible. You can use the `<env>` tag to specify environment variables that need to be set for a particular machine or node. The $(find pkg) syntax let you specify file paths relative to a ROS package, instead of specifying their location on a particular machine. You can also use the $(env ENVIRONMENT_VARIABLE) syntax within include tags to load in .launch files based on environment variables (e.g. MACHINE_NAME).
 
 From this, there are a few more design goals and roles for `roslaunch` from ROS 1:
 
@@ -121,7 +109,7 @@ This is somewhere that the launch system in ROS 2 can hopefully improve on what 
 
 In the ROS 1 wiki for `roslaunch`, it says ([https://wiki.ros.org/roslaunch/Architecture](https://wiki.ros.org/roslaunch/Architecture)):
 
-> roslaunch does not guarantee any particular order to the startup of nodes -- although this is a frequently requested feature, it is not one that has any particular meaning in the ROS architecture as there is no way to tell when a node is initialized.
+roslaunch does not guarantee any particular order to the startup of nodes -- although this is a frequently requested feature, it is not one that has any particular meaning in the ROS architecture as there is no way to tell when a node is initialized.
 
 Hopefully this is another case on which the launch system for ROS 2 can improve, at least for nodes with a lifecycle, a.k.a. Managed Nodes[^lifecycle].
 For Managed Nodes, it would not be possible to apply constraints on when something is launched, rather than how it is in `roslaunch` from ROS 1, where things are run in a non-deterministic order.
@@ -209,7 +197,7 @@ For these, the launch system needs to know how to execute them, and to do that i
 - working directory (directory from which to execute the process)
 - launch prefix (used to inject things like `gdb`, `valgrind`, etc...)
 
-<div class="alert alert-warning" markdown="1">
+    <div class="alert alert-warning" markdown="1">
 RFC:
 
 Missing from this list is the user which should be used to execute the process.
@@ -283,9 +271,9 @@ A kind of in-between entity is an operating system process which uses shell eval
 Any of the entities based on an operating system process can be made into a remote operating system process by simply adding the requirement information needed to gain access to the other machine and execute it.
 This is a feature that ROS 1's `roslaunch` has, and is useful in multi machine robots.
 
-<div class="alert alert-warning" markdown="1">
-TODO: figure out what we need to do here in terms of portability and configuration
-</div>
+    <div class="alert alert-warning" markdown="1">
+    TODO: figure out what we need to do here in terms of portability and configuration
+    </div>
 
 ### ROS Nodes
 
@@ -717,16 +705,16 @@ The lowest level of event handlers is the function which takes an event and retu
 For example, a user defined event handler might look like this in Python:
 
 ```python
-# This is a made up example of an API, consider it pseudo code...
-
-launch_description = LaunchDescription(...)
-# ...
-
-def my_process_exit_logger_callback(event: ProcessExitedEvent) -> LaunchDescription:
-    print(f"process with pid '{event.pid}' exited with return code '{event.return_code}'")
-
-launch_description.register_event_handler(
-    ProcessExitedEvent, my_process_exit_logger_callback, name='my_process_exit_logger')
+    # This is a made up example of an API, consider it pseudo code...
+    
+    launch_description = LaunchDescription(...)
+    # ...
+    
+    def my_process_exit_logger_callback(event: ProcessExitedEvent) -> LaunchDescription:
+        print(f"process with pid '{event.pid}' exited with return code '{event.return_code}'")
+    
+    launch_description.register_event_handler(
+        ProcessExitedEvent, my_process_exit_logger_callback, name='my_process_exit_logger')
 ```
 
 However, to remove boilerplate code or to avoid programming in markup descriptions, common event handler patterns can be encapsulated in different event handler signatures.
@@ -735,21 +723,21 @@ For example, there might be the `on_event` event handler signature, which then r
 This signature might be useful to after ten seconds start a node or include another launch file, and in XML it might look like this:
 
 ```xml
-<!-- This is a made up example of a markup, consider it pseudo code... -->
-<!-- Also this could be made even simpler by just having a tag which lets -->
-<!-- you specify the extra actions directly, rather than emitting an event and -->
-<!-- handling it, but this demonstrates the custom event handler signature -->
-
-<emit_event after="10" type="my_custom_timer_event" />
-
-<on_event event_type="my_custom_timer_event">
-  <!-- actions to be included when this event occurs -->
-  <include file="$(package-share my_package)/something.launch.xml" />
-  <node pkg="my_package" executable="my_exec" />
-  <group namespace="my_ns">
-    <node pkg="my_package" executable="my_exec" />
-  </group>
-</on_event>
+    <!-- This is a made up example of a markup, consider it pseudo code... -->
+    <!-- Also this could be made even simpler by just having a tag which lets -->
+    <!-- you specify the extra actions directly, rather than emitting an event and -->
+    <!-- handling it, but this demonstrates the custom event handler signature -->
+    
+    <emit_event after="10" type="my_custom_timer_event" />
+    
+    <on_event event_type="my_custom_timer_event">
+      <!-- actions to be included when this event occurs -->
+      <include file="$(package-share my_package)/something.launch.xml" />
+      <node pkg="my_package" executable="my_exec" />
+      <group namespace="my_ns">
+        <node pkg="my_package" executable="my_exec" />
+      </group>
+    </on_event>
 ```
 
 ##### Emitting Events

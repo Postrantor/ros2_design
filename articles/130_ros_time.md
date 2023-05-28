@@ -1,29 +1,17 @@
 ---
-layout: default
-title: Clock and Time
-permalink: articles/clock_and_time.html
-abstract:
-  This article describes the ROS primitives to support programming which can run both in real time as well as simulated time which may be faster or slower.
-published: true
-author: '[Tully Foote](https://github.com/tfoote)'
-date_written: 2018-07
-last_modified: 2015-12
+    layout: default
+    title: Clock and Time
+    permalink: articles/clock_and_time.html
+    abstract:
+      This article describes the ROS primitives to support programming which can run both in real time as well as simulated time which may be faster or slower.
+    published: true
+    author: '[Tully Foote](https://github.com/tfoote)'
+    date_written: 2018-07
+    last_modified: 2015-12
+    Authors: {{ page.author }}
+    Date Written: {{ page.date_written }}
+    Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
 ---
-
-- This will become a table of contents (this text will be scraped).
-{:toc}
-
-# {{ page.title }}
-
-<div class="abstract" markdown="1">
-{{ page.abstract }}
-</div>
-
-Authors: {{ page.author }}
-
-Date Written: {{ page.date_written }}
-
-Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
 
 ## Background
 
@@ -176,19 +164,19 @@ It also will require appropriate threading to support the reception of `TimeSour
 It will provide implementations parallel to the public datastructures and storage which the client library can depend upon and to which it can delegate.
 The underlying datatypes will also provide ways to register notifications, however it is the responsibility of the client library implementation to collect and dispatch user callbacks.
 
-<div class="alert alert-warning" markdown="1">
-  <b>TODO:</b> Enumerate the <code>rcl</code> datastructures and methods here.
-</div>
-
+    <div class="alert alert-warning" markdown="1">
+      <b>TODO:</b> Enumerate the <code>rcl</code> datastructures and methods here.
+    </div>
+    
 ## References
 
 The default time source is modeled on the ROS Clock and ROS Time system used in ROS 1.0.
 For more information on the implementation in ROS 1.0 see:
 
-- [ROS Clock Documentation](http://wiki.ros.org/Clock)
-- [rospy Time Documentation](http://wiki.ros.org/rospy/Overview/Time)
-- [roscpp Time Documentation](http://wiki.ros.org/roscpp/Overview/Time)
+    - [ROS Clock Documentation](http://wiki.ros.org/Clock)
+    - [rospy Time Documentation](http://wiki.ros.org/rospy/Overview/Time)
+    - [roscpp Time Documentation](http://wiki.ros.org/roscpp/Overview/Time)
 
-[`std::chrono`]: http://en.cppreference.com/w/cpp/chrono
-[`steady_clock`]: http://en.cppreference.com/w/cpp/chrono/steady_clock
-[`system_clock`]: http://en.cppreference.com/w/cpp/chrono/system_clock
+    [`std::chrono`]: http://en.cppreference.com/w/cpp/chrono
+    [`steady_clock`]: http://en.cppreference.com/w/cpp/chrono/steady_clock
+    [`system_clock`]: http://en.cppreference.com/w/cpp/chrono/system_clock

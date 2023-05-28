@@ -1,62 +1,55 @@
 ---
-layout: default
-title: Mapping between ROS interface types and DDS IDL types
-permalink: articles/mapping_dds_types.html
-abstract:
-  This article specifies the mapping between the ROS interface types and the DDS types.
-published: true
-author: '[Dirk Thomas](https://github.com/dirk-thomas)'
-date_written: 2015-06
-last_modified: 2020-02
-categories: Interfaces
+    layout: default
+    title: Mapping between ROS interface types and DDS IDL types
+    permalink: articles/mapping_dds_types.html
+    abstract:
+      This article specifies the mapping between the ROS interface types and the DDS types.
+    published: true
+    author: '[Dirk Thomas](https://github.com/dirk-thomas)'
+    date_written: 2015-06
+    last_modified: 2020-02
+    categories: Interfaces
+
+    <div class="alert alert-warning" markdown="1">
+    With the transition to use ``IDL`` for specifying interfaces in ROS 2 Dashing this article has been superseded by the mapping described in the [Interface definition using .msg / .srv / .action files](legacy_interface_definition.html) article.
+    </div>
+    
+    Authors: {{ page.author }}
+    Date Written: {{ page.date_written }}
+    Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
 ---
-
-{:toc}
-
-# {{ page.title }}
-
-<div class="alert alert-warning" markdown="1">
-With the transition to use ``IDL`` for specifying interfaces in ROS 2 Dashing this article has been superseded by the mapping described in the [Interface definition using .msg / .srv / .action files](legacy_interface_definition.html) article.
-</div>
-
-<div class="abstract" markdown="1">
-{{ page.abstract }}
-</div>
-
-Authors: {{ page.author }}
-
-Date Written: {{ page.date_written }}
-
-Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
 
 ## Scope
 
 This article specifies the mapping between ROS interface types defined in the [interface definition article](interface_definition.html) and DDS types defined in the [Interface Definition Language](https://www.omg.org/spec/IDL/3.5).
 
+> 本文指定了[Interface定义文章]（Interface_definition.html）中定义的ROS接口类型与[Interface定义语言]（https://www.omg.org/spec/spec/spec/idl/3.5）中定义的ROS接口类型之间的映射。。
+
 ## Mapping of primitive types
 
-| ROS type | DDS type           |
-| -------- | ------------------ |
-| bool     | boolean            |
-| byte     | octet              |
-| char     | char               |
-| float32  | float              |
-| float64  | double             |
-| int8     | octet              |
-| uint8    | octet              |
-| int16    | short              |
-| uint16   | unsigned short     |
-| int32    | long               |
-| uint32   | unsigned long      |
-| int64    | long long          |
-| uint64   | unsigned long long |
-| string   | string             |
-
+    | ROS type | DDS type           |
+    | -------- | ------------------ |
+    | bool     | boolean            |
+    | byte     | octet              |
+    | char     | char               |
+    | float32  | float              |
+    | float64  | double             |
+    | int8     | octet              |
+    | uint8    | octet              |
+    | int16    | short              |
+    | uint16   | unsigned short     |
+    | int32    | long               |
+    | uint32   | unsigned long      |
+    | int64    | long long          |
+    | uint64   | unsigned long long |
+    | string   | string             |
+    
 ## Mapping of arrays and bounded strings
 
-| ROS type                | DDS type       |
-| ----------------------- | -------------- |
-| static array            | T\[N\]         |
-| unbounded dynamic array | sequence<T>    |
-| bounded dynamic array   | sequence<T, N> |
-| bounded string          | string<N>      |
+    | ROS type                | DDS type       |
+    | ----------------------- | -------------- |
+    | static array            | T\[N\]         |
+    | unbounded dynamic array | sequence<T>    |
+    | bounded dynamic array   | sequence<T, N> |
+    | bounded string          | string<N>      |
+    
