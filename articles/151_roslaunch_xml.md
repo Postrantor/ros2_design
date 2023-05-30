@@ -235,41 +235,41 @@ All substitutions are enclosed by `$(...)`.
 
 `$(find-pkg-prefix <pkg-name>)`
 : Substituted by the install prefix path of the given package.
-  Forward and backwards slashes will be resolved to the local filesystem convention.
-  Substitution will fail if the package cannot be found.
+Forward and backwards slashes will be resolved to the local filesystem convention.
+Substitution will fail if the package cannot be found.
 
 `$(find-pkg-share <pkg-name>)`
 : Substituted by the share directory path of the given package.
-  The share directory includes the package's name, e.g. `<prefix>/share/<pkg-name>`.
-  Forward and backwards slashes will be resolved to the local filesystem convention.
-  Substitution will fail if the package cannot be found.
+The share directory includes the package's name, e.g. `<prefix>/share/<pkg-name>`.
+Forward and backwards slashes will be resolved to the local filesystem convention.
+Substitution will fail if the package cannot be found.
 
 `$(find-exec <exec-name>)`
 : Substituted by the path to the executable in the local filesystem.
-  Executables are looked up in the PATH environment variable.
-  Forward and backwards slashes will be resolved to the local filesystem convention.
-  Substitution will fail if the executable cannot be found.
+Executables are looked up in the PATH environment variable.
+Forward and backwards slashes will be resolved to the local filesystem convention.
+Substitution will fail if the executable cannot be found.
 
 `$(exec-in-package <exec-name> <package-name>)`
 : Substituted by the path to the executable in the local filesystem.
-  Executables are looked up in the `lib` directory of the package.
-  Substitution will fail if the executable cannot be found.
+Executables are looked up in the `lib` directory of the package.
+Substitution will fail if the executable cannot be found.
 
 `$(var <name>)`
 : Substituted by the value of the launch configuration variable.
-  Substitution will fail if the named argument does not exist.
+Substitution will fail if the named argument does not exist.
 
 `$(env <env-var> [default-value])`
 : Substituted by the value of the given environment variable
-  Substitution will fail if the variable is not set, unless a default value is provided.
+Substitution will fail if the variable is not set, unless a default value is provided.
 
 `$(eval <python-expression>)`
 : Substituted by the evaluated python expression.
-  Substitution will fail if python fails to evaluate the expression.
+Substitution will fail if python fails to evaluate the expression.
 
 `$(dirname)`
 : Substituted by the current launch file directory name.
-  Substitution will always succeed.
+Substitution will always succeed.
 
 #### User-defined Substitutions
 

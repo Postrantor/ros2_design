@@ -2,16 +2,15 @@
 layout: default
 title: ROS 2 Launch Static Descriptions - Implementation Considerations
 permalink: articles/roslaunch_frontend.html
-abstract:
-  The launch system in ROS 2 aims to support extension of static descriptions, so as to easily allow both exposing new features of the underlying implementation, which may or may not be extensible itself, and introducing new markup languages. This document discusses several approaches for implementations to follow.
-author: '[Michel Hidalgo](https://github.com/hidmic) [William Woodall](https://github.com/wjwwood)'
+abstract: The launch system in ROS 2 aims to support extension of static descriptions, so as to easily allow both exposing new features of the underlying implementation, which may or may not be extensible itself, and introducing new markup languages. This document discusses several approaches for implementations to follow.
+author: "[Michel Hidalgo](https://github.com/hidmic) [William Woodall](https://github.com/wjwwood)"
 date_written: 2019-09
 last_modified: 2020-07
 published: true
 ---
 
 - This will become a table of contents (this text will be scraped).
-{:toc}
+  {:toc}
 
 # {{ page.title }}
 
@@ -58,7 +57,8 @@ The parser instantiates each launch entity by parsing and collecting the instant
 
 Some description samples in different markup languages are provided below:
 
-*XML*
+_XML_
+
 ```xml
 <launch version="x.1.0">
   <action name="some-action" type="actions.ExecuteProcess">
@@ -77,7 +77,8 @@ Some description samples in different markup languages are provided below:
 </launch>
 ```
 
-*YAML*
+_YAML_
+
 ```yml
 launch:
   version: x.1.0
@@ -100,15 +101,15 @@ launch:
 
 #### Advantages & Disadvantages
 
-*+* Straightforward to implement.
+_+_ Straightforward to implement.
 
-*+* Launch implementations are completely unaware of the existence of the static description formats and their parsing process (to the extent that type agnostic instantiation mechanisms are available).
+_+_ Launch implementations are completely unaware of the existence of the static description formats and their parsing process (to the extent that type agnostic instantiation mechanisms are available).
 
-*-* Statically typed launch system implementations may require variant objects to deal with actions.
+_-_ Statically typed launch system implementations may require variant objects to deal with actions.
 
-*-* Static descriptions are geared towards easing parsing, making them more uniform like a serialization format but also less user friendly.
+_-_ Static descriptions are geared towards easing parsing, making them more uniform like a serialization format but also less user friendly.
 
-*-* Care must be exercised to avoid coupling static descriptions with a given implementation.
+_-_ Care must be exercised to avoid coupling static descriptions with a given implementation.
 
 ### Forward Description Mapping plus Markup Helpers (FDM+)
 
@@ -119,7 +120,8 @@ The parser may thus delegate entire description sections to these helpers, which
 
 Some description samples in different markup languages are provided below:
 
-*XML*
+_XML_
+
 ```xml
 <launch version="x.1.0">
   <executable name="some-action" cmd="$(find-exec my-process)" prefix="$(env LAUNCH_PREFIX)">
@@ -131,7 +133,8 @@ Some description samples in different markup languages are provided below:
 </launch>
 ```
 
-*YAML*
+_YAML_
+
 ```yml
 launch:
   version: x.1.0
@@ -149,7 +152,8 @@ launch:
 
 Some code samples in different programming languages are provided below:
 
-*Python*
+_Python_
+
 ```python
 @launch_markup.xml.handle_tag('process')
 def process_tag_helper(xml_element, parser):
@@ -162,7 +166,8 @@ def env_subst_helper(args, parser):
     return launch.substitutions.EnvironmentVariable(parser.parse(args[0]))
 ```
 
-*C++*
+_C++_
+
 ```c++
 std::unique_ptr<launch::actions::ExecuteProcess>
 process_tag_helper(const XmlElement & xml_element, const launch_markup::xml::Parser & parser) {
@@ -183,15 +188,15 @@ LAUNCH_MARKUP_HANDLE_SUBST("env", env_subst_helper);
 
 #### Advantanges & Disadvantages
 
-*+* Straightforward to implement.
+_+_ Straightforward to implement.
 
-*-* Launch system implementations are aware of the parsing process, being completely involved with it if sugars are to be provided.
+_-_ Launch system implementations are aware of the parsing process, being completely involved with it if sugars are to be provided.
 
-*+* Allows leveraging the strengths of each markup language.
+_+_ Allows leveraging the strengths of each markup language.
 
-*-* Opens the door to big differences in the representation of launch entities across different front end implementations, and even within a given one by allowing the users to introduce multiple custom representations for the same concept (e.g. a list of numbers).
+_-_ Opens the door to big differences in the representation of launch entities across different front end implementations, and even within a given one by allowing the users to introduce multiple custom representations for the same concept (e.g. a list of numbers).
 
-*-* Care must be exercised to avoid coupling static descriptions with a given implementation.
+_-_ Care must be exercised to avoid coupling static descriptions with a given implementation.
 
 ### Abstract Description Parsing (ADP)
 
@@ -202,7 +207,8 @@ The parser does not attempt any form of description inference, traversing the de
 
 Some description samples in different markup languages are provided below:
 
-*XML*
+_XML_
+
 ```xml
 <launch version="x.1.0">
   <executable name="some-action" cmd="$(find-exec my-process)" prefix="$(env LAUNCH_PREFIX)">
@@ -214,7 +220,8 @@ Some description samples in different markup languages are provided below:
 </launch>
 ```
 
-*YAML*
+_YAML_
+
 ```yaml
 launch:
   version: x.1.0
@@ -244,7 +251,8 @@ Define an `Entity` object that has:
 
 Some sample definitions in different programming languages are provided below:
 
-*Python*
+_Python_
+
 ```python
 class Entity:
 
@@ -270,7 +278,8 @@ class Entity:
         pass
 ```
 
-*C++*
+_C++_
+
 ```c++
 namespace parsing {
 class Entity {
@@ -297,7 +306,8 @@ class Entity {
 It is up to each front end implementation to choose how to map these concepts to the markup language.
 For instance, one could map both of the following descriptions:
 
-*XML*
+_XML_
+
 ```xml
 <node name="my-node" pkg="demos" exec="talker">
   <param name="a" value="100."/>
@@ -305,7 +315,8 @@ For instance, one could map both of the following descriptions:
 </node>
 ```
 
-*YAML*
+_YAML_
+
 ```yaml
 - node:
     name: my-node
@@ -320,7 +331,8 @@ For instance, one could map both of the following descriptions:
 
 such that their associated parsing entity `e` exposes its data as follows:
 
-*Python*
+_Python_
+
 ```python
 e.type_name == 'node'
 e.get_attr(name) == 'my-node'
@@ -330,7 +342,8 @@ params[0].get_attr('name') == 'a'
 params[1].get_attr('name') == 'b'
 ```
 
-*C++*
+_C++_
+
 ```c++
 e.type() == "node"
 e.get<std::string>("name") == "my-node"
@@ -347,7 +360,8 @@ It is up to the parsing procedures to disambiguate them.
 
 Each launch entity that is to be statically described must provide a parsing procedure.
 
-*Python*
+_Python_
+
 ```python
 @launch.frontend.expose_action('some-action')
 class SomeAction(launch.Action):
@@ -375,7 +389,8 @@ class SomeSubstitution(launch.Substitution):
         return cls(*data)
 ```
 
-*C++*
+_C++_
+
 ```c++
 class SomeAction : public launch::Action {
   static std::unique_ptr<SomeAction>
@@ -420,15 +435,15 @@ If accurate type information is somehow available (e.g.: type annotations in con
 
 The abstraction layer allows.
 
-*-* Launch system implementations are aware of the parsing process.
+_-_ Launch system implementations are aware of the parsing process.
 
-*+* The static description abstraction effectively decouples launch frontends and backends, allowing for completely independent development and full feature availability at zero cost.
+_+_ The static description abstraction effectively decouples launch frontends and backends, allowing for completely independent development and full feature availability at zero cost.
 
-*-* No markup language specific sugars are possible.
-    REVISIT(hidmic): IMHO explicitly disallowing this is a good thing, it makes for more homogeneus descriptions and avoids proliferation of multiple representation of the same concepts (e.g. a list of strings).
+_-_ No markup language specific sugars are possible.
+REVISIT(hidmic): IMHO explicitly disallowing this is a good thing, it makes for more homogeneus descriptions and avoids proliferation of multiple representation of the same concepts (e.g. a list of strings).
 
-*+* The transfer function nature of the parsing procedure precludes the need for a rooted object type hierarchy in statically typed launch system implementations.
+_+_ The transfer function nature of the parsing procedure precludes the need for a rooted object type hierarchy in statically typed launch system implementations.
 
-*-* Automatic parsing provisioning requires accurate type information, which may not be trivial to gather in some implementations.
+_-_ Automatic parsing provisioning requires accurate type information, which may not be trivial to gather in some implementations.
 
-*-* Harder to implement.
+_-_ Harder to implement.

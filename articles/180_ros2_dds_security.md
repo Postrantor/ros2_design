@@ -8,7 +8,7 @@ abstract: >
   In ROS 1, this flexibility was valued above all else, at the cost of security.
   By virtue of being designed on top of DDS, ROS 2 is able to retain that flexibility while obtaining the ability to be secured by properly utilizing the DDS-Security specification.
   This article describes how ROS 2 integrates with DDS-Security.
-author:  >
+author: >
   [Kyle Fazzari](https://github.com/kyrofa)
 date_written: 2019-07
 last_modified: 2020-07
@@ -17,7 +17,6 @@ categories: Security
 ---
 
 {:toc}
-
 
 # {{ page.title }}
 
@@ -30,7 +29,6 @@ Authors: {{ page.author }}
 Date Written: {{ page.date_written }}
 
 Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
-
 
 # DDS-Security overview
 
@@ -47,7 +45,6 @@ ROS 2's security features currently utilize only the first three.
 This is due to the fact that neither **Logging** nor **Data Tagging** are required in order to be compliant with the [DDS-Security spec][dds_security] (see section 2.3), and thus not all DDS implementations support them.
 Let's delve a little further into those first three plugins.
 
-
 ## Authentication
 
 The **Authentication** plugin (see section 8.3 of the [DDS-Security spec][dds_security]) is central to the entire SPI architecture, as it provides the concept of a confirmed identity without which further enforcement would be impossible (e.g. it would be awfully hard to make sure a given ROS identity could only access specific topics if it was impossible to securely determine which identity it was).
@@ -60,7 +57,6 @@ The rationale for using the builtin plugin as opposed to anything else is twofol
 
 1. It's the only approach described in detail by the spec.
 2. It's mandatory for all compliant DDS implementations to interoperably support it (see section 2.3 of the [DDS-Security spec][dds_security]), which makes the ROS 2 security features work across vendors with minimal effort.
-
 
 ## Access control
 
@@ -81,7 +77,6 @@ The rationale for using the builtin plugin as opposed to anything else is the sa
 1. It's the only approach described in detail by the spec.
 2. It's mandatory for all compliant DDS implementations to interoperably support it (see section 2.3 of the [DDS-Security spec][dds_security]), which makes the ROS 2 security features work across vendors with minimal effort.
 
-
 ## Cryptographic
 
 The **Cryptographic** plugin (see section 8.5 of the [DDS-Security spec][dds_security]) is where all the cryptography-related operations are handled: encryption, decryption, signing, hashing, etc.
@@ -95,13 +90,11 @@ The rationale for using the builtin plugin as opposed to anything else is the sa
 1. It's the only approach described in detail by the spec.
 2. It's mandatory for all compliant DDS implementations to interoperably support it (see section 2.3 of the [DDS-Security spec][dds_security]), which makes the ROS 2 security features work across vendors with minimal effort.
 
-
 # DDS-Security integration with ROS 2: SROS 2
 
 Now that we have established some shared understanding of how security is supported in DDS, let's discuss how that support is exposed in ROS 2.
 By default, none of the security features of DDS are enabled in ROS 2.
 The set of features and tools in ROS 2 that are used to enable them are collectively named "Secure ROS 2" (SROS 2).
-
 
 ## Features in the ROS client library (RCL)
 
@@ -115,7 +108,6 @@ RCL includes the following features for SROS 2:
 
 Let's discuss each of these in turn.
 
-
 ### Security files for each domain participant
 
 As stated earlier, the DDS-Security plugins require a set of security files (e.g. keys, governance and permissions files, etc.) per domain participant.
@@ -126,7 +118,6 @@ RCL supports being pointed at a directory containing security files in two diffe
 - Manual specification.
 
 Let's delve further into these.
-
 
 #### Directory tree of all security files
 
@@ -149,12 +140,12 @@ The set of files expected within each enclave instance directory are:
 - **cert.pem**: The x.509 certificate of this enclave instance (signed by the Identity CA).
 - **key.pem**: The private key of this enclave instance.
 - **permissions_ca.cert.pem**: The x.509 certificate of the CA trusted by the **Access control** plugin (the "Permissions" CA).
-- **governance.p7s**: The XML document that specifies to the **Access control** plugin how the domain should be secured  (signed by the Permissions CA).
+- **governance.p7s**: The XML document that specifies to the **Access control** plugin how the domain should be secured (signed by the Permissions CA).
 - **permissions.p7s**: The XML document that specifies the permissions of this particular enclave instance to the **Access control** plugin (also signed by the Permissions CA).
 
 This can be specified by setting the `ROS_SECURITY_KEYSTORE` environment variable to point to the root of the keystore directory tree, and then specifying the enclave path using the `--ros-args` runtime argument `-e`, `--enclave`, e.g.:
 
-``` shell
+```shell
 export ROS_SECURITY_KEYSTORE="/home/bob/.ros/sros2_keystore"
 ros2 run <package> <executable> --ros-args --enclave="/front/camera"
 ```
@@ -167,13 +158,13 @@ Note that this setting takes precedence over `ROS_SECURITY_KEYSTORE` with `--enc
 
 Note that the following two examples load from the same enclave path as demonstrated prior:
 
-``` shell
+```shell
 export ROS_SECURITY_KEYSTORE="/home/bob/.ros/sros2_keystore"
 export ROS_SECURITY_ENCLAVE_OVERRIDE="/front/camera"
 ros2 run <package> <executable>
 ```
 
-``` shell
+```shell
 export ROS_SECURITY_KEYSTORE="/home/bob/.ros/sros2_keystore"
 export ROS_SECURITY_ENCLAVE_OVERRIDE="/front/camera"
 ros2 run <package> <executable> --ros-args --enclave="/spam"
@@ -184,11 +175,10 @@ ros2 run <package> <executable> --ros-args --enclave="/spam"
 Participants with the security features enabled will not communicate with participants that don't, but what should RCL do if one tries to launch a participant that has no discernable enclave with keys/permissions/etc.? It has two options:
 
 - **Permissive mode**: Try to find security files, and if they can't be found, launch the participant without enabling any security features.
-This is the default behavior.
+  This is the default behavior.
 - **Strict mode**: Try to find security files, and if they can't be found, fail to run the participant.
 
 The type of mode desired can be specified by setting the `ROS_SECURITY_STRATEGY` environment variable to "Enforce" (case-sensitive) for strict mode, and anything else for permissive mode.
-
 
 ### Support for a master "on/off" switch for all SROS 2 features
 
@@ -197,7 +187,6 @@ If it's turned off (the default), none of the above security features will be en
 
 In order to enable SROS 2, set the `ROS_SECURITY_ENABLE` environment variable to "true" (case-sensitive).
 To disable, set to any other value.
-
 
 ## Features in the SROS 2 CLI
 
@@ -211,7 +200,6 @@ However, the [SROS 2 CLI](https://github.com/ros2/sros2) should include a tool `
 - Create a governance file that will encrypt all DDS traffic by default.
 - Support specifying enclave permissions [in familiar ROS terms](/articles/ros2_access_control_policies.html) which are then automatically converted into low-level DDS permissions.
 - Support automatically discovering required permissions from a running ROS system.
-
 
 [dds_security]: https://www.omg.org/spec/DDS-SECURITY/1.1/PDF
 [dds]: https://www.omg.org/spec/DDS/1.4/PDF

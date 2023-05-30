@@ -1,7 +1,9 @@
 ---
 tip: translate by openai@2023-05-28 11:14:54
 ...
+
 ---
+
     layout: default
     title: ROS 2 Documentation System
     permalink: articles/ros_documentation_system.html
@@ -14,23 +16,22 @@ tip: translate by openai@2023-05-28 11:14:54
     Authors: {{ page.author }}
     Date Written: {{ page.date_written }}
     Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
----
 
+---
 
 This document is meant to capture the results of discussions about the way we (the ROS 2 developers) would like documentation to work in ROS 2 and polish those results into a proposal.
 
-> 这份文件旨在捕捉我们（ROS 2 开发者）希望ROS 2中文档的工作方式的讨论结果，并将这些结果整理成一份提案。
+> 这份文件旨在捕捉我们（ROS 2 开发者）希望 ROS 2 中文档的工作方式的讨论结果，并将这些结果整理成一份提案。
 
 It is likely that this document should be refined and made into a REP once a suitable design is settled on.
 
-> 这份文件可能需要在确定合适的设计之后进行细化和制定成一个REP。
+> 这份文件可能需要在确定合适的设计之后进行细化和制定成一个 REP。
 
 ## Glossary
 
-
 - **Documentation Engine**: Any tool which takes in information and produces documentation for the end user, e.g. Sphinx, Doxygen, a custom documentation script, etc.
 
-> -**文档引擎**：任何用于接受信息并为最终用户生成文档的工具，例如Sphinx、Doxygen、自定义文档脚本等。
+> -**文档引擎**：任何用于接受信息并为最终用户生成文档的工具，例如 Sphinx、Doxygen、自定义文档脚本等。
 
 - **Documentation Job**: A series of actions taken to provide documentation prerequisites, do documentation, validate the result, and finally transfer the result to a hosting solution, i.e. what to do on the build farm.
 
@@ -46,34 +47,31 @@ It is likely that this document should be refined and made into a REP once a sui
 
 ## Documentation System Overview
 
-
 Probably the principal difference between this proposed design and the existing ROS 1 system is the belief that general documentation about a package should be captured in the package as version controlled plain text files.
 
-> 可能这个提议的设计和现有的ROS 1系统的主要区别在于相信关于一个包的一般文档应该作为版本控制的纯文本文件存储在包中。
+> 可能这个提议的设计和现有的 ROS 1 系统的主要区别在于相信关于一个包的一般文档应该作为版本控制的纯文本文件存储在包中。
 
 ### Wiki Versus Static Documentation
 
-
 In this case "general" documentation is what you would typically find on the ROS 1 wiki and consists of things like detailed descriptions of packages, links to external references, images and diagrams, descriptions of nodes, launch files, and other common components of ROS packages.
 
-> 在这种情况下，“通用”文档就是您通常会在ROS 1维基上找到的内容，包括详细描述的软件包、链接到外部参考资料、图像和图表、节点描述、启动文件以及ROS软件包的其他常见组件。
+> 在这种情况下，“通用”文档就是您通常会在 ROS 1 维基上找到的内容，包括详细描述的软件包、链接到外部参考资料、图像和图表、节点描述、启动文件以及 ROS 软件包的其他常见组件。
 
 This is to distinguish these things from other kinds of documentation like Code API documentation, which is often written along side the code as comments, extracted automatically, and so therefore traditionally kept in plain text formats and version controlled with the code already.
 
-> 这是为了区分这些东西和其他类型的文档，比如代码API文档，通常是作为注释写在代码旁边，自动提取，因此通常会以纯文本格式保存，并与代码一起进行版本控制。
+> 这是为了区分这些东西和其他类型的文档，比如代码 API 文档，通常是作为注释写在代码旁边，自动提取，因此通常会以纯文本格式保存，并与代码一起进行版本控制。
 
 This "general" documentation could also encompass other types of documentation or memorandum like tutorials, API reviews, and discussions, but these types of documentation could also be kept in a separate system like a wiki.
 
-> 这种"一般"文档也可以包括其他类型的文档或备忘录，比如教程、API评论和讨论，但这些类型的文档也可以保存在另一个系统中，比如维基百科。
-
+> 这种"一般"文档也可以包括其他类型的文档或备忘录，比如教程、API 评论和讨论，但这些类型的文档也可以保存在另一个系统中，比如维基百科。
 
 In ROS 1, a conscious decision was made to push as much of the documentation into the ROS 1 wiki as possible and in ROS 2 we would like to diverge from that and suggest that more documentation should be version controlled with the code.
 
-> 在ROS 1中，我们有意识地决定将尽可能多的文档推送到ROS 1 wiki中，而在ROS 2中，我们希望能够偏离这一点，建议将更多的文档与代码一起版本控制。
+> 在 ROS 1 中，我们有意识地决定将尽可能多的文档推送到 ROS 1 wiki 中，而在 ROS 2 中，我们希望能够偏离这一点，建议将更多的文档与代码一起版本控制。
 
 The main reason, as far as we can gather, for this decision in ROS 1 was to make it as easy as possible for non developers to contribute changes to the documentation.
 
-> 这个决定在ROS 1中的主要原因是尽可能让非开发人员容易地为文档做出更改。
+> 这个决定在 ROS 1 中的主要原因是尽可能让非开发人员容易地为文档做出更改。
 
 It is still the case for outsiders that changing documentation in a source repository is more difficult than documentation which is located in a wiki.
 
@@ -81,27 +79,25 @@ It is still the case for outsiders that changing documentation in a source repos
 
 However, it seems that times have changed in this respect, and that the gap between editing a wiki page and getting a change in a source repository has narrowed.
 
-> 然而，在这方面似乎时代已经发生了变化，编辑wiki页面和在源代码库中得到更改的差距已经缩小了。
+> 然而，在这方面似乎时代已经发生了变化，编辑 wiki 页面和在源代码库中得到更改的差距已经缩小了。
 
 This is mostly due to improvements in the open source contribution practices on services like GitHub and BitBucket and the proliferation of both the Pull Request pattern and the "Edit in GitHub/BitBucket" buttons on generated documentation pages.
 
-> 这主要是由于GitHub和BitBucket等服务上的开源贡献实践的改进以及拉取请求模式和生成文档页面上的“在GitHub/BitBucket中编辑”按钮的普及所致。
-
+> 这主要是由于 GitHub 和 BitBucket 等服务上的开源贡献实践的改进以及拉取请求模式和生成文档页面上的“在 GitHub/BitBucket 中编辑”按钮的普及所致。
 
 In exchange for moving some types of documentation into the source repository, we believe that maintaining changes in documentation across different ROS versions and different package versions will become easier.
 
-> 为了把一些文档移动到源代码库，我们相信在不同的ROS版本和不同的软件包版本中维护文档的变化会变得更容易。
+> 为了把一些文档移动到源代码库，我们相信在不同的 ROS 版本和不同的软件包版本中维护文档的变化会变得更容易。
 
 Additionally, the systems for doing code documentation will allow for more robust cross referencing to and from the code API documentation.
 
-> 此外，用于进行代码文档的系统将允许更强大的与代码API文档的互相引用。
+> 此外，用于进行代码文档的系统将允许更强大的与代码 API 文档的互相引用。
 
 Finally, by doing this kind of documentation in code, it brings the ROS community's recommended practices closer to common practice for modern open source software projects, where the last few years have seen a migration from wiki's to statically generated documentation which comes from plain text files in the version control system.
 
-> 最后，通过在代码中进行这种文档记录，它使ROS社区推荐的实践更接近现代开源软件项目的常规实践，过去几年中，wiki已经从静态生成的文档中迁移到版本控制系统中的纯文本文件。
+> 最后，通过在代码中进行这种文档记录，它使 ROS 社区推荐的实践更接近现代开源软件项目的常规实践，过去几年中，wiki 已经从静态生成的文档中迁移到版本控制系统中的纯文本文件。
 
 ### Risks of Static Documentation
-
 
 There are some risks associated with using static documentation over something more dynamic like a wiki.
 
@@ -113,11 +109,11 @@ As mentioned before the barrier to entry to contributions may be too high for so
 
 Another potential issue is in documenting packages which would like to straddle multiple ROS distributions.
 
-> 另一个潜在问题是文档化想要跨越多个ROS发行版的软件包。
+> 另一个潜在问题是文档化想要跨越多个 ROS 发行版的软件包。
 
 This happens with code too, where a package would ideally have one line of versions and one development branch for several similar ROS distributions.
 
-> 这也发生在代码中，理想情况下，一个包应该有一行版本和一个开发分支，用于几个类似的ROS发行版。
+> 这也发生在代码中，理想情况下，一个包应该有一行版本和一个开发分支，用于几个类似的 ROS 发行版。
 
 Doing so cuts down on the number branches and amount of forward and back porting required which reduces the overall developer load.
 
@@ -125,12 +121,11 @@ Doing so cuts down on the number branches and amount of forward and back porting
 
 By doing more documentation in source it may become harder to maintain these ROS agnostic development branches.
 
-> 通过在源代码中做更多的文档，维护ROS不可知开发分支可能变得更加困难。
+> 通过在源代码中做更多的文档，维护 ROS 不可知开发分支可能变得更加困难。
 
 This essentially becomes a trade-off in how easy it is to document packages with large or small changes between ROS distributions.
 
-> 这本质上成为在ROS分发之间大或小变化的软件包文档化的容易程度之间的权衡。
-
+> 这本质上成为在 ROS 分发之间大或小变化的软件包文档化的容易程度之间的权衡。
 
 Another risk of this proposal is that it may discourage usage of a wiki in scenarios where a wiki would be appropriate.
 
@@ -138,7 +133,7 @@ Another risk of this proposal is that it may discourage usage of a wiki in scena
 
 The intention of this proposal is not to suggest that wiki's should not be used, but instead means it will be up to the developer to decide what kinds of documentation are best suited for difference documentation options.
 
-> 本提案的意图并不是建议不使用wiki，而是由开发人员来决定哪种文档最适合不同的文档选项。
+> 本提案的意图并不是建议不使用 wiki，而是由开发人员来决定哪种文档最适合不同的文档选项。
 
 For example, documentation which bridges multiple packages is not well suited to being contained in one package's documentation and therefore may work better in a wiki style system.
 
@@ -150,22 +145,21 @@ However, by encouraging developers to make use of static documentation generatio
 
 ### Other Goals of the Documentation System
 
-
 One desired goal of the documentation system is to generate a standard landing page for all packages which are released or documented.
 
 > 一个文档系统的期望目标是为所有发布或记录的包生成一个标准的入口页面。
 
 Similar to how the [PackageHeader](http://wiki.ros.org/WikiMacros#PackageHeader) wiki macro works in ROS 1, this page would summarize the items common to all packages.
 
-> 类似于ROS 1中[PackageHeader](http://wiki.ros.org/WikiMacros#PackageHeader)维基宏的工作方式，本页面将总结所有包共有的项目。
+> 类似于 ROS 1 中[PackageHeader](http://wiki.ros.org/WikiMacros#PackageHeader)维基宏的工作方式，本页面将总结所有包共有的项目。
 
 These items would consist of information extracted from the package manifest, the package's README file, and other external resources like the build farm and the ROS distribution file.
 
-> 这些项目将包括从包清单、包的README文件以及像构建农场和ROS发行文件等其他外部资源中提取的信息。
+> 这些项目将包括从包清单、包的 README 文件以及像构建农场和 ROS 发行文件等其他外部资源中提取的信息。
 
 This page can also contain dynamically generated information about the package which transcends one version of the package or one ROS distribution, e.g. it could list all of the ROS distributions in which the package has been released.
 
-> 这个页面也可以包含关于软件包的动态生成信息，这些信息可以超越一个软件包版本或一个ROS发行版，例如它可以列出软件包已发布的所有ROS发行版。
+> 这个页面也可以包含关于软件包的动态生成信息，这些信息可以超越一个软件包版本或一个 ROS 发行版，例如它可以列出软件包已发布的所有 ROS 发行版。
 
 This page would also be able to automatically collect and link to resources in the packages.
 
@@ -173,11 +167,11 @@ This page would also be able to automatically collect and link to resources in t
 
 For example, it could link to documentation for messages or external services like wiki's and other kinds of external documentation.
 
-> 例如，它可以链接到消息或外部服务的文档，比如wiki和其他类型的外部文档。
+> 例如，它可以链接到消息或外部服务的文档，比如 wiki 和其他类型的外部文档。
 
 Ideally this page would be easy to produce locally as part of the normal documentation of the package and is not something special that is only done on the ROS infrastructure.
 
-> 理想情况下，这个页面可以轻松地作为包的正常文档的一部分本地生成，而不是只在ROS基础设施上完成的特殊操作。
+> 理想情况下，这个页面可以轻松地作为包的正常文档的一部分本地生成，而不是只在 ROS 基础设施上完成的特殊操作。
 
 Generating it locally would allow the developer to preview all of the content for their package before publishing it to the publicly hosted infrastructure.
 
@@ -185,20 +179,19 @@ Generating it locally would allow the developer to preview all of the content fo
 
 To support this goal, there would need to be a documentation engine which is run by every ROS package regardless of any other general documentation a developer wishes to create.
 
-> 为了支持这个目标，每个ROS包都需要运行一个文档引擎，无论开发人员希望创建任何其他一般文档。
-
+> 为了支持这个目标，每个 ROS 包都需要运行一个文档引擎，无论开发人员希望创建任何其他一般文档。
 
 Another goal of the system is to support general documentation of ROS packages in source repositories rather than in a separately version controlled system like a wiki.
 
-> 系统的另一个目标是支持ROS包在源代码仓库中的普通文档，而不是在像维基一样的独立版本控制系统中。
+> 系统的另一个目标是支持 ROS 包在源代码仓库中的普通文档，而不是在像维基一样的独立版本控制系统中。
 
 To achieve this the system would need to supply the developers with ROS specific documentation tools.
 
-> 要实现这一目标，系统需要向开发人员提供ROS特定的文档工具。
+> 要实现这一目标，系统需要向开发人员提供 ROS 特定的文档工具。
 
 These kinds of tools would do things like cross reference to ROS messages automatically or make the information from the package manifest accessible in the documentation engine.
 
-> 这些工具可以像自动交叉参考ROS消息或使包清单中的信息可在文档引擎中访问一样做事情。
+> 这些工具可以像自动交叉参考 ROS 消息或使包清单中的信息可在文档引擎中访问一样做事情。
 
 This kind of tooling would need to be provided for each documentation engine which we expect users to use for general documentation, which would be a burden to support.
 
@@ -207,7 +200,6 @@ This kind of tooling would need to be provided for each documentation engine whi
 Therefore, it would make sense to have a recommended documentation engine for general documentation of packages, limiting the need for tools in many documentation engines.
 
 > 因此，为了减少对多种文档引擎的需求，为包的一般文档提供推荐文档引擎是有意义的。
-
 
 There are some other tasks which every package _may_ need to perform based on its contents.
 
@@ -231,23 +223,21 @@ Even if the developer does not reference their own launch files or messages, ano
 
 ## Default Documentation Engine
 
-
 Based on the above goals, it seems clear that one or more default documentation engines will be required.
 
 > 根据以上目标，似乎很明显需要一个或多个默认文档引擎。
 
 The above goals mostly apply to ROS packages, but not necessarily any package our tool chain can build, i.e. third party CMake, Python, or autotools packages.
 
-> 以上目标主要适用于ROS包，但不一定适用于我们的工具链可以构建的任何包，即第三方CMake、Python或autotools包。
+> 以上目标主要适用于 ROS 包，但不一定适用于我们的工具链可以构建的任何包，即第三方 CMake、Python 或 autotools 包。
 
 The distinction is that our tool chain should not automatically assume a default engine, but rather the qualities that make a package a "ROS" package, i.e. depending on a ROS documentation package, should determine whether or not the default documentation engine is exercised by the tool chain.
 
-> 我们的工具链的区别在于，不应自动假定默认引擎，而是应该根据使一个包成为“ROS”包的特性，即是否依赖ROS文档包，来决定工具链是否使用默认文档引擎。
+> 我们的工具链的区别在于，不应自动假定默认引擎，而是应该根据使一个包成为“ROS”包的特性，即是否依赖 ROS 文档包，来决定工具链是否使用默认文档引擎。
 
 This allows the tool chain to be agnostic to these additional items which are common to all ROS packages, but not necessarily all packages.
 
-> 这使得工具链对所有ROS包中的这些附加项目具有不可知性，尽管不一定适用于所有包。
-
+> 这使得工具链对所有 ROS 包中的这些附加项目具有不可知性，尽管不一定适用于所有包。
 
 While it would be convenient to have one default documentation engine, it may be necessary to have several for either technical reasons or for modularity.
 
@@ -257,10 +247,9 @@ For simplicity, this article will describe a system with a single documentation 
 
 > 为了简单起见，本文将描述一个具有单一文档系统的系统，理解为该默认文档引擎可能会从先前的过程中获得输入，或者它可能会将多个不同的工具作为其执行的一部分来聚合。
 
-
 So for ROS packages this default engine would always be run and would be responsible for generating the package's landing page and for generating documentation for any special items like launch files and other common items which can be automatically documented.
 
-> 所以对于ROS软件包，这个默认引擎将始终被运行，负责生成软件包的首页，并且为任何特殊项目（如启动文件和其他可以自动文档化的常见项目）生成文档。
+> 所以对于 ROS 软件包，这个默认引擎将始终被运行，负责生成软件包的首页，并且为任何特殊项目（如启动文件和其他可以自动文档化的常见项目）生成文档。
 
 If the developer does not provide any configurations for this default documentation engine then a boiler plate configuration which generates a landing page would be created for them automatically.
 
@@ -272,17 +261,15 @@ This would allow all packages to have some minimal documentation with zero confi
 
 The developer would be able to generate this boiler plate documentation and configuration if they wanted to modify it, for instance to add something to the default landing page (much like you would on the ROS 1 wiki below the PackageHeader macro).
 
-> 开发人员如果想要修改它，比如在默认的登录页面上添加一些东西（就像你在ROS 1维基上下面的PackageHeader宏一样），就可以生成这个锅炉板文档和配置。
+> 开发人员如果想要修改它，比如在默认的登录页面上添加一些东西（就像你在 ROS 1 维基上下面的 PackageHeader 宏一样），就可以生成这个锅炉板文档和配置。
 
 However, the system should do some minimal check to ensure that the landing page looks and feels consistent with other packages, e.g. ensure the equivalent to the "PackageHeader" is on the landing page and that the ROS theme is being used or extended.
 
-> 然而，系统应该做一些最低限度的检查，以确保登陆页面看起来和感觉与其他包一致，例如确保“PackageHeader”的等价物出现在登陆页面上，并且使用或扩展ROS主题。
-
+> 然而，系统应该做一些最低限度的检查，以确保登陆页面看起来和感觉与其他包一致，例如确保“PackageHeader”的等价物出现在登陆页面上，并且使用或扩展 ROS 主题。
 
 When selecting a default engine, some things should be considered:
 
 > 在选择默认引擎时，应该考虑以下几点：
-
 
 - The engine should be easy to extend (in order to provide the aforementioned tooling to the developer).
 
@@ -290,7 +277,7 @@ When selecting a default engine, some things should be considered:
 
 - The engine's syntax should be easy to learn (on the level of the current ROS 1 wiki's syntax).
 
-> 引擎的语法应该容易学习（达到当前ROS 1 wiki语法的水平）。
+> 引擎的语法应该容易学习（达到当前 ROS 1 wiki 语法的水平）。
 
 - The engine must be design for general purpose documenting (not just automatic code documenting).
 
@@ -300,17 +287,15 @@ When selecting a default engine, some things should be considered:
 
 > 引擎应该有一个交叉引用系统来帮助维护包之间的链接。
 
-
 Based on that, feasible options would include Sphinx, Doxygen, or a custom Python script that just expands an `empy` template.
 
-> 基于此，可行的选项包括Sphinx、Doxygen或者只是扩展`empy`模板的自定义Python脚本。
+> 基于此，可行的选项包括 Sphinx、Doxygen 或者只是扩展`empy`模板的自定义 Python 脚本。
 
 ### Sphinx as a Default Documentation Engine
 
-
 Sphinx is a compelling solution since it can be easily extended with Python and has a cross referencing system.
 
-> 斯芬克斯是一个引人注目的解决方案，因为它可以用Python轻松扩展，并具有交叉引用系统。
+> 斯芬克斯是一个引人注目的解决方案，因为它可以用 Python 轻松扩展，并具有交叉引用系统。
 
 It uses the ReStructured Text (rst) standard for its markup language, which is fairly easy to learn, but can be cumbersome in some scenarios.
 
@@ -318,37 +303,35 @@ It uses the ReStructured Text (rst) standard for its markup language, which is f
 
 The benefit of rst and Sphinx is that its "directive" system provides a flexible way to extend the markup language without relying on an external template system.
 
-> 优势在于rst和Sphinx的“指令”系统提供了一种灵活的方式，可以在不依赖外部模板系统的情况下扩展标记语言。
+> 优势在于 rst 和 Sphinx 的“指令”系统提供了一种灵活的方式，可以在不依赖外部模板系统的情况下扩展标记语言。
 
 Philosophically, Sphinx is oriented around creating documentation rather than extracting documentation from code.
 
-> 从哲学上讲，Sphinx更多的是为了创建文档而不是从代码中提取文档。
+> 从哲学上讲，Sphinx 更多的是为了创建文档而不是从代码中提取文档。
 
 ### Doxygen as a Default Documentation Engine
 
-
 Doxygen would also be a good choice since it has a good cross reference system and can parse markdown files for general purpose documentation.
 
-> Doxygen也是一个不错的选择，因为它具有很好的交叉引用系统，可以解析markdown文件用于一般文档。
+> Doxygen 也是一个不错的选择，因为它具有很好的交叉引用系统，可以解析 markdown 文件用于一般文档。
 
 Markdown is arguably simpler and easier to read than rst, but it also is less flexible since it does not have a built in system for extension.
 
-> Markdown可以说比rst更简单易读，但由于没有内置的扩展系统，它的灵活性也较少。
+> Markdown 可以说比 rst 更简单易读，但由于没有内置的扩展系统，它的灵活性也较少。
 
 Doxygen has manually extended Markdown to include cross referencing, but more complicated tasks would need to be done using a template engine in conjunction with Markdown, similar to how Jekyll works.
 
-> Doxygen已手动扩展了Markdown，以支持交叉引用，但更复杂的任务需要使用模板引擎与Markdown结合使用，就像Jekyll一样。
+> Doxygen 已手动扩展了 Markdown，以支持交叉引用，但更复杂的任务需要使用模板引擎与 Markdown 结合使用，就像 Jekyll 一样。
 
 Doxygen excels at extracting documentation from code, especially C++ and Java, and has a lot of its features geared toward describing and automatically organizing code documentation.
 
-> Doxygen 在从代码中提取文档方面表现出色，尤其是C++和Java，它有许多特性有助于描述和自动组织代码文档。
+> Doxygen 在从代码中提取文档方面表现出色，尤其是 C++和 Java，它有许多特性有助于描述和自动组织代码文档。
 
 Its extension system is arguably less approachable than Sphinx's since they are done in C++ and scripting of Doxygen commands is limited to argument aliasing.
 
-> 它的扩展系统可以说比Sphinx的不那么容易接近，因为它们是用C++完成的，而且Doxygen命令的脚本化仅限于参数别名。
+> 它的扩展系统可以说比 Sphinx 的不那么容易接近，因为它们是用 C++完成的，而且 Doxygen 命令的脚本化仅限于参数别名。
 
 ### Custom Tool as a Default Documentation Engine
-
 
 A custom tool as the default documentation engine provides perhaps the most opportunity for flexibility and leanness, but also will require the most effort to develop.
 
@@ -360,53 +343,49 @@ A custom tool would need to either not support cross referencing to other system
 
 It would be leaner than either Sphinx or Doxygen since it would have less features and would not try to document or extract code API's.
 
-> 它比Sphinx或Doxygen都要精简，因为它拥有的功能更少，不会试图文档化或提取代码API。
+> 它比 Sphinx 或 Doxygen 都要精简，因为它拥有的功能更少，不会试图文档化或提取代码 API。
 
 ### Using the Default Documentation Engine
 
-
 Prioritizing for the least development time and the most features, Sphinx seems like a reasonable choice for the default documentation engine.
 
-> 优先考虑最少的开发时间和最多的功能，Sphinx似乎是默认文档引擎的合理选择。
+> 优先考虑最少的开发时间和最多的功能，Sphinx 似乎是默认文档引擎的合理选择。
 
 However, suggesting that Sphinx be the default documentation engine is not a complete proposal.
 
-> 然而，建议Sphinx作为默认文档引擎还不是一个完整的提案。
+> 然而，建议 Sphinx 作为默认文档引擎还不是一个完整的提案。
 
 Several details remain which will affect the requirements of the system and how the developers of packages will interact with it.
 
 > 几个细节仍然会影响系统的要求以及开发者如何与其交互。
 
-
 TODO: explain the issue with having Sphinx as the default: should the developer reuse it for documentation; should the developer run their own Sphinx instead; how to integrate them and make them both cross reference-able?
 
-> TODO：解释使用Sphinx作为默认配置的问题：开发者是否应该重用它来进行文档；开发者是否应该自己运行Sphinx；如何将它们集成并使它们可以互相引用？
-
+> TODO：解释使用 Sphinx 作为默认配置的问题：开发者是否应该重用它来进行文档；开发者是否应该自己运行 Sphinx；如何将它们集成并使它们可以互相引用？
 
 If Sphinx is the default documentation engine, one issue to sort out is whether or not the user should reuse this default run of Sphinx or not.
 
-> 如果Sphinx是默认的文档引擎，需要解决的一个问题是用户是否应该重用这个默认的Sphinx运行。
+> 如果 Sphinx 是默认的文档引擎，需要解决的一个问题是用户是否应该重用这个默认的 Sphinx 运行。
 
 The user could integrate their own Sphinx documentation into the default Sphinx run if the system allowed it.
 
-> 用户如果系统允许，可以将自己的Sphinx文档集成到默认的Sphinx运行中。
+> 用户如果系统允许，可以将自己的 Sphinx 文档集成到默认的 Sphinx 运行中。
 
 On the other hand the user could put all of their Sphinx documentation into a second run of Sphinx.
 
-> 另一方面，用户可以将他们的Sphinx文档放入第二次Sphinx运行中。
-
+> 另一方面，用户可以将他们的 Sphinx 文档放入第二次 Sphinx 运行中。
 
 The advantage to the later option is that the fact that the default documentation is generated by Sphinx becomes an implementation detail.
 
-> 优势在于，Sphinx生成的默认文档成为实现细节。
+> 优势在于，Sphinx 生成的默认文档成为实现细节。
 
 However, in this case there are technical details to address, like how to integrate cross referencing the default documentation run and the user's Sphinx job.
 
-> 然而，在这种情况下，需要解决技术细节，比如如何将默认文档运行与用户的Sphinx作业进行交叉引用。
+> 然而，在这种情况下，需要解决技术细节，比如如何将默认文档运行与用户的 Sphinx 作业进行交叉引用。
 
 In Sphinx, a cross reference is done by calling out to another project by name.
 
-> 在Sphinx中，可以通过按名称调用另一个项目来完成交叉引用。
+> 在 Sphinx 中，可以通过按名称调用另一个项目来完成交叉引用。
 
 For example, to reference the function `foo_func` in the `foo_pkg` package the developer would do something like this: `` ... :py:func:`foo_pkg:foo_func` ... ``.
 
@@ -414,11 +393,11 @@ For example, to reference the function `foo_func` in the `foo_pkg` package the d
 
 When there is a single run of Sphinx per project then the name used for the mapping would simply be the package's name.
 
-> 如果每个项目只有一次Sphinx运行，那么用于映射的名称将简单地是包的名称。
+> 如果每个项目只有一次 Sphinx 运行，那么用于映射的名称将简单地是包的名称。
 
 However, when there are multiple runs of Sphinx then different names would be required.
 
-> 如果有多个Sphinx运行，则需要不同的名称。
+> 如果有多个 Sphinx 运行，则需要不同的名称。
 
 One possibility is that the default run is always something like `<package_name>-default`, so that referencing a section in the landing page would be something like: `` ... :ref:`foo_pkg-default:SectionName` ... ``.
 
@@ -426,19 +405,17 @@ One possibility is that the default run is always something like `<package_name>
 
 It may be possible compose a single cross referencing from multiple runs of Sphinx into a single mapping to make it appear as if multiple Sphinx projects were actually one, but this would need to deal with collisions of references, something that is handled by Sphinx normally.
 
-> 可能有可能从多次Sphinx运行中组合出一个单一的交叉引用，以使其看起来好像多个Sphinx项目实际上是一个，但这需要处理引用冲突，这是Sphinx通常处理的。
+> 可能有可能从多次 Sphinx 运行中组合出一个单一的交叉引用，以使其看起来好像多个 Sphinx 项目实际上是一个，但这需要处理引用冲突，这是 Sphinx 通常处理的。
 
     <div class="alert alert-warning" markdown="1">
     TODO: see if merging Sphinx object-inventories is possible.
     </div>
 
-
 This same issue comes up when considering if the developer should be able to run multiple instances of a particular documentation engine, for example should they be able to run Doxygen multiple times and if so, how is that organized such that other packages can cross reference both runs of Doxygen?
 
-> 这个问题也出现在考虑开发者是否能够运行特定文档引擎的多个实例时，例如他们是否能够多次运行Doxygen，如果是这样，如何组织这样的方式，以便其他包可以跨引用两次Doxygen的运行？
+> 这个问题也出现在考虑开发者是否能够运行特定文档引擎的多个实例时，例如他们是否能够多次运行 Doxygen，如果是这样，如何组织这样的方式，以便其他包可以跨引用两次 Doxygen 的运行？
 
 ## Standard Documentation Inputs and Outputs
-
 
 Each documentation engine has its own inputs and outputs, so to support more than one and arbitrary documentation engines in the future, the documentation system need to have a flexible way to export and import documentation information between packages.
 
@@ -456,7 +433,6 @@ The documentation system will want to provide some default values for these conf
 
 > 文档系统将为这些配置提供一些默认值。
 
-
 Additionally most documentation engines have a method for configuring where to find external projects' documentation for use in cross referencing.
 
 > 此外，大多数文档引擎都有一种配置方法，用于查找用于交叉引用的外部项目的文档。
@@ -471,10 +447,9 @@ The cross referencing information could be useful only for other packages using 
 
 For example, a C++ only package may export Doxygen XML files which is used by another package using Sphinx to do cross referencing.
 
-> 例如，一个仅使用C++的包可以导出Doxygen XML文件，这些文件被另一个使用Sphinx的包用来做跨引用。
+> 例如，一个仅使用 C++的包可以导出 Doxygen XML 文件，这些文件被另一个使用 Sphinx 的包用来做跨引用。
 
 ### Documentation Output
-
 
 Because the content of this exported and imported information is specific to the documentation engines that are being used, the transfer of information should be flexible.
 
@@ -502,7 +477,6 @@ For example, this might look something like this in the general form:
           xml_output_dir: '/doxygen_xml/'
     {% endhighlight %}
 
-
 This example is extremely declarative, but the developer would not need to explicitly fill this file out, but instead it could be dynamically generated by the documentation process and tooling.
 
 > 这个例子非常声明性，但是开发人员不需要显式地填写这个文件，而是可以通过文档流程和工具动态生成。
@@ -519,7 +493,6 @@ The details of the run can be a documentation engine specific opaque set of sett
 
 ### Documentation Input
 
-
 Additional information, e.g. a base path, could be paired with the above example output and given as input to another package.
 
 > 除了上面的例子输出，可以为另一个包提供额外的信息，比如基础路径。
@@ -533,7 +506,6 @@ So in addition to the default configurations, the documentation inputs for a pac
 > 除了默认配置之外，对于一个包的文档输入还包括一系列基础路径和“文档工件清单”，用于包的构建、运行和文档依赖项。
 
 ## The Documentation Job
-
 
 There are two processes which need to be detailed in order to successfully document different kinds of packages.
 
@@ -550,7 +522,6 @@ The documentation job is the process of preparing the operating system for docum
 The rough outline of the process is:
 
 > 这个过程的大致描述是：
-
 
 - Build-like dependencies are installed.
 
@@ -576,9 +547,7 @@ The rough outline of the process is:
     TODO: Fill in details about the documentation job
     </div>
 
-
 ## The Documentation Process
-
 
 The documentation process consists of the series of actions which must be preformed in order to generate documentation for a single package.
 
@@ -595,7 +564,6 @@ This process constitutes what happens for the "doc target" of the build tools.
 The build tools will perform these steps in the documentation process:
 
 > 编译工具将在文档流程中执行以下步骤:
-
 
 - Create a list of requested and implicit runs of documentation engines.
 
@@ -617,7 +585,6 @@ The build tools will perform these steps in the documentation process:
 
 > 编目输出元数据被编译成一个文档清单，用于安装该包。
 
-
 The implicit runs would encompass the default documentation engine.
 
 > .
@@ -630,22 +597,19 @@ The implicit runs would encompass the default documentation engine.
 
 ## User Stories
 
-
 This section will look at the documentation system from the point of view of the users, in this case package developers and package consumers, by constructing some common and uncommon scenarios in order to gain a better understanding of the requirements.
 
 > 这一节将从用户的角度来看文档系统，在这种情况下是包开发者和包消费者，通过构建一些常见和不常见的场景，以便更好地了解需求。
 
 ### Discovering Packages Through Documentation
 
-
 Scenario:
 
 > 情景：
 
-
 A "package consumer", someone who is looking for packages to use in their ROS system, hears about a package that sounds interesting to them, e.g. `wall_e_plant_detection`.
 
-> 一个"包消费者"，他们正在寻找可以在自己的ROS系统中使用的包，听说了一个听起来很有趣的包，例如`wall_e_plant_detection`。
+> 一个"包消费者"，他们正在寻找可以在自己的 ROS 系统中使用的包，听说了一个听起来很有趣的包，例如`wall_e_plant_detection`。
 
 She searches for `wall_e_plant_detection` with her favorite search engine and finds a page which summarizes or references the package.
 
@@ -653,7 +617,7 @@ She searches for `wall_e_plant_detection` with her favorite search engine and fi
 
 After a while she realizes that she can go to `packages.ros2.org/wall_e_plant_detection` get redirected to the latest version of the package for the current ROS distribution, which might end up going to something more specific like `http://packages.ros2.org/en/jade/latest/wall_e_plant_detection/index.html`.
 
-> 沒一會，她意識到她可以去packages.ros2.org/wall_e_plant_detection重定向到當前ROS發行版的該包的最新版本，最終可能會去到更具體的位置，如http://packages.ros2.org/en/jade/latest/wall_e_plant_detection/index.html。
+> 沒一會，她意識到她可以去 packages.ros2.org/wall_e_plant_detection 重定向到當前 ROS 發行版的該包的最新版本，最終可能會去到更具體的位置，如http://packages.ros2.org/en/jade/latest/wall_e_plant_detection/index.html。
 
 The page summarizes or references all the information about the package that can be compiled by the documentation system, e.g. Code documentation, Tutorials, wiki, jobs on the farm, etc.
 
@@ -663,14 +627,13 @@ This page has also been customized by the developer to include a longer descript
 
 > 这个页面也已经被开发人员定制，包括更长的描述和更多内容，如到外部资源的自定义链接。
 
-
 This ROS package landing page would be similar to the landing pages for Ubuntu packages, e.g. `http://packages.ubuntu.com/trusty/libboost-all-dev`.
 
-> 这个ROS软件包的登陆页面将类似于Ubuntu软件包的登陆页面，例如`http://packages.ubuntu.com/trusty/libboost-all-dev`。
+> 这个 ROS 软件包的登陆页面将类似于 Ubuntu 软件包的登陆页面，例如`http://packages.ubuntu.com/trusty/libboost-all-dev`。
 
 From here the user can discover general and API documentation, tutorials, other versions, dependencies, dependents, provided resources, etc., all for this package.
 
-> 从这里，用户可以发现这个包的常规文档、API文档、教程、其他版本、依赖项、依赖项、提供的资源等等。
+> 从这里，用户可以发现这个包的常规文档、API 文档、教程、其他版本、依赖项、依赖项、提供的资源等等。
 
 `packages.ros2.org` is just an example.
 
@@ -680,8 +643,7 @@ Based on the implementation of the infrastructure for this site, something more 
 
 Even `wiki.ros2.org`, if it is implemented more as a wiki with static pages embedded throughout.
 
-> 即使是`wiki.ros2.org`，如果它被更多地实现为一个具有嵌入静态页面的wiki，也是如此。
-
+> 即使是`wiki.ros2.org`，如果它被更多地实现为一个具有嵌入静态页面的 wiki，也是如此。
 
 One question is whether or not the package developer should be able to customize this page at all.
 
@@ -697,11 +659,9 @@ This could be accomplished by either having the ability to import something like
 
 ### Documentation for a Released Package
 
-
 Scenario:
 
 > 场景：
-
 
 After providing zero extra documentation or configuration a package developer releases their package to take advantage of the binary packaging provided for released packages.
 
@@ -711,18 +671,15 @@ After the release has been processed by the build farm, the package will have a 
 
 > 经过构建农场处理发布之后，该包将拥有一个可发现的着陆页面，其中包含尽可能多从包中提取的信息。
 
-
 This is a slight improvement on the ROS 1 system, because in ROS 1 the package developer would have to additionally go to the wiki and create a package with the `PackageHeader` macro in it in order to gain the same effect.
 
-> 这是对ROS 1系统的一个轻微改进，因为在ROS 1中，包开发人员必须额外转到Wiki上，使用`PackageHeader`宏创建一个包，才能获得同样的效果。
+> 这是对 ROS 1 系统的一个轻微改进，因为在 ROS 1 中，包开发人员必须额外转到 Wiki 上，使用`PackageHeader`宏创建一个包，才能获得同样的效果。
 
 ### Documentation for an Unreleased Package
-
 
 Scenario:
 
 > 情景：
-
 
 A package developer would like to make their package discoverable by others and have their documentation hosted, but has not taken the time to do a proper release of the package.
 
@@ -730,7 +687,7 @@ A package developer would like to make their package discoverable by others and 
 
 She submits a pull request to the ROS distribution file to add a "doc" entry for her package(s).
 
-> 她向ROS发行文件提交了一个拉取请求，以为她的包添加一个"doc"条目。
+> 她向 ROS 发行文件提交了一个拉取请求，以为她的包添加一个"doc"条目。
 
 This doc entry points to repository which contains her package(s) on her main development branch.
 
@@ -744,22 +701,19 @@ Documentation was generated based on her package's configurations and the result
 
 > 文档是根据她的软件包的配置生成的，结果已上传到文档服务器，供其他人查找。
 
-
 The scenario shows that users should be able to take advantage of as much of the documentation system as possible without releasing their package.
 
 > 用户应该尽可能多地利用文档系统，而不需要发布他们的包。
 
 ### Maintaining Multiple Versions of Documentation
 
-
 Scenario:
 
 > 情景：
 
-
 A package developer adds to the public API in a backwards compatible way during a ROS release, e.g. between versions `1.1.0` and `1.2.0` for the Jade ROS distribution.
 
-> 一个软件包开发者在ROS发布期间以向后兼容的方式向公共API添加内容，例如Jade ROS发行版本1.1.0和1.2.0之间。
+> 一个软件包开发者在 ROS 发布期间以向后兼容的方式向公共 API 添加内容，例如 Jade ROS 发行版本 1.1.0 和 1.2.0 之间。
 
 Because of this change, the package developer would like to make the documentation for both versions of the package available to their users.
 
@@ -771,16 +725,15 @@ So in addition to specifying a branch of their VCS repository that should be doc
 
 So now there are three versions of the documentation for Jade, her latest branch `jade-devel`, version `0.1.0`, and the most recent released version `0.2.0`.
 
-> 现在有三个版本的Jade文档，她最新的分支“jade-devel”，版本“0.1.0”，以及最新发布的版本“0.2.0”。
+> 现在有三个版本的 Jade 文档，她最新的分支“jade-devel”，版本“0.1.0”，以及最新发布的版本“0.2.0”。
 
 When users browse to her package's documentation they will see three options for versions of documentation for Jade, `latest`, `0.1.0`, and `0.2.0`.
 
-> 当用户浏览她的软件包的文档时，他们会看到Jade的三个文档版本，即`最新版`，`0.1.0`和`0.2.0`。
-
+> 当用户浏览她的软件包的文档时，他们会看到 Jade 的三个文档版本，即`最新版`，`0.1.0`和`0.2.0`。
 
 Currently the ROS 1 infrastructure only allows for one version of documentation per package per ROS distribution.
 
-> 目前ROS 1基础设施只允许每个ROS发行版中每个软件包有一个版本的文档。
+> 目前 ROS 1 基础设施只允许每个 ROS 发行版中每个软件包有一个版本的文档。
 
 This works for most cases, but a more flexible option for packages which change during the life time of distributions would be to have multiple released versions as well as a floating "latest" version if desired.
 
@@ -788,7 +741,7 @@ This works for most cases, but a more flexible option for packages which change 
 
 To do this would require capturing which VCS tags should be documented, where the tags map to older versions of the software.
 
-> 这需要捕获哪些VCS标签应该被记录，这些标签映射到软件的旧版本。
+> 这需要捕获哪些 VCS 标签应该被记录，这些标签映射到软件的旧版本。
 
 This would be in addition to the information we already capture in the "doc" entry which covers a tag or branch to document and the "release" entry which tells us the latest version of the package currently released but not previous versions.
 
@@ -800,18 +753,15 @@ This idea is borrowed from the way the [https://readthedocs.org/](https://readth
 
 ## Documentation Requirements
 
-
 The functional requirements were arrived at by building on the experience of the ROS 1 documentation system and practices, while keeping in mind some non-functional requirements.
 
-> 功能要求是通过建立在ROS 1文档系统和实践的经验基础上，同时考虑一些非功能性要求而得出的。
+> 功能要求是通过建立在 ROS 1 文档系统和实践的经验基础上，同时考虑一些非功能性要求而得出的。
 
 ### Non-Functional Requirements
-
 
 Listed in no particular order, the documentation system should be...
 
 > 没有特定顺序，文档系统应该是...
-
 
 - _scalable_ by ensuring that a default, minimal output for each package is generated with zero configuration.
 
@@ -823,7 +773,7 @@ Listed in no particular order, the documentation system should be...
 
 - _extensible_ by ensuring that many documentation engines can be supported and that special elements can be automatically documented, e.g. ROS messages, launch files, node parameters, etc.
 
-> 确保可以支持许多文档引擎，并且可以自动文档化特殊元素（例如ROS消息、启动文件、节点参数等），以实现可扩展性。
+> 确保可以支持许多文档引擎，并且可以自动文档化特殊元素（例如 ROS 消息、启动文件、节点参数等），以实现可扩展性。
 
 - _standard compliant and conventional_ by reusing tools which already exist where possible.
 
@@ -851,19 +801,17 @@ Listed in no particular order, the documentation system should be...
 
 - _discoverable_ by having easy to read and understand URL schemes and by facilitating the storage of and switching between multiple versions of the documentation.
 
-> 可发现，通过具有易于阅读和理解的URL架构，以及促进存储和在多个版本之间切换文档。
+> 可发现，通过具有易于阅读和理解的 URL 架构，以及促进存储和在多个版本之间切换文档。
 
 - _stable_ by having conventions about documentation layout, warning when they are violated, and enforcing them where possible.
 
 > 保持文档布局的约定，当它们被违反时发出警告，并尽可能地执行它们，以保持稳定。
-
 
 These no-functional requirements, or qualities, of the system guided the following proposed functional requirements and system design.
 
 > 这些非功能性需求或质量指导了下面提出的功能性需求和系统设计。
 
 ### Functional Requirements
-
 
 The above non-function requirements have suggestions at some of the more concrete function requirements.
 
@@ -874,7 +822,6 @@ The above non-function requirements have suggestions at some of the more concret
 Listed in no particular order, the documentation system will...
 
 > 按无特定顺序列出，文档系统将...
-
 
 - support at least Sphinx and Doxygen.
 
@@ -894,52 +841,52 @@ Listed in no particular order, the documentation system will...
 
 - run Sphinx by default.
 
-> 默认运行Sphinx。
+> 默认运行 Sphinx。
 
 - **_not_** allow the developer to skip running Sphinx on their package.
 
-> 不允许开发者跳过在它们的包上运行Sphinx
+> 不允许开发者跳过在它们的包上运行 Sphinx
 
 - provide a default Sphinx configuration for packages which do not provide one.
 
-> 为不提供默认Sphinx配置的包提供默认Sphinx配置。
+> 为不提供默认 Sphinx 配置的包提供默认 Sphinx 配置。
 
 - provide a tool to generate the default Sphinx configuration, allowing the developer to modify it.
 
-> 提供一个工具来生成默认的Sphinx配置，以便开发者可以修改它。
+> 提供一个工具来生成默认的 Sphinx 配置，以便开发者可以修改它。
 
 - validate the Sphinx settings and warn the developer in the case that a setting might cause a problem with the output.
 
-> 验证Sphinx设置，如果设置可能导致输出问题，则警告开发人员。
+> 验证 Sphinx 设置，如果设置可能导致输出问题，则警告开发人员。
 
 - provide a mechanism in Sphinx to access and reuse information stored in the package manifest file.
 
-> 提供一种机制，以便在Sphinx中访问和重用存储在包清单文件中的信息。
+> 提供一种机制，以便在 Sphinx 中访问和重用存储在包清单文件中的信息。
 
 - provide a mechanism in Sphinx to generate the "package page header" which summarizes the package and provides a consistent landing page for all packages (similar to the package header in the ROS 1 wiki).
 
-> 提供一种机制，在Sphinx中生成“包页面头”，该头部概括包的内容，并为所有包提供一致的入口页面（类似于ROS 1维基中的包头）。
+> 提供一种机制，在 Sphinx 中生成“包页面头”，该头部概括包的内容，并为所有包提供一致的入口页面（类似于 ROS 1 维基中的包头）。
 
 - enforce that the index page for Sphinx follows a certain format which starts with the "package page header".
 
-> 强制要求Sphinx的索引页面遵循一个特定的格式，以"包页面头"开头。
+> 强制要求 Sphinx 的索引页面遵循一个特定的格式，以"包页面头"开头。
 
 - enforce that reserved names are not used as pages or folders in the Sphinx layout, e.g. `msgs` which will contain ROS message documentation.
 
-> 强制要求不能在Sphinx布局中使用保留的名称作为页面或文件夹，例如`msgs`将包含ROS消息文档。
+> 强制要求不能在 Sphinx 布局中使用保留的名称作为页面或文件夹，例如`msgs`将包含 ROS 消息文档。
 
 - run Doxygen by default.
 
-> 默认情况下运行Doxygen。
+> 默认情况下运行 Doxygen。
 
 - allow the developer to skip running Doxygen on their package.
 
-> 允许开发人员跳过在他们的包上运行Doxygen。
+> 允许开发人员跳过在他们的包上运行 Doxygen。
 
 - provide default Doxygen configuration for packages which do not provide them.
 
-> 为没有提供默认Doxygen配置的包提供默认Doxygen配置。
+> 为没有提供默认 Doxygen 配置的包提供默认 Doxygen 配置。
 
 - provide a tool to generate the default Doxygen configuration, allowing the developer to modify them.
 
-> 提供一个工具来生成默认的Doxygen配置，以便开发者可以对其进行修改。
+> 提供一个工具来生成默认的 Doxygen 配置，以便开发者可以对其进行修改。

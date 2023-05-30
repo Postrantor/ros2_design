@@ -44,9 +44,7 @@ To provide a simplified time interface we will provide a ROS time and duration d
 To query for the latest time a ROS Clock interface will be provided.
 A TimeSource can manage one or more Clock instances.
 
-
 ## Clock
-
 
 ### Challenges in using abstracted time
 
@@ -167,7 +165,7 @@ The underlying datatypes will also provide ways to register notifications, howev
     <div class="alert alert-warning" markdown="1">
       <b>TODO:</b> Enumerate the <code>rcl</code> datastructures and methods here.
     </div>
-    
+
 ## References
 
 The default time source is modeled on the ROS Clock and ROS Time system used in ROS 1.0.
