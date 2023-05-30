@@ -61,31 +61,31 @@ For a message a Python `class` with the same name as the message is generated in
 
 #### Mapping of primitive types
 
-    | ROS type | Python type                  |
-    | -------- | ---------------------------- |
-    | bool     | builtins.bool                |
-    | byte     | builtins.bytes with length 1 |
-    | char     | builtins.str with length 1   |
-    | float32  | builtins.float               |
-    | float64  | builtins.float               |
-    | int8     | builtins.int                 |
-    | uint8    | builtins.int                 |
-    | int16    | builtins.int                 |
-    | uint16   | builtins.int                 |
-    | int32    | builtins.int                 |
-    | uint32   | builtins.int                 |
-    | int64    | builtins.int                 |
-    | uint64   | builtins.int                 |
-    | string   | builtins.str                 |
+| ROS type | Python type                  |
+| -------- | ---------------------------- |
+| bool     | builtins.bool                |
+| byte     | builtins.bytes with length 1 |
+| char     | builtins.str with length 1   |
+| float32  | builtins.float               |
+| float64  | builtins.float               |
+| int8     | builtins.int                 |
+| uint8    | builtins.int                 |
+| int16    | builtins.int                 |
+| uint16   | builtins.int                 |
+| int32    | builtins.int                 |
+| uint32   | builtins.int                 |
+| int64    | builtins.int                 |
+| uint64   | builtins.int                 |
+| string   | builtins.str                 |
 
 #### Mapping of arrays and bounded strings
 
-    | ROS type                | Python type   |
-    | ----------------------- | ------------- |
-    | static array            | builtins.list |
-    | unbounded dynamic array | builtins.list |
-    | bounded dynamic array   | builtins.list |
-    | bounded string          | builtins.str  |
+| ROS type                | Python type   |
+| ----------------------- | ------------- |
+| static array            | builtins.list |
+| unbounded dynamic array | builtins.list |
+| bounded dynamic array   | builtins.list |
+| bounded string          | builtins.str  |
 
 ### Properties
 

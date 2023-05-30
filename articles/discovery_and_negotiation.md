@@ -18,15 +18,22 @@ Date Written: {{ page.date_written }}
 Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
 ---
 
+> [!NOTE]
+> 这里主要谈到的是 graph 的概念，实际上 ros2 中有 rqt_graph 的工具，可以查看当前 node 组成的 graph 之间的连接关系
+> 进一步的，这里就涉及到 node 生命周期的概念
+> 尤其是 `## Node Life Cycles` 这一节的内容
+
+---
+
 ## Problem Space
 
 ROS systems tend to be implemented as a **computational graph**, where there are graph **node**'s connected by **topic**'s and **service**'s. The graph which models the computational nodes with their topics and services can be different from the graph which represents the physical groupings and connections which implement the behavior modeled in the topics and services graph.
 
-> ROS 系统往往被实现为计算图，其中有图节点由主题和服务连接。模拟计算节点及其主题和服务的图可能与表示实现主题和服务图中模型行为的物理分组和连接的图不同。
+> **ROS 系统往往被实现为计算图**，其中有图节点由主题和服务连接。模拟计算节点及其主题和服务的图可能与表示实现主题和服务图中模型行为的物理分组和连接的图不同。
 
 For the purposes of this document, the graph which defines the computational nodes and how they are connected using topics and services will be referred to as the **computational graph**. The graph which models processes around nodes and physical layers between nodes will be referred to as the **data layer graph**. A **node** is any addressable participant in the **computational graph**, it does not imply how nodes are organized into system processes, i.e. a node is neither necessarily a single process, nor does it necessarily share a process with other nodes.
 
-> 为了本文件的目的，用主题和服务连接计算节点的图表被称为**计算图**。模拟节点和节点之间物理层的过程的图表被称为**数据层图**。**节点**是**计算图**中可寻址的参与者，它不意味着节点如何组织到系统进程中，即节点既不一定是单个进程，也不一定与其他节点共享进程。
+> 为了本文件的目的，用主题和服务连接计算节点的图表被称为**计算图**。模拟节点和节点之间物理层的过程的图表被称为**数据层图**。**节点**是**计算图**中可寻址的参与者，它不意味着节点如何组织到系统进程中，即**节点既不一定是单个进程，也不一定与其他节点共享进程**。
 
 To demonstrate the difference between the **computational graph** and the **data layer graph**, consider the following:
 
@@ -50,11 +57,15 @@ The above describes how the **computational graph** is organized from a conceptu
 
 The above constraints do not at all describe the method by which messages over topics are delivered to various nodes of the graph, this is known as the **data layer graph**. It is the responsibility of some entity, or entities, to use this **computational graph** (and optionally the information about process and machine layout) to decide how the **data layer graph** should be implemented and then execute that implementation.
 
-> 上述约束并不描述消息如何通过主题发送到图形的各个节点，这被称为**数据层图**。某个实体或实体有责任使用这个**计算图**（可选择性地使用关于过程和机器布局的信息）来决定**数据层图**应该如何实现，然后执行该实现。
+> 上述约束并不描述消息如何通过主题发送到图形的各个节点，这被称为**数据层图**。某个实体或实体有责任使用这个**计算图**(可选择性地使用关于过程和机器布局的信息)来决定**数据层图**应该如何实现，然后执行该实现。
 
 In the current ROS system, each node reports its address and configuration to a master process which coordinates the graph. The master is responsible for maintaining the graph state and notifying nodes of relevant changes to the graph, e.g. a new publisher of a topic which this node subscribes to was created. The nodes will then initiate connections to other nodes where appropriate, so in this sense the nodes are somewhat autonomous. One could argue that ROS should have multiple masters rather than sharing one master amongst multiple machines, or that there should be no master and all of the nodes should be completely autonomous.The point here is that there is no one-size fits all solution, therefore this paper will try to identify ways that these discovery and negotiation steps can be abstracted such that many different implementations may be supported.
 
-> 在当前的 ROS 系统中，每个节点都会向一个主进程报告其地址和配置，该主进程负责协调图形。主进程负责维护图形状态，并通知节点有关图形的相关变化，例如，此节点订阅的新发布者已创建。然后，节点将在适当的情况下与其他节点建立连接，因此，从某种意义上讲，节点有一定的自主性。可以说，ROS 应该有多个主而不是在多台机器之间共享一个主，或者不应该有主，而所有节点都应该完全自主。重点是没有一种通用的解决方案，因此本文将尝试确定这些发现和协商步骤的抽象方式，以支持多种不同的实现。
+> 在当前的 ROS 系统中，**每个节点都会向一个主进程报告其地址和配置，该主进程负责协调图形。主进程负责维护图形状态，并通知节点有关图形的相关变化，例如，此节点订阅的新发布者已创建**。然后，节点将在适当的情况下与其他节点建立连接，因此，从某种意义上讲，节点有一定的自主性。可以说，ROS 应该有多个主而不是在多台机器之间共享一个主，或者不应该有主，而所有节点都应该完全自主。重点是没有一种通用的解决方案，因此本文将尝试确定这些发现和协商步骤的抽象方式，以支持多种不同的实现。
+
+> [!NOTE]
+> 存在 manager 的角色？
+> 最直接相关的就是 “ROS2 Lifecycle Manager”。
 
 ## Use Cases
 
@@ -70,11 +81,17 @@ The most basic use case is where each node is given a list of declarative instru
 
 The basic building block that this requires is that nodes provide an API which allows something to instruct the node to establish some connection ("connect_to") and to map publishers and subscribers to a given connection ("map_to"). The program parsing the declarative instructions would just iterate over the instructions, calling this "connect_to" function for each url and then the "map_to" function on each publisher and subscriber.
 
-> 这需要的基本构建块是，节点提供一个 API，允许某些东西指示节点建立一些连接（“connect_to”），并将发布者和订阅者映射到给定的连接（“map_to”）。解析声明性指令的程序只需要遍历这些指令，为每个 url 调用“connect_to”函数，然后为每个发布者和订阅者调用“map_to”函数。
+> 这需要的基本构建块是，节点提供一个 API，允许某些东西指示节点建立一些连接(“connect_to”)，并将发布者和订阅者映射到给定的连接(“map_to”)。解析声明性指令的程序只需要遍历这些指令，为每个 url 调用“connect_to”函数，然后为每个发布者和订阅者调用“map_to”函数。
+
+> [!NOTE]
+> 这里提到了一个有意思的想法：**指示节点建立一些连接(“connect_to”)**
 
 It should be noted that at this point, this "map_to" call should fail if the node is asked to do something which it has not previously set itself up to do, e.g. a node is asked to map a topic and subscriber to a connection for which it has not created a Subscriber instance. This constraint implies the need for a life cycle where any publishers and subscribers are instantiated by the node in one step and then connections are made in another step.
 
-> 需要注意的是，在这一点上，如果节点被要求做一些以前没有准备好的事情，比如要求节点将主题和订阅者映射到尚未创建订阅者实例的连接，此时此"map_to"调用将失败。这一约束意味着需要一个生命周期，其中任何发布者和订阅者都是由节点在一个步骤中实例化的，然后在另一个步骤中建立连接。
+> 需要注意的是，在这一点上，如果节点被要求做一些以前没有准备好的事情，比如要求节点将主题和订阅者映射到尚未创建订阅者实例的连接，此时此"map_to"调用将失败。**这一约束意味着需要一个生命周期，其中任何发布者和订阅者都是由节点在一个步骤中实例化的，然后在另一个步骤中建立连接。**
+
+> [!NOTE]
+> 为什么需要声明周期！
 
 Because the decisions about how to connect to the data layer are static, it also removes the possibility for dynamically creating publishers and subscribers on the fly because no entity will be watching for new publishers/subscribers and dynamically determining and executing data layer connections.
 
@@ -82,13 +99,13 @@ Because the decisions about how to connect to the data layer are static, it also
 
 Another point is that when nodes lose connection with each other on the data layer (temporary loss of network), the node implementation which calls "connect_to" would be responsible for issuing a new "connect_to" after the connection dies. This implies there should be away to introspect the node by polling it or by getting notifications about the state of the underlying connections which were created.
 
-> 另一个重要的一点是，当节点在数据层上失去连接（网络暂时丢失）时，调用“connect_to”的节点实现将负责在连接断开后发出新的“connect_to”。这意味着应该有一种方法可以通过轮询或获取有关创建的底层连接状态的通知来内省节点。
+> 另一个重要的一点是，当节点在数据层上失去连接(网络暂时丢失)时，调用“connect_to”的节点实现将负责在连接断开后发出新的“connect_to”。这意味着应该有一种方法可以通过轮询或获取有关创建的底层连接状态的通知来内省节点。
 
 ### Statically Configured Graph
 
 The next more complicated system is one where each node starts and waits for an outside process to tell it how to make its connections to the data layer. In this scenario a central authority has the static configuration of all node addresses and knows how they should be connected to each other in the data layer. In order to execute this, the central authority needs to be able to call the previously described "connect_to" and "map_to" functions remotely.
 
-> 下一个更复杂的系统是，每个节点都启动并等待外部进程告知它如何与数据层连接。在这种情况下，中央权威机构具有所有节点地址的静态配置，并知道它们应如何在数据层中相互连接。为了执行这一点，中央权威机构需要能够远程调用先前描述的“connect_to”和“map_to”函数。
+> 下一个更复杂的系统是，**每个节点都启动并等待外部进程告知它如何与数据层连接。在这种情况下，中央权威机构具有所有节点地址的静态配置，并知道它们应如何在数据层中相互连接。为了执行这一点，中央权威机构需要能够远程调用先前描述的“connect_to”和“map_to”函数。**
 
 This adds the necessity for a node to provide an RPC interface for the "connect_to" and "map_to" functions.
 
@@ -138,7 +155,7 @@ One of the issues with the "Statically Configured Graph" system described above 
 
 In order to enable these type of flexible or dynamic node configurations, each node must provided an externally accessible function for getting the configuration of itself. This would allow a central authority to periodically check each node for new topic subscriptions or publications and/or new service providers and dynamically change the **data layer graph** layout to reflect these changes.
 
-> 为了实现这种灵活或动态的节点配置，每个节点必须提供一个可外部访问的函数来获取自身的配置。这将允许中央权威机构定期检查每个节点的新主题订阅或发布以及/或新的服务提供商，并动态更改**数据层图**布局以反映这些变化。
+> 为了实现这种灵活或动态的节点配置，**每个节点必须提供一个可外部访问的函数来获取自身的配置**。这将允许中央权威机构定期检查每个节点的新主题订阅或发布以及/或新的服务提供商，并动态更改**数据层图**布局以反映这些变化。
 
 This also allows for a system where the list of graph participants and their location is known, but the data layer graph is unknown and can be determined at runtime. This would allow a small additional flexibility over a completely statically configured system.
 
@@ -148,7 +165,7 @@ This also allows for a system where the list of graph participants and their loc
 
 The other issue with the "Statically Configured Graph" system above is that it cannot easily monitor the state of each of the graph participants and their connections because it would require some form of polling or point to point event systems. In order to better facilitate use cases where graph state would be maintained in a decentralized manner, point to point events should be avoided (at least conceptually), and instead participants in the graph should be able to send messages (events) to the "graph" notifying the rest of the graph participants of changes to their own state, and anything which wants to monitor the state of the graph should be able to maintain a consistent state of the graph by listening to messages sent to the graph by its participants. This assumes that nodes are the authority of their state in the graph.
 
-> 其他问题是，上述“静态配置图”系统无法轻松监视图中各个参与者及其连接的状态，因为它需要某种形式的轮询或点对点事件系统。为了更好地实现图状态在分散管理的情况下保持的用例，应该尽量避免点对点事件（至少在概念上），而是图中的参与者应该能够向“图”发送消息（事件），通知其他图参与者自身状态的变化，以及任何想要监视图状态的东西都应该能够通过监听图中参与者发送给图的消息来维持图的一致状态。这假设节点是图中状态的权威。
+> 其他问题是，上述“静态配置图”系统**无法轻松监视图中各个参与者及其连接的状态，因为它需要某种形式的轮询或点对点事件系统**。为了更好地实现图状态在分散管理的情况下保持的用例，**应该尽量避免点对点事件(至少在概念上)，而是图中的参与者应该能够向“图”发送消息(事件)，通知其他图参与者自身状态的变化**，以及任何想要监视图状态的东西都应该能够通过监听图中参与者发送给图的消息来维持图的一致状态。这假设节点是图中状态的权威。
 
 This begins to outline the need for a graph interface, which allows a user to maintain the state of the graph, get asynchronous notifications of graph changes, and send events to the graph. What the graph interface looks like is discussed in a later section.
 
@@ -158,21 +175,25 @@ With a graph interface anyone, either a graph participant or an observer, can mo
 
 > 有了图形界面，任何人，无论是图形参与者还是观察者，都可以监视图形的状态，并可能对图形的变化做出反应。这允许长期运行的中央权威机构最初设置图形，并在运行时恢复任何连接。
 
+> [!NOTE]
+>
+> [rqt_graph](C:\Users\trantor\Documents\Hirain\Project\rolling\ros-visualization\rqt_graph)
+
 Along with data layer events, comes the notion of liveliness. When a connection is terminated for some reason an event should be sent to the graph, but often the reason for a disconnect will be that one end of the connection has dropped off the graph unexpectedly and therefore an event is unlikely to reach the graph. For this reason, it makes sense to include liveliness into the system when data layer events are added. Liveliness is not required, but could be added to any system which has a notion of the graph interface and is able to send and receive messages to the graph, these messages would be some form of heartbeat.
 
-> 随着数据层事件的出现，活力的概念也随之而来。当连接因某种原因中断时，应该向图表发送一个事件，但是通常断开连接的原因是一端意外地从图表中断开，因此事件不太可能到达图表。因此，在添加数据层事件时，包含活力是有意义的。活力不是必需的，但可以添加到任何具有图形界面概念并能够向图表发送和接收消息的系统中，这些消息将是某种形式的心跳。
+> 随着数据层事件的出现，活力(liveliness)的概念也随之而来。当连接因某种原因中断时，应该向图表发送一个事件，但是通常断开连接的原因是一端意外地从图表中断开，因此事件不太可能到达图表。因此，在添加数据层事件时，包含活力是有意义的。活力不是必需的，但可以添加到任何具有图形界面概念并能够向图表发送和接收消息的系统中，这些消息将是某种形式的心跳。
 
 ### Dynamically Configured Graph with Data Layer Events and Static Discovery
 
 This system simply adds the data layer events (connection established/lost, heartbeat, etc...) on top of the "Dynamically Configured Graph with Static Discovery". This system would be able to take a static set of nodes, with addresses, and dynamically detect their configuration, determine an appropriate data layer graph, and execute it. It would also be able to adapt to a change in the configuration of the node and adapt to data layer events, like temporarily lost connections, or connection state introspection.
 
-> 这个系统只是在“动态配置图与静态发现”之上添加数据层事件（连接建立/丢失，心跳等）。这个系统能够拿到一组静态节点，带有地址，并动态检测它们的配置，确定一个合适的数据层图，并执行它。它也能够适应节点配置的变化，并适应像临时失去连接或连接状态内省等数据层事件。
+> 这个系统只是在“动态配置图与静态发现”之上添加数据层事件(连接建立/丢失，心跳等)。**这个系统能够拿到一组静态节点，带有地址，并动态检测它们的配置**，确定一个合适的数据层图，并执行它。它也能够适应节点配置的变化，并适应像临时失去连接或连接状态内省等数据层事件。
 
 ### Dynamically Configured Graph with Dynamic Discovery
 
 The obvious next step is a system where the participants of the graph and their locations (addresses) are discovered at runtime. This information along with the ability for nodes to dynamically configure their topics and services, allows for a lot of the tools which exist currently in ROS. Being able to add a node to the graph in an ad-hoc manner and then dynamically create publishers and subscribers, allows for dynamic introspection of the graph as well as dynamic development of the graph.
 
-> 显而易见的下一步是建立一个系统，在运行时发现图的参与者及其位置（地址）。这些信息以及节点动态配置主题和服务的能力，可以让 ROS 中现有的大量工具得以利用。可以以临时方式将节点添加到图中，然后动态创建发布者和订阅者，这样可以动态地观察图，也可以动态地开发图。
+> 显而易见的下一步是建立一个系统，在运行时发现图的参与者及其位置(地址)。这些信息以及节点动态配置主题和服务的能力，可以让 ROS 中现有的大量工具得以利用。可以**以临时方式将节点添加到图中，然后动态创建发布者和订阅者，这样可以动态地观察图，也可以动态地开发图**。
 
 Implementation of this system requires the notion of the graph interface, so that on node creation and termination, the node can send messages to the graph, notifying the rest of the graph of their participation in the graph or their leaving of the graph.
 
@@ -186,11 +207,11 @@ This system does not have the data layer events described in previous systems, t
 
 This is the most fully featured system covered in this paper, as it combines dynamic configuration of nodes (topics and services), dynamic discovery of nodes, and data layer events.
 
-> 这是本文中最完整的系统，因为它结合了节点的动态配置（主题和服务）、节点的动态发现以及数据层事件。
+> 这是本文中最完整的系统，因为它结合了节点的动态配置(主题和服务)、节点的动态发现以及数据层事件。
 
 This system is capable of supporting dynamic insertion and removal of nodes in the graph. Each of those nodes can dynamically change their configurations at will. One or more entities can monitor the state of the nodes and their **computational graph** layout, determine part of or a whole **data layer graph** layout, and execute the **data layer graph** layout. Further more these entities can get event driven notifications of changes to the nodes in the graph, changes to their computational graph connections amongst each other, or changes to their data layer connections.
 
-> 这个系统能够支持动态地插入和移除图中的节点。这些节点可以随意地动态改变它们的配置。一个或多个实体可以监控节点的状态和它们的计算图布局，确定数据层图布局的一部分或整体，并执行数据层图布局。此外，这些实体可以获得关于图中节点的变化、它们之间计算图连接的变化以及数据层连接的变化的事件驱动通知。
+> **这个系统能够支持动态地插入和移除图中的节点。** 这些节点可以随意地动态改变它们的配置。一个或多个实体可以监控节点的状态和它们的计算图布局，确定数据层图布局的一部分或整体，并执行数据层图布局。此外，这些实体可以获得关于图中节点的变化、它们之间计算图连接的变化以及数据层连接的变化的事件驱动通知。
 
 All of these capabilities together allows for complex systems which are capable of dynamic behavior.
 
@@ -202,49 +223,50 @@ Below is a table summarizing the above mentioned use cases and what interfaces/f
 
 > 以下是汇总上述用例及其需要实现的接口/功能的表格。下表中的所有系统都需要具有"connect_to"和"map_to"函数以及基本连接内省功能的基本本地节点 API。
 
-<div class="table" markdown="1">
+| System Name                                                    | Remote Node API | Node Configuration API | Data Layer Events | Dynamic Discovery | Requires Graph API |
+| -------------------------------------------------------------- | --------------- | ---------------------- | ----------------- | ----------------- | ------------------ |
+| Statically Configured Nodes                                    | .               | .                      | .                 | .                 | .                  |
+| Statically Configured Graph                                    | &#x2713;        | .                      | .                 | .                 | .                  |
+| Dynamically Configured Graph with Static Discovery             | &#x2713;        | &#x2713;               | .                 | .                 | .                  |
+| Statically Configured Graph with Events                        | &#x2713;        | .                      | &#x2713;          | .                 | &#x2713;           |
+| Dynamically Configured Graph with Events and Static Discovery  | &#x2713;        | &#x2713;               | &#x2713;          | .                 | &#x2713;           |
+| Dynamically Configured Graph with Dynamic Discovery            | &#x2713;        | &#x2713;               | .                 | &#x2713;          | &#x2713;           |
+| Dynamically Configured Graph with Events and Dynamic Discovery | &#x2713;        | &#x2713;               | &#x2713;          | &#x2713;          | &#x2713;           |
 
-    | System Name                                                    | Remote Node API | Node Configuration API | Data Layer Events | Dynamic Discovery | Requires Graph API |
-    | ---                                                            | ---             | ---                    | ---               | ---               | ---                |
-    | Statically Configured Nodes                                    | .               | .                      | .                 | .                 | .                  |
-    | Statically Configured Graph                                    | &#x2713;        | .                      | .                 | .                 | .                  |
-    | Dynamically Configured Graph with Static Discovery             | &#x2713;        | &#x2713;               | .                 | .                 | .                  |
-    | Statically Configured Graph with Events                        | &#x2713;        | .                      | &#x2713;          | .                 | &#x2713;           |
-    | Dynamically Configured Graph with Events and Static Discovery  | &#x2713;        | &#x2713;               | &#x2713;          | .                 | &#x2713;           |
-    | Dynamically Configured Graph with Dynamic Discovery            | &#x2713;        | &#x2713;               | .                 | &#x2713;          | &#x2713;           |
-    | Dynamically Configured Graph with Events and Dynamic Discovery | &#x2713;        | &#x2713;               | &#x2713;          | &#x2713;          | &#x2713;           |
-
-</div>
-
-## Node Life Cycles
+## **Node Life Cycles**
 
 Something that wasn't covered in the previous section of use cases was verifiability of the system. There are different levels of the system that may need to be verified, depending on the use case. In the most flexible and dynamic system, one could imagine that the user develops the system using all of the freedom which the dynamic system gives him/her at development time, but also wanting to ensure that his/her system is up and connected the way he expects. In a simpler system, like the "Statically Configured Graph" system, one could imagine that a centralized authority would want all nodes up and connected before trying to use the system. In both of these cases, the system needs each participant in the graph to report something about their state.
 
-> 在先前的使用案例部分没有涵盖的是系统的可验证性。根据使用案例，可能需要验证不同级别的系统。在最灵活和动态的系统中，可以想象用户在开发时利用动态系统提供的所有自由权，但也希望确保他/她的系统正确连接并运行。在更简单的系统中，比如“静态配置图”系统，可以想象中央权威在尝试使用系统之前，希望所有节点都处于连接状态。在这两种情况下，系统都需要图中的每个参与者报告其状态。
+> **在先前的使用案例部分没有涵盖的是系统的可验证性。** 根据使用案例，可能需要验证不同级别的系统。在最灵活和动态的系统中，可以想象用户在开发时利用动态系统提供的所有自由权，但也希望确保他/她的系统正确连接并运行。在更简单的系统中，比如“静态配置图”(Statically Configured Graph)系统，可以想象中央权威(centralized authority)在尝试使用系统之前，希望所有节点都处于连接状态。在这两种情况下，**系统都需要图中的每个参与者报告其状态**。
 
 One option is to provide a Life Cycle to nodes in the graph. Each node would have a set series of states in which it could be, something like starting, establishing configuration, establishing connections, running, error, and stopping. The exact states are not as important as the ability for the system to introspect the life cycle state of all of the nodes.
 
-> 一个选项是为图中的节点提供一个生命周期。每个节点都有一系列状态，如启动，建立配置，建立连接，运行，错误和停止。确切的状态不如系统可以内省所有节点的生命周期状态重要。
+> **一个选项是为图中的节点提供一个生命周期。** 每个节点都有一系列状态，如启动，建立配置，建立连接，运行，错误和停止。确切的状态不如系统可以内省所有节点的生命周期状态重要。
+
+> [!NOTE]
+> 这里就给出了 lifecycle 的出发点？！
 
 Combining the life cycle information of the nodes with the state of graph could allow for various levels of system verifiability. It would allow something to ask the question, "Is the system up and running?". Currently in ROS, a user would run a launch file and hope that all of their nodes start without crashing and then make the correct connections, and it is difficult to verify if the thing the user designed in the launch file is what the user got at launch time.
 
-> 将节点的生命周期信息与图的状态结合起来，可以允许各种级别的系统可验证性。它将允许某人问：“系统正在运行吗？” 目前在 ROS 中，用户将运行启动文件，并希望所有节点都能在不崩溃的情况下启动，并建立正确的连接，很难验证用户在启动文件中设计的内容是否与启动时所得到的内容相同。
+> **将节点的生命周期信息与图的状态结合起来，可以允许各种级别的系统可验证性。** 它将允许某人问：“系统正在运行吗？” **目前在 ROS 中**，用户将运行启动文件，并希望所有节点都能在不崩溃的情况下启动，并建立正确的连接，**很难验证用户在启动文件中设计的内容是否与启动时所得到的内容相同**。
+
+> [!NOTE]
+> 这里想说的应该是：用户设计好了图，即 node 之间的连接关系，但是启动的过程中不能保证与设计的图是一样的
+> 这里应用 lifecycle 的设计，可以保证节点之间建立的关系、依赖、顺序等等。
 
 Life cycle information could be presented to the user as an API, which the user should call at various points in the code to signify transitioning to different states. If users are fine with design their code in a structured component like construct, the system could provide life cycle reporting automatically. Life cycle reporting should not be required by default, otherwise it might discourage, or make it more difficult, to debug and experiment using a scripting language.
 
-> 生命周期信息可以作为 API 呈现给用户，用户在代码中的不同点应该调用它来表示转换到不同的状态。如果用户愿意以结构化组件的形式设计他们的代码，系统可以自动提供生命周期报告。默认情况下不应该要求生命周期报告，否则可能会挫伤人们，或者使用脚本语言调试和实验变得更加困难。
+> **生命周期信息可以作为 API 呈现给用户，用户在代码中的不同点应该调用它来表示转换到不同的状态。** 如果用户愿意以结构化组件的形式设计他们的代码，系统可以自动提供生命周期报告。**默认情况下不应该要求生命周期报告**，否则可能会挫伤人们，或者使用脚本语言调试和实验变得更加困难。
 
 Life cycle state information could be provided by nodes in any above described use case except the "Statically Configured Nodes" system. For systems with a graph interface, the life cycle state changes can be sent as a graph message, otherwise a simple remote procedure call interface could be provided.
 
-> 生命周期状态信息可以在上述任何使用案例中由节点提供，除了“静态配置节点”系统。对于具有图形界面的系统，可以将生命周期状态变化作为图形消息发送，否则可以提供简单的远程过程调用接口。
+> **生命周期状态信息**可以在上述任何使用案例中**由节点提供**，除了“静态配置节点”系统。对于具有图形界面的系统，可以**将生命周期状态变化作为图形消息发送**，否则可以提供简单的远程过程调用接口。
 
 ## Proposed Interfaces
 
 In this section of the paper, some more details about interfaces which were eluded to in the use cases above are provided.
 
 > 在本节中，提供了一些关于上述用例中暗示的接口的更多细节。
-
-> [NOTE]:
 
 ### Node Interface
 
@@ -258,21 +280,24 @@ The "connect_to" function is necessary in order to execute the data layer connec
 
 In order to better support non point-to-point communication transport types like UDP Multicast, the system needs to be able to differentiate between transport and topic, which is why the "map_to" function is described as a separate function. The topic information could be included in the "connect_to" call, but that would make some use cases more difficult. For example, if a system wanted to send multiple types of topics over a single connection, possibly a single TCP or UDP connection, then it would not really make sense to call the "connect_to" function for a topic whose connection is already established. Instead the proposed set of functions would prescribe that the "connect_to" function would be called once, returning a handle to the connection, and that handle would be reused in multiple calls to "map_to".
 
-> 为了更好地支持非点对点通信传输类型，如 UDP 多播，系统需要能够区分传输和主题，这就是为什么“map_to”函数被描述为一个单独的函数。主题信息可以包含在“connect_to”调用中，但这会使某些用例更加困难。例如，如果一个系统想要在单个连接（可能是单个 TCP 或 UDP 连接）上发送多种类型的主题，那么就不太合理调用“connect_to”函数来连接已经建立的主题。相反，拟议的函数集合提出，只调用一次“connect_to”函数，返回一个连接句柄，并在多次调用“map_to”时重用该句柄。
+> 为了更好地支持非点对点通信传输类型，如 UDP 多播，系统需要能够区分传输和主题，这就是为什么“map_to”函数被描述为一个单独的函数。主题信息可以包含在“connect_to”调用中，但这会使某些用例更加困难。例如，如果一个系统想要在单个连接(可能是单个 TCP 或 UDP 连接)上发送多种类型的主题，那么就不太合理调用“connect_to”函数来连接已经建立的主题。相反，拟议的函数集合提出，只调用一次“connect_to”函数，返回一个连接句柄，并在多次调用“map_to”时重用该句柄。
 
 In addition to the "connect_to" and "map_to" functions, the basic node interface should provide introspection of the created connections. This allows the entity which created the connections to keep tabs on the state of those connections. This could be implemented using a handle for each connection, returned by "connect_to", allowing the user to poll the state of the connection, but an asynchronous interface could also be implemented, allowing for local events.
 
-> 除了"connect_to"和"map_to"功能之外，基本的节点界面应该提供对创建的连接的内省。这允许创建连接的实体保持对这些连接状态的跟踪。这可以通过由"connect_to"返回的每个连接的句柄来实现，允许用户轮询连接的状态，但也可以实现异步接口，允许本地事件。
+> 除了"connect_to"和"map_to"功能之外，基本的节点界面应该**提供对创建的连接的内省。这允许创建连接的实体保持对这些连接状态的跟踪**。这可以通过由"connect_to"返回的每个连接的句柄来实现，**允许用户轮询连接的状态，但也可以实现异步接口，允许本地事件**。
 
 This API should always be provided locally, but in most systems described above it should also be exposed over RPC to allow for remote control and management of the node.
 
-> 这个 API 应该总是在本地提供，但是在上面描述的大多数系统中，它也应该通过 RPC 公开，以允许远程控制和管理节点。
+> 这个 **API 应该总是在本地提供**，但是在上面描述的大多数系统中，它**也应该通过 RPC 公开，以允许远程控制和管理节点**。
 
 ### Node Configuration Interface
 
 The node configuration interface allows a user of the interface to get the configuration of the node. This paper will not try to exhaustively list the contents of the node configuration, but it should at least contain some way to uniquely identify the node, probably a tuple of machine id, process id, and node id. The configuration should probably also include publications, subscriptions, and services consumed or provided by the node. In order for a negotiation algorithm to come up with "connect_to" and "map_to" instructions for each node, the configuration for each node will probably need to contain the supported communication paradigms, serialization wire formats, and transports. The negotiator can then know what connections need to be made and what connections are possible, and then it can use some algorithm to decide how to wire nodes together.
 
-> 节点配置界面允许界面的用户获取节点的配置。本文不会尝试详尽地列出节点配置的内容，但至少应包含一些唯一标识节点的方式，可能是机器 ID、进程 ID 和节点 ID 的元组。配置也可能包括节点发布的、订阅的和消费或提供的服务。为了让协商算法为每个节点生成“connect_to”和“map_to”指令，每个节点的配置可能需要包含支持的通信范式、序列化线路格式和传输协议。协商者可以知道需要建立哪些连接以及哪些连接是可能的，然后可以使用一些算法来决定如何将节点连接在一起。
+> **节点配置界面允许界面的用户获取节点的配置。** 本文不会尝试详尽地列出节点配置的内容，但至少应包含一些唯一标识节点的方式，可能是机器 ID、进程 ID 和节点 ID 的元组。配置也可能包括节点发布的、订阅的和消费或提供的服务。为了让协商算法为每个节点生成“connect_to”和“map_to”指令，每个节点的配置可能需要包含支持的通信范式、序列化线路格式和传输协议。协商者可以知道需要建立哪些连接以及哪些连接是可能的，然后可以使用一些算法来决定如何将节点连接在一起。
+
+> [!NOTE]
+> 利用 beatles 中现有的 manifest 文件实现配置
 
 The format for the configurations should probably be some extensible format rather than a statically defined data structure. Though this might not scale well to small computers or embedded devices. Obvious candidates would be something like JSON or XML, though a non-nestable solution like INI file might be sufficient for the use case while simultaneously being much easier to parse on embedded computers.
 
@@ -290,7 +315,10 @@ The first layer of the graph interface is the send and receive layer, which basi
 
 The nodes which will be coordinating with each other will have to agree on a graph transport implementation a priori. Because there is no opportunity to negotiate the graph transport implementation, there must exist a simple "lingua franca" and the system wide graph transport implementation serves as that unifying language. It would still be possible to write programs which could serve to transparently bridge networks which used different graph transports.
 
-> 两个协调一起工作的节点必须提前就图形传输实现达成一致。由于没有机会来协商图形传输实现，必须存在一种简单的“共同语言”，而系统范围内的图形传输实现可以作为这种统一的语言。仍然可以编写程序，用于透明地桥接使用不同图形传输的网络。
+> **两个协调一起工作的节点必须提前就图形传输实现达成一致。由于没有机会来协商图形传输实现，必须存在一种简单的“共同语言”，而系统范围内的图形传输实现可以作为这种统一的语言。仍然可以编写程序，用于透明地桥接使用不同图形传输的网络。**
+
+> [!NOTE]
+> 不太理解？！
 
 On top of the first layer an asynchronous graph event system could be created. Users of this API would instantiate a system which monitors the graph using the receive message function described above and would notify the user when events which the user is interested in occurs. For instance, the user could ask the system to notify them anytime a new publisher for the topic 'foo' is created. This could be used by the implementation of a negotiation system, master or master-less, or it could be used by a diagnostics system or even user land code to build more robust systems.
 
@@ -298,13 +326,13 @@ On top of the first layer an asynchronous graph event system could be created. U
 
 With the graph event interface another interface which maintains the state of the graph and allows for queries on the graph can be built. A user would use this interface by instantiating an object which would maintain the graph state by monitoring the graph using the graph event system and the node configuration interface. This interface might be used by a master system or by a visualization tool. A master system would use this interface in the master process to maintain the graph state, so that questions like "what nodes are publishing to topic 'foo'" can be answered efficiently. A master-less system would have each node in the graph use this interface to maintain a graph state so that all nodes have a notion of the graph topology and could make distributed decisions about how to connect to their peers. A graph visualization tool would also likely use this interface in order to visualize the current state of the graph.
 
-> 通过使用图形事件接口，可以构建另一个接口来维护图形的状态，并允许对图形进行查询。用户可以通过实例化一个对象来使用这个接口，该对象通过使用图形事件系统和节点配置接口来监视图形状态。这个接口可能会被主系统或可视化工具使用。主系统会在主进程中使用这个接口来维护图形状态，以便可以快速回答像“哪些节点正在发布到主题“foo”的问题”。无主系统会让图形中的每个节点都使用这个接口来维护图形状态，以便所有节点都有图形拓扑的概念，并可以做出分布式决策，关于如何连接到他们的同行。图形可视化工具也可能会使用这个接口来可视化图形的当前状态。
+> 通过使用图形事件接口，可以**构建另一个接口来维护图形的状态，并允许对图形进行查询**。用户可以通过实例化一个对象来使用这个接口，该对象通过使用图形事件系统和节点配置接口来监视图形状态。这个接口可能会被主系统或可视化工具使用。主系统会在主进程中使用这个接口来维护图形状态，以便**可以快速回答像“哪些节点正在发布到主题“foo”的问题”**。**无主系统会让图形中的每个节点都使用这个接口来维护图形状态，以便所有节点都有图形拓扑的概念，并可以做出分布式决策，关于如何连接到他们的同行**。图形可视化工具也可能会使用这个接口来可视化图形的当前状态。
 
 ## Communication Negotiation
 
 The previous paragraphs have not discussed the negotiation of the communications at all. It has been described how nodes may provide their configurations dynamically, or the configurations might be captured statically and it has been described how nodes can be instructed to establish connections on the data layer either internally or externally, but not much has been said about determining the appropriate **data layer graph** layout based on the node's configurations and the machine/network topology. It is left to the implementor of the the negotiation system to use the configurations of the nodes and potentially other information to design and execute a **data layer graph**. This method of negotiation implies that when determining the **data layer graph**'s layout, all of the required information can be retrieved from the node, i.e. a node should be able to answer "what transports do you support?" through the node configuration API.
 
-> 上一段没有讨论通信协商的问题。它描述了节点如何动态提供配置，或者如何静态捕获配置，以及如何指示节点在数据层上建立内部或外部连接，但是没有太多关于基于节点的配置和机器/网络拓扑确定合适的**数据层图**布局的内容。这就留给协商系统的实现者使用节点的配置以及其他可能的信息来设计和执行**数据层图**。这种协商方法意味着，在确定**数据层图**的布局时，所有所需的信息都可以从节点中检索，即节点应该能够通过节点配置 API 回答“你支持什么传输？”
+> 上一段**没有讨论通信协商的问题**。它描述了**节点如何动态提供配置，或者如何静态捕获配置**，以及如何指示节点在数据层上建立内部或外部连接，但是没有太多关于基于节点的配置和机器/网络拓扑确定合适的**数据层图**布局的内容。这就留给协商系统的实现者使用节点的配置以及其他可能的信息来设计和执行**数据层图**。这种协商方法意味着，在确定**数据层图**的布局时，所有所需的信息都可以从节点中检索，即节点应该能够通过节点配置 API 回答“你支持什么传输？”
 
 What the above set of use cases does do is try to ensure that most conceivable negotiation systems could be implemented on top of these interfaces. To illustrate, this paper will describe some theoretical systems.
 
@@ -314,11 +342,14 @@ What the above set of use cases does do is try to ensure that most conceivable n
 
 This system is very similar to the existing ROS system in that each node on startup contacts a centralized master. The node reports its existence to the master and notifies the master any time a new publisher or subscriber is created in the node. The master notifies nodes when a publisher exists for their subscribers and the nodes initiate a TCP connection to the publishing node. There is no point at which some more sophisticated **data layer graph** layout is chosen.
 
-> 这个系统与现有的 ROS 系统非常相似，因为每个启动的节点都会联系一个中央主机。节点向主机报告它的存在，并在节点中创建新的发布者或订阅者时通知主机。当发布者存在于他们的订阅者时，主机会通知节点，节点会启动一个到发布节点的 TCP 连接。没有某种更复杂的**数据层图**布局被选择的时刻。
+> 这个系统与现有的 ROS 系统非常相似，因为**每个启动的节点都会联系一个中央主机。节点向主机报告它的存在**，并在节点中创建新的发布者或订阅者时通知主机。当发布者存在于他们的订阅者时，主机会通知节点，节点会启动一个到发布节点的 TCP 连接。没有某种更复杂的**数据层图**布局被选择的时刻。
 
 In this system the graph transport implementation is a connection to the master for each node. The state of the graph is maintained in the master process only, and each node calls its own interface in order to execute the data layer connections between nodes. All events and configurations for each node are sent to the master and relayed to the correct nodes by the master.
 
-> 在这个系统中，图形传输实现是每个节点与主节点的连接。图形的状态仅在主进程中维护，每个节点调用自己的接口来执行节点间的数据层连接。所有事件和配置都发送到主节点，然后由主节点转发到正确的节点。
+> 在这个系统中，图形传输实现是每个节点与主节点的连接。**图的状态仅在主进程中维护，每个节点调用自己的接口来执行节点间的数据层连接。所有事件和配置都发送到主节点，然后由主节点转发到正确的节点。**
+
+> [!NOTE]
+> 这里主进程对于维护图来说就是 master 了，不仅仅是 manager?!
 
 ### Distributed System with Intelligent Multicast
 
@@ -340,7 +371,7 @@ There exist still some open questions surrounding Discovery and Negotiation.
 
 One use case not addressed above is how to allow user code to hint or constrain the generation of the **data layer graph** layout. Ideally, a user could indicate that data on a certain topic is or is not suitable for unreliable transportation, but as it stands there is no direct way for a node to effect change on the data layer.
 
-> 一个未在上面提及的用例是如何允许用户代码提示或约束数据层图形布局。理想情况下，用户可以指出某个主题的数据是否适合不可靠的运输，但是现在没有直接的方式让节点对数据层产生影响。
+> 一个未在上面提及的用例是如何允许用户代码提示或约束数据层图形布局。理想情况下，**用户可以指出某个主题的数据是否适合不可靠的运输**，但是现在没有直接的方式让节点对数据层产生影响。
 
 One option might be to allow certain hints or constraints to be added to the node configuration, which the negotiation system could use to make more ideal decisions when generating the **data layer graph** layout. However, this implies that the **data layer graph** is determined at runtime and not static.
 
@@ -354,7 +385,7 @@ Another option is not allow constraints at all, because there will always be the
 
 What RPC system should nodes use to expose their API's?
 
-> 节点使用什么 RPC 系统来公开它们的 API？
+> **节点使用什么 RPC 系统来公开它们的 API？**
 
 What system should be used for serialization or graph messages?
 
@@ -362,7 +393,7 @@ What system should be used for serialization or graph messages?
 
 What transport should be used for graph messages?
 
-> 何种交通工具应该用于图形消息？
+> 何种转换工具应该用于图形消息？
 
 One option is just pick one of the available systems that are used by the data layer. Another option is pick a simple set which must always be available.
 

@@ -13,10 +13,7 @@ last_modified: 2019-05
 published: true
 
 <div class="alert alert-warning" markdown="1">
-This article is out-of-date.
-It was written at a time before decisions were made to use DDS and RTPS as the underlying communication standards for ROS 2.
-It represents an idealistic understanding of what RPC and "actions" should be like in ROS.
-It can be considered memoranda and not necessarily the intention of how to develop the system.
+  This article is out-of-date. It was written at a time before decisions were made to use DDS and RTPS as the underlying communication standards for ROS 2. It represents an idealistic understanding of what RPC and "actions" should be like in ROS. It can be considered memoranda and not necessarily the intention of how to develop the system.
 </div>
 
 Authors: {{ page.author }}

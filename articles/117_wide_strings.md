@@ -49,6 +49,8 @@ ROS 2 messages will have a new [primitive field type](/articles/interface_defini
 
 `string` and `wstring` are required to be UTF-8 and UTF-16, but the requirement may not be enforced. Since ROS 2 is targeting resource constrained systems, it is left to the rmw implementation to choose whether to enforce the encoding. Further, since many users will write code to check that a string contains valid data, checking again in lower layers may not be necessary in some cases.
 
+> `字符串`和`wstring`必须是 UTF-8 和 UTF-16，但可能无法执行要求。由于 ROS 2 是针对资源约束系统的目标，因此 RMW 实现将选择是否执行编码。此外，由于许多用户会编写代码以检查字符串是否包含有效的数据，因此在某些情况下可能不需要在较低层进行检查。
+
 If a `string` or `wstring` field is populated with the wrong encoding then the behavior is undefined. It is possible the rmw implementation may allow invalid strings to be passed through to subscribers. Each subscriber is responsible for detecting invalid strings and deciding how to handle them. For example, subscribers like `ros2 topic echo` may echo the bytes in hexadecimal.
 
 > 如果一个`string`或`wstring`字段使用了错误的编码，那么行为是不确定的。有可能 rmw 实现允许传递无效的字符串给订阅者。每个订阅者都负责检测无效的字符串，并决定如何处理它们。例如，像`ros2 topic echo`这样的订阅者可以以十六进制的形式输出字节。

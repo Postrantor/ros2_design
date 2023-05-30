@@ -19,7 +19,7 @@ This document seeks to summarize the requirements of real-time computing and the
 
 Robotic systems need to be responsive. In mission critical applications, a delay of less than a millisecond in the system can cause a catastrophic failure. For ROS 2 to capture the needs of the robotics community, the core software components must not interfere with the requirements of real-time computing.
 
-> 系统需要响应迅速。在关键任务中，系统延迟不到一毫秒就可能导致灾难性失败。为了满足机器人社区的需求，ROS 2 的核心软件组件必须不影响实时计算的要求。
+> 系统需要响应迅速。在关键任务中，**系统延迟不到一毫秒**就可能导致灾难性失败。为了满足机器人社区的需求，ROS 2 的核心软件组件必须不影响实时计算的要求。
 
 ## Definition of Real-time Computing
 
@@ -70,7 +70,7 @@ Some examples of real-time environments:
 
 In general, an operating system can guarantee that the tasks it handles for the developer, such as thread scheduling, are deterministic, but the OS may not guarantee that the developer's code will run in real-time. Therefore, it is up to the developer to know what the determinstic guarantees of an existing system are, and what she must do to write hard real-time code on top of the OS.
 
-> 一般来说，操作系统可以保证它为开发者处理的任务(如线程调度)是确定性的，但操作系统可能不能保证开发者的代码可以实时运行。因此，开发者需要了解现有系统的确定性保证以及如何在操作系统上编写硬实时代码。
+> 一般来说，**操作系统可以保证它为开发者处理的任务(如线程调度)是确定性的**，但操作系统**可能不能保证开发者的代码可以实时运行**。因此，开发者需要了解现有系统的确定性保证以及如何在操作系统上编写硬实时代码。
 
 In this section, various strategies for developing on top of a real-time OS are explored, since these strategies might be applicable to ROS 2. The patterns focus on the use case of C/C++ development on Linux-based real-time OS's (such as `RT_PREEMPT`), but the general concepts are applicable to other platforms. Most of the patterns focus on workarounds for blocking calls in the OS, since any operation that involves blocking for an indeterminate amount of time is nondeterministic.
 
@@ -84,7 +84,7 @@ It is a common pattern to section real-time code into three parts; a non real-ti
 
 Proper memory management is critical for real-time performance. In general, the programmer should avoid page faults in the real-time code path. During a page fault, the CPU pauses all computation and loads the missing page from disk into RAM (or cache, or registers). Loading data from disk is a slow and unpredictable operation. However, page faults are necessary or else the computer will run out of memory. The solution is to avoid pagefaults.
 
-> 正确的内存管理对实时性能至关重要。一般来说，程序员应该避免在实时代码路径中出现页面故障。在页面故障期间，CPU 会暂停所有计算，并将缺失的页面从磁盘加载到 RAM(或缓存或寄存器)中。从磁盘加载数据是一个缓慢且不可预知的操作。然而，页面故障是必要的，否则计算机将耗尽内存。解决方案是避免页面故障。
+> **正确的内存管理对实时性能至关重要。** 一般来说，程序员应该避免在实时代码路径中出现页面故障。在页面故障期间，CPU 会暂停所有计算，并将缺失的页面从磁盘加载到 RAM(或缓存或寄存器)中。从磁盘加载数据是一个缓慢且不可预知的操作。然而，页面故障是必要的，否则计算机将耗尽内存。解决方案是避免页面故障。
 
 Dynamic memory allocation can cause poor real-time performance. Calls to `malloc/new` and `free/delete` will probably result in pagefaults. Additionally, the heap allocates and frees memory blocks in such a way that leads to memory fragmentation, which creates poor performance for reads and writes, since the OS may have to scan for an indeterminate amount of time for a free memory block.
 
@@ -154,7 +154,7 @@ Cons:
 
 The default allocator on most operating systems is not optimized for real-time safety. However, there is another strategy that is an exception to the "avoid dynamic memory allocation" rule. Research into alternative dynamic memory allocators is a rich research topic (8).
 
-> 大多数操作系统上的默认分配器不适合实时安全。但是，有另一种策略是对“避免动态内存分配”规则的例外。研究可替代的动态内存分配器是一个丰富的研究课题(8)。
+> 大多数操作系统上的默认分配器不适合实时安全。但是，有另一种策略是对“避免动态内存分配”规则的例外。**研究可替代的动态内存分配器**是一个丰富的研究课题(8)。
 
 One such alternative allocator is TLSF (Two-Level Segregate Fit). It is also called the O(1) allocator, since the time cost of `malloc`, `free`, and `align` operations under TLSF have a constant upper bound. It creates a low level of fragmentation. The disadvantages of TLSF are that it is not thread safe and that its current implementation is architecture specific: it assumes the system can make 4-byte aligned accesses.
 
@@ -227,7 +227,7 @@ Different programs have different memory needs, thus memory management strategie
 
 Interacting with physical devices (disk I/O, printing to the screen, etc.) may introduce unacceptable latency in the real-time code path, since the process is often forced to wait on slow physical phenomena. Additionally, many I/O calls such as `fopen` result in pagefaults.
 
-> 与物理设备交互(磁盘 I/O、向屏幕打印等)可能会在实时代码路径中引入不可接受的延迟，因为进程通常被迫等待缓慢的物理现象。此外，许多 I/O 调用，如`fopen`会导致页面错误。
+> **与物理设备交互(磁盘 I/O、向屏幕打印等)可能会在实时代码路径中引入不可接受的延迟**，因为进程通常被迫等待缓慢的物理现象。此外，许多 I/O 调用，如`fopen`会导致页面错误。
 
 Keep disk reads/writes at the beginning or end of the program, outside of the RT code path. Spin up threads that are not scheduled in real-time to print output to the screen.
 
@@ -237,7 +237,7 @@ Keep disk reads/writes at the beginning or end of the program, outside of the RT
 
 Real-time computation requirements change the typical paradigm of multithreaded programming. Program execution may not block asynchronously, and threads must be scheduled deterministically. A real-time operating system will fulfill this scheduling requirement, but there are still pitfalls for the developer to fall into. This section provides guidelines for avoiding these pitfalls.
 
-> 实时计算要求改变了多线程编程的典型范式。程序执行可能不会异步阻塞，线程必须以确定性的方式调度。实时操作系统将满足这一调度要求，但是开发人员仍然有可能陷入陷阱。本节提供了避免这些陷阱的指导方针。
+> 实时计算要求改变了多线程编程的典型范式。**程序执行可能不会异步阻塞，线程必须以确定性的方式调度**。实时操作系统将满足这一调度要求，但是开发人员仍然有可能陷入陷阱。本节提供了避免这些陷阱的指导方针。
 
 #### Thread creation guidelines
 
@@ -253,7 +253,7 @@ Create high priority (but not 99) threads with a FIFO, Round Robin, or Deadline 
 
 Priority inversion can occur on a system with a preemptive task scheduler and results in deadlock. It occurs when: a low-priority task acquires a lock and is then pre-empted by a medium-priority task, then a high-priority task acquires the lock held by the low-priority task.
 
-> 优先级反转可以发生在具有抢占式任务调度程序的系统上，并导致死锁。它发生的情况是：低优先级任务获取锁，然后被中优先级任务抢占，然后高优先级任务获取由低优先级任务持有的锁。
+> **优先级反转可以发生在具有抢占式任务调度程序的系统上，并导致死锁**。它发生的情况是：低优先级任务获取锁，然后被中优先级任务抢占，然后高优先级任务获取由低优先级任务持有的锁。
 
 The three tasks are stuck in a triangle: the high-priority task is blocked on the low-priority task, which is blocked on the medium-priority task because it was preempted by a task with a higher priority, and the medium-priority task is also blocked on a task with a higher priority.
 
@@ -283,13 +283,13 @@ The most important consideration for the developer is to use a high precision ti
 
 Spinlocks tend to cause clock drift. The developer should avoid implementing his own spinlocks. The RT Preempt patch replaces much of the kernel's spinlocks with mutexes, but this might not be guaranteed on all platforms.
 
-> 自旋锁往往会导致时钟漂移。开发人员应避免实现自己的自旋锁。RT Preempt 补丁将内核的大部分自旋锁替换为互斥锁，但这在所有平台上可能不能保证。
+> **自旋锁往往会导致时钟漂移**。开发人员应避免实现自己的自旋锁。RT Preempt 补丁将内核的大部分自旋锁替换为互斥锁，但这在所有平台上可能不能保证。
 
 #### Avoid fork
 
 [`fork`](http://linux.die.net/man/3/memset) is not real-time safe because it is implemented using [copy-on-write](https://en.wikipedia.org/wiki/Copy-on-write). This means that when a forked process modifies a page of memory, it gets its own copy of that page. This leads to page faults!
 
-> `fork`不是实时安全的，因为它使用[copy-on-write](https://en.wikipedia.org/wiki/Copy-on-write)实现。这意味着当一个 fork 进程修改一页内存时，它会得到自己的一份该页的副本。这就导致了页面故障！
+> **`fork`不是实时安全的**，因为它使用[copy-on-write](https://en.wikipedia.org/wiki/Copy-on-write)实现。这意味着当一个 fork 进程修改一页内存时，它会得到自己的一份该页的副本。这就导致了页面故障！
 
 Page faults should be avoided in real-time programming, so Linux `fork`, as well as programs that call `fork`, should be avoided.
 
