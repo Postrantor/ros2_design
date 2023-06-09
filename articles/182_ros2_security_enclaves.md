@@ -16,7 +16,6 @@ Authors: {{ page.author }}
 Date Written: {{ page.date_written }}
 Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
 ---
-
 This design document formalizes the integration of ROS 2 with security enclaves. In summary, all secure processes must use an enclave that contains the runtime security artifacts unique to that enclave, yet each process may not necessarily have a unique enclave. Multiple enclaves can be encapsulated in a single security policy to accurately model the information flow control. Users can tune the fidelity of such models by controlling at what scope enclaves are applied at deployment. E.g. one unique enclave per OS process, or per OS user, or per device/robot, or per swarm, etc. The rest of this document details how enclaves can be organized and used by convention.
 
 > 这份设计文档正式将 ROS 2 与安全区域集成起来。总的来说，所有安全进程必须使用一个包含该区域的运行时安全特征的区域，但是每个进程不一定有一个唯一的区域。多个区域可以封装在一个安全策略中，以准确地模拟信息流控制。用户可以通过控制部署时应用的范围来调整这种模型的保真度。例如，每个操作系统进程，或每个操作系统用户，或每个设备/机器人，或每个群体等等。本文档的其余部分详细说明了如何按照惯例组织和使用区域。
@@ -31,7 +30,7 @@ Before detailing the SROS 2 integration of the enclaves, the following concepts 
 
 Participant is the object representing a single entity on the network. In the case of DDS, the `Participant` is a DDS DomainParticipant, which has both access control permissions and a security identity.
 
-> 参与者是代表网络上的单个实体的对象。在 DDS 的情况下，`参与者`是一个 DDS DomainParticipant，它具有访问控制权限和安全身份。
+> 参与者是代表网络上的单个实体的对象。在 DDS 的情况下，`参与者` 是一个 DDS DomainParticipant，它具有访问控制权限和安全身份。
 
 ### Namespaces
 
@@ -45,13 +44,13 @@ Previously, the Fully Qualified Name (FQN) of a node was used directly by a sele
 
 ### Contexts
 
-With the advent of ROS 2, multiple nodes may now be composed into one process for improved performance. Previously however, each node would retain it's one to one mapping to a separate middleware `Participant`. Given the non-negligible overhead incurred of multiple `Participant`s per process, a change was introduced to map a single `Participant` to a context, and allow for multiple nodes to share that context.
+With the advent of ROS 2, multiple nodes may now be composed into one process for improved performance. Previously however, each node would retain it's one to one mapping to a separate middleware `Participant`. Given the non-negligible overhead incurred of multiple `Participant` s per process, a change was introduced to map a single `Participant` to a context, and allow for multiple nodes to share that context.
 
 > 随着 ROS 2 的出现，多个节点现在可以组合成一个进程以提高性能。然而，以前每个节点都会保留其一对一映射到单独的中间件“Participant”。鉴于每个进程所产生的多个“Participant”的不可忽视的开销，引入了一项更改，将单个“Participant”映射到上下文，并允许多个节点共享该上下文。
 
 Based on the DDS Security specification v1.1, a `Participant` can only utilise a single security identity; consequently the access control permissions applicable to every node mapped to a given context must be consolidated and combined into a single set of security artifacts, or enclave. Thus, all contexts and their respective participants in each process will then use that single enclave. As such, additional tooling and extensions to SROS 2 are necessary to support this new paradigm.
 
-> 根据 DDS 安全规范 v1.1，`参与者`只能使用单个安全标识；因此，映射到给定上下文的每个节点的访问控制权限必须合并并组合成单个安全工件或飞地。因此，每个过程中的所有上下文及其各自的参与者将使用该单个飞地。因此，需要额外的工具和 SROS 2 的扩展来支持这种新的范式。
+> 根据 DDS 安全规范 v1.1，`参与者` 只能使用单个安全标识；因此，映射到给定上下文的每个节点的访问控制权限必须合并并组合成单个安全工件或飞地。因此，每个过程中的所有上下文及其各自的参与者将使用该单个飞地。因此，需要额外的工具和 SROS 2 的扩展来支持这种新的范式。
 
 ## Keystore
 
@@ -231,7 +230,7 @@ enclaves/
 
 One such approach could be done by adding a `enclave` attribute to `push_ros_namespace` element.
 
-> 一种这样的方法可以通过向`push_ros_namespace`元素添加`enclave`属性来实现。
+> 一种这样的方法可以通过向 `push_ros_namespace` 元素添加 `enclave` 属性来实现。
 
 This also keeps the pushing of enclaves close/readable to pushing of namespaces.
 
@@ -241,7 +240,7 @@ This also keeps the pushing of enclaves close/readable to pushing of namespaces.
 
 Another alternative approach could be to add an entirely new `push_ros_enclave` element.
 
-> 另一种替代方法可以是添加一个全新的`push_ros_enclave`元素。
+> 另一种替代方法可以是添加一个全新的 `push_ros_enclave` 元素。
 
 This could ensure the pushing of enclave path independent/flexable from namespaces.
 

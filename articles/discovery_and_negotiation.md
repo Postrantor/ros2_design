@@ -17,7 +17,6 @@ Authors: {{ page.author }}
 Date Written: {{ page.date_written }}
 Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
 ---
-
 > [!NOTE]
 > 这里主要谈到的是 graph 的概念，实际上 ros2 中有 rqt_graph 的工具，可以查看当前 node 组成的 graph 之间的连接关系
 > 进一步的，这里就涉及到 node 生命周期的概念
@@ -77,7 +76,7 @@ For the proposed solution to this design space, this paper will build up the int
 
 The most basic use case is where each node is given a list of declarative instructions on how to connect to the data layer. These instructions would likely come in the form of url's, but would be of the notion "Connect to Topic `<topic>` of type `<msg_type>` via `<protocol>://<address>:<port>/` using `<transport>` and `<serialization>`". A more concrete example might be "Connect to Topic `/foo` of type `pkg/Foo` via `udpm://225.82.79.83:11311/` using `<zmq_pgm>` and `<protobuf>`".
 
-> 最基本的用例是，每个节点都被赋予了一个声明性指令列表，用于如何连接到数据层。这些指令可能以 url 的形式出现，但其概念是“使用“<传输>”和“<序列化>”连接到类型为“<msg_type>”的主题“<topic>” via `<protocol>://<address>:<port>/`。一个更具体的例子可能是“连接到类型为`pkg/Foo`的主题`/foo` via `udpm://225.82.79.83:11311/`使用`<zmq_pgm>`和`<protobuf>`”。
+> 最基本的用例是，每个节点都被赋予了一个声明性指令列表，用于如何连接到数据层。这些指令可能以 url 的形式出现，但其概念是“使用“< 传输 >”和“< 序列化 >”连接到类型为“<msg_type>”的主题“<topic>” via `<protocol>://<address>:<port>/`。一个更具体的例子可能是“连接到类型为 `pkg/Foo` 的主题 `/foo` via `udpm://225.82.79.83:11311/` 使用 `<zmq_pgm>` 和 `<protobuf>`”。
 
 The basic building block that this requires is that nodes provide an API which allows something to instruct the node to establish some connection ("connect_to") and to map publishers and subscribers to a given connection ("map_to"). The program parsing the declarative instructions would just iterate over the instructions, calling this "connect_to" function for each url and then the "map_to" function on each publisher and subscriber.
 
@@ -132,7 +131,6 @@ This is were the system features matrix forks. There are two glaring limitations
   - connection_established/connection_lost
   - mapping_established/mapping_lost
   - etc...
-
 - The list of nodes and their addresses, publishers, subscribers, etc. are statically maintained, which prevents:
 
   - dynamically computing the data layer connections
@@ -177,7 +175,7 @@ With a graph interface anyone, either a graph participant or an observer, can mo
 
 > [!NOTE]
 >
-> [rqt_graph](C:\Users\trantor\Documents\Hirain\Project\rolling\ros-visualization\rqt_graph)
+> [rqt_graph](C:%5CUsers%5Ctrantor%5CDocuments%5CHirain%5CProject%5Crolling%5Cros-visualization%5Crqt_graph)
 
 Along with data layer events, comes the notion of liveliness. When a connection is terminated for some reason an event should be sent to the graph, but often the reason for a disconnect will be that one end of the connection has dropped off the graph unexpectedly and therefore an event is unlikely to reach the graph. For this reason, it makes sense to include liveliness into the system when data layer events are added. Liveliness is not required, but could be added to any system which has a notion of the graph interface and is able to send and receive messages to the graph, these messages would be some form of heartbeat.
 
@@ -226,12 +224,12 @@ Below is a table summarizing the above mentioned use cases and what interfaces/f
 | System Name                                                    | Remote Node API | Node Configuration API | Data Layer Events | Dynamic Discovery | Requires Graph API |
 | -------------------------------------------------------------- | --------------- | ---------------------- | ----------------- | ----------------- | ------------------ |
 | Statically Configured Nodes                                    | .               | .                      | .                 | .                 | .                  |
-| Statically Configured Graph                                    | &#x2713;        | .                      | .                 | .                 | .                  |
-| Dynamically Configured Graph with Static Discovery             | &#x2713;        | &#x2713;               | .                 | .                 | .                  |
-| Statically Configured Graph with Events                        | &#x2713;        | .                      | &#x2713;          | .                 | &#x2713;           |
-| Dynamically Configured Graph with Events and Static Discovery  | &#x2713;        | &#x2713;               | &#x2713;          | .                 | &#x2713;           |
-| Dynamically Configured Graph with Dynamic Discovery            | &#x2713;        | &#x2713;               | .                 | &#x2713;          | &#x2713;           |
-| Dynamically Configured Graph with Events and Dynamic Discovery | &#x2713;        | &#x2713;               | &#x2713;          | &#x2713;          | &#x2713;           |
+| Statically Configured Graph                                    | &#x2713;              | .                      | .                 | .                 | .                  |
+| Dynamically Configured Graph with Static Discovery             | &#x2713;              | &#x2713;                     | .                 | .                 | .                  |
+| Statically Configured Graph with Events                        | &#x2713;              | .                      | &#x2713;                | .                 | &#x2713;                 |
+| Dynamically Configured Graph with Events and Static Discovery  | &#x2713;              | &#x2713;                     | &#x2713;                | .                 | &#x2713;                 |
+| Dynamically Configured Graph with Dynamic Discovery            | &#x2713;              | &#x2713;                     | .                 | &#x2713;                | &#x2713;                 |
+| Dynamically Configured Graph with Events and Dynamic Discovery | &#x2713;              | &#x2713;                     | &#x2713;                | &#x2713;                | &#x2713;                 |
 
 ## **Node Life Cycles**
 

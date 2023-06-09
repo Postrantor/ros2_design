@@ -3,7 +3,6 @@ layout: default
 title: Contribute
 show_in_nav: true
 ---
-
 # Contribute
 
 There are many ways you can contribute to the ROS 2 design effort.
@@ -39,29 +38,31 @@ New articles should follow this template, with the content of the article format
 
 {% raw %}
 
-    ---
-    layout: default
-    title: Template for New Articles
-    abstract:
-      This is a multi-line abstract about this article. It should give a good overview about the contents of this article, the reason for writing it, and what the article delivers. The abstract is put in the "front-matter" of the document (YAML between the initial `---`'s) so that it can easily be reused elsewhere in the site.
-    author: '[William Woodall](https://github.com/wjwwood)'
-    published: false
-    ---
+```
+---
+layout: default
+title: Template for New Articles
+abstract:
+  This is a multi-line abstract about this article. It should give a good overview about the contents of this article, the reason for writing it, and what the article delivers. The abstract is put in the "front-matter" of the document (YAML between the initial `---`'s) so that it can easily be reused elsewhere in the site.
+author: '[William Woodall](https://github.com/wjwwood)'
+published: false
+---
 
-    - This will become a table of contents (this text will be scraped).
-    {:toc}
+- This will become a table of contents (this text will be scraped).
+{:toc}
 
-    # {{ page.title }}
+# {{ page.title }}
 
-    <div class="abstract" markdown="1">
-    {{ page.abstract }}
-    </div>
+<div class="abstract" markdown="1">
+{{ page.abstract }}
+</div>
 
-    Original Author: {{ page.author }}
+Original Author: {{ page.author }}
 
-    ## First Heading
+## First Heading
 
-    Content....
+Content....
+```
 
 {% endraw %}
 
@@ -82,7 +83,9 @@ If you do not, then browse to this [repository](https://github.com/ros2/design) 
 Github will now go off and create a fork of this repository into your Github account.
 Then you can clone your fork of the repository by running this command:
 
-    git clone https://github.com/<your github username>/design.git
+```
+git clone https://github.com/<your github username>/design.git
+```
 
 This will clone the repository onto your machine into a folder called `design`. You can edit these files in this folder using your favorite editor.
 
@@ -95,7 +98,9 @@ First install Jekyll for your system:
 
 Once you have Jekyll installed you should be able to run this command:
 
-    jekyll serve --watch --baseurl=''
+```
+jekyll serve --watch --baseurl=''
+```
 
 The `jekyll server` command will start a web server which you can access at `http://localhost:4000`.
 The `--watch` option will cause the jekyll web server to regenerate pages which are changed each time they are modified.
@@ -112,12 +117,16 @@ There is a markdown linter that checks formatting style which is automatically i
 To run the same checks locally you first need Node.js version 4 or later.
 Install [nvm](https://github.com/creationix/nvm/blob/master/README.markdown) and use it to install Node, for example with:
 
-    nvm install 4
+```
+nvm install 4
+```
 
 Then you need to install the linter specific Node packages and invoke the linter using the following commands, within the repository directory:
 
-    npm install remark-cli remark-lint remark-lint-sentence-newline
-    jekyll build
-    ./node_modules/remark-cli/cli.js --frail articles/
+```
+npm install remark-cli remark-lint remark-lint-sentence-newline
+jekyll build
+./node_modules/remark-cli/cli.js --frail articles/
+```
 
 If the result of the check is that no issues were found, your markdown style is correct and you can submit your pull request.

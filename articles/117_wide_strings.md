@@ -14,7 +14,6 @@ Authors: {{ page.author }}
 Date Written: {{ page.date_written }}
 Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
 ---
-
 ## Background
 
 Some users would like to send text data in languages that cannot be represented by ASCII characters. Currently ROS 1 only supports ASCII data in the string field but [allows users to populate it with UTF-8](http://wiki.ros.org/msg).
@@ -27,33 +26,35 @@ The following links have more information about multi-byte characters and the hi
 
 > 以下链接有更多关于多字节字符和字符编码的历史信息。
 
-    * [http://kunststube.net/encoding/](http://kunststube.net/encoding/)
-    * [http://stackoverflow.com/questions/4588302/why-isnt-wchar-t-widely-used-in-code-for-linux-related-platforms](http://stackoverflow.com/questions/4588302/why-isnt-wchar-t-widely-used-in-code-for-linux-related-platforms)
-    * [http://www.diveintopython3.net/strings.html](http://www.diveintopython3.net/strings.html)
-    * [http://stackoverflow.com/questions/402283/stdwstring-vs-stdstring](http://stackoverflow.com/questions/402283/stdwstring-vs-stdstring)
-    * [https://utf8everywhere.org/](http://utf8everywhere.org/)
+```
+* [http://kunststube.net/encoding/](http://kunststube.net/encoding/)
+* [http://stackoverflow.com/questions/4588302/why-isnt-wchar-t-widely-used-in-code-for-linux-related-platforms](http://stackoverflow.com/questions/4588302/why-isnt-wchar-t-widely-used-in-code-for-linux-related-platforms)
+* [http://www.diveintopython3.net/strings.html](http://www.diveintopython3.net/strings.html)
+* [http://stackoverflow.com/questions/402283/stdwstring-vs-stdstring](http://stackoverflow.com/questions/402283/stdwstring-vs-stdstring)
+* [https://utf8everywhere.org/](http://utf8everywhere.org/)
+```
 
 ## Unicode Characters in Strings
 
 Two goals for ROS 2 strings are to be compatible with ROS 1 strings, and compatible with the DDS wire format. ROS 1 says string fields are to contain ASCII encoded data, but allows UTF-8. DDS-XTYPES mandates UTF-8 be used as the encoding of IDL type `string`. To be compatibile with both, in ROS 2 the content of a `string` is expected to be UTF-8.
 
-> ROS 2 的两个字符串目标是与 ROS 1 字符串兼容，以及与 DDS 线路格式兼容。ROS 1 表示字符串字段应包含 ASCII 编码的数据，但允许使用 UTF-8。DDS-XTYPES 强制使用 UTF-8 作为 IDL 类型`string`的编码。为了与两者兼容，在 ROS 2 中，`string`的内容预计为 UTF-8。
+> ROS 2 的两个字符串目标是与 ROS 1 字符串兼容，以及与 DDS 线路格式兼容。ROS 1 表示字符串字段应包含 ASCII 编码的数据，但允许使用 UTF-8。DDS-XTYPES 强制使用 UTF-8 作为 IDL 类型 `string` 的编码。为了与两者兼容，在 ROS 2 中，`string` 的内容预计为 UTF-8。
 
 ## Wide Strings
 
 ROS 2 messages will have a new [primitive field type](/articles/interface_definition.html) `wstring`. The purpose is to allow ROS 2 nodes to communicate with non-ROS DDS entities using an IDL containing a `wstring` field. The encoding of data in this type should be UTF-16 to match DDS-XTYPES 1.2. Since both UTF-8 and UTF-16 can encode the same code points, new ROS 2 messages should prefer `string` over `wstring`.
 
-> ROS 2 消息将有一个新的[原语字段类型](/articles/interface_definition.html)`wstring`。其目的是允许 ROS 2 节点与不使用 ROS DDS 实体的 IDL 进行通信，该 IDL 包含一个`wstring`字段。此类型的数据编码应为 UTF-16，以匹配 DDS-XTYPES 1.2。由于 UTF-8 和 UTF-16 可以编码相同的代码点，因此新的 ROS 2 消息应优先使用`string`而不是`wstring`。
+> ROS 2 消息将有一个新的[原语字段类型](/articles/interface_definition.html) `wstring`。其目的是允许 ROS 2 节点与不使用 ROS DDS 实体的 IDL 进行通信，该 IDL 包含一个 `wstring` 字段。此类型的数据编码应为 UTF-16，以匹配 DDS-XTYPES 1.2。由于 UTF-8 和 UTF-16 可以编码相同的代码点，因此新的 ROS 2 消息应优先使用 `string` 而不是 `wstring`。
 
 ## Encodings are Required but not Guaranteed to be Enforced
 
 `string` and `wstring` are required to be UTF-8 and UTF-16, but the requirement may not be enforced. Since ROS 2 is targeting resource constrained systems, it is left to the rmw implementation to choose whether to enforce the encoding. Further, since many users will write code to check that a string contains valid data, checking again in lower layers may not be necessary in some cases.
 
-> `字符串`和`wstring`必须是 UTF-8 和 UTF-16，但可能无法执行要求。由于 ROS 2 是针对资源约束系统的目标，因此 RMW 实现将选择是否执行编码。此外，由于许多用户会编写代码以检查字符串是否包含有效的数据，因此在某些情况下可能不需要在较低层进行检查。
+> `字符串` 和 `wstring` 必须是 UTF-8 和 UTF-16，但可能无法执行要求。由于 ROS 2 是针对资源约束系统的目标，因此 RMW 实现将选择是否执行编码。此外，由于许多用户会编写代码以检查字符串是否包含有效的数据，因此在某些情况下可能不需要在较低层进行检查。
 
 If a `string` or `wstring` field is populated with the wrong encoding then the behavior is undefined. It is possible the rmw implementation may allow invalid strings to be passed through to subscribers. Each subscriber is responsible for detecting invalid strings and deciding how to handle them. For example, subscribers like `ros2 topic echo` may echo the bytes in hexadecimal.
 
-> 如果一个`string`或`wstring`字段使用了错误的编码，那么行为是不确定的。有可能 rmw 实现允许传递无效的字符串给订阅者。每个订阅者都负责检测无效的字符串，并决定如何处理它们。例如，像`ros2 topic echo`这样的订阅者可以以十六进制的形式输出字节。
+> 如果一个 `string` 或 `wstring` 字段使用了错误的编码，那么行为是不确定的。有可能 rmw 实现允许传递无效的字符串给订阅者。每个订阅者都负责检测无效的字符串，并决定如何处理它们。例如，像 `ros2 topic echo` 这样的订阅者可以以十六进制的形式输出字节。
 
 The IDL specification forbids `string` from containing `NULL` values. To be compatible, a ROS message `string` field must not contain zero bytes, and a `wstring` field must not contain zero words. This restriction will be enforced.
 
@@ -67,11 +68,11 @@ Since ROS 1 and 2 both allow `string` to be UTF-8, the ROS 1 bridge will pass va
 
 **Note:** Bridging `wstring` fields is not yet implemented. See [ros2/ros1_bridge#203](https://github.com/ros2/ros1_bridge/issues/203).
 
-> **注意：** 桥接`wstring`字段尚未实现。请参阅[ros2/ros1_bridge#203](https://github.com/ros2/ros1_bridge/issues/203)。
+> **注意：** 桥接 `wstring` 字段尚未实现。请参阅 [ros2/ros1_bridge#203](https://github.com/ros2/ros1_bridge/issues/203)。
 
 If a ROS 2 message has a field of type `wstring` then the bridge will attempt to convert it from UTF-16 to UTF-8. The resulting UTF-8 encoded string will be published as a `string` type. If the conversion fails then the bridge will by default not publish the message.
 
-> 如果 ROS 2 消息具有`wstring`类型的字段，那么桥接器将尝试将其从 UTF-16 转换为 UTF-8。转换后的 UTF-8 编码字符串将以`string`类型发布。如果转换失败，则桥接器默认不会发布消息。
+> 如果 ROS 2 消息具有 `wstring` 类型的字段，那么桥接器将尝试将其从 UTF-16 转换为 UTF-8。转换后的 UTF-8 编码字符串将以 `string` 类型发布。如果转换失败，则桥接器默认不会发布消息。
 
 ## Size of a Wide String
 
@@ -87,7 +88,7 @@ Some DDS implementations currently use 32bit types to store wide strings values.
 
 Message definitions may restrict the maximum size of a string. These are referred to as bounded strings. Their purpose is to restrict the amount of memory used, so the bounds must be specified as units of memory. If a `string` field is bounded then the size is given in bytes. Similarly the size of a bounded `wstring` is to be specified in words. It is the responsibility of whoever populates a bounded `string` or `wstring` to make sure it contains whole code points only. Partial code points are indistinuguishable from invalid code points, so a bounded string whose last code point is incomplete is not guaranteed to be published.
 
-> 字符串的消息定义可能会限制最大尺寸。这些被称为有界字符串。它们的目的是限制使用的内存量，因此边界必须用内存单位指定。如果`string`字段是有界的，那么尺寸是以字节为单位给出的。同样，有界`wstring`的大小也应以字为单位指定。负责填充有界`string`或`wstring`的人有责任确保它只包含完整的代码点。部分代码点与无效代码点难以区分，因此最后一个代码点不完整的有界字符串不能保证发布。
+> 字符串的消息定义可能会限制最大尺寸。这些被称为有界字符串。它们的目的是限制使用的内存量，因此边界必须用内存单位指定。如果 `string` 字段是有界的，那么尺寸是以字节为单位给出的。同样，有界 `wstring` 的大小也应以字为单位指定。负责填充有界 `string` 或 `wstring` 的人有责任确保它只包含完整的代码点。部分代码点与无效代码点难以区分，因此最后一个代码点不完整的有界字符串不能保证发布。
 
 ## Runtime impact of wide string
 
@@ -105,7 +106,7 @@ However, whole string equality checking is the same whether using wide strings o
 
 In Python the `str` type will be used for both strings and wide strings. Bytes of a known encoding should be converted to a `str` using [bytes.decode](https://docs.python.org/3/library/stdtypes.html#bytes.decode) before being assigned to a field.
 
-> 在 Python 中，`str`类型既用于字符串，也用于宽字符串。在赋值给字段之前，应该使用[bytes.decode](https://docs.python.org/3/library/stdtypes.html#bytes.decode)将已知编码的字节转换为`str`。
+> 在 Python 中，`str` 类型既用于字符串，也用于宽字符串。在赋值给字段之前，应该使用 [bytes.decode](https://docs.python.org/3/library/stdtypes.html#bytes.decode) 将已知编码的字节转换为 `str`。
 
 **Example**
 
@@ -133,7 +134,7 @@ if __name__ == '__main__':
 
 In C++ wstring `wchar_t` has different sizes on different platforms (2 bytes on Windows, 4 bytes on Linux). Instead ROS 2 will use `char16_t` for characters of wide strings, and `std::u16string` for wide strings themselves.
 
-> 在 C++的 wstring 中，wchar_t 在不同的平台上有不同的大小（在 Windows 上是 2 个字节，在 Linux 上是 4 个字节）。ROS 2 将使用 char16_t 来表示宽字符串的字符，并使用 std::u16string 来表示宽字符串本身。
+> 在 C++ 的 wstring 中，wchar_t 在不同的平台上有不同的大小（在 Windows 上是 2 个字节，在 Linux 上是 4 个字节）。ROS 2 将使用 char16_t 来表示宽字符串的字符，并使用 std::u16string 来表示宽字符串本身。
 
 **Example**
 

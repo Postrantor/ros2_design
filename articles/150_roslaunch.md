@@ -13,7 +13,6 @@ Authors: {{ page.author }}
 Date Written: {{ page.date_written }}
 Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
 ---
-
 ## Context
 
 This article describes the launch system for ROS 2, and as the successor to the launch system in ROS 1 it makes sense to summarize the features and roles of `roslaunch` from ROS 1 and compare them to the goals of the launch system for ROS 2.
@@ -24,7 +23,7 @@ This article describes the launch system for ROS 2, and as the successor to the 
 
 From the description of `roslaunch` from the wiki ([https://wiki.ros.org/roslaunch](https://wiki.ros.org/roslaunch)):
 
-> 从 roslaunch 的描述(https://wiki.ros.org/roslaunch)：roslaunch是ROS系统中一种用于启动和管理多个ROS节点的命令行工具。它可以同时加载和启动一组节点，并且可以自动处理依赖关系，以便节点在正确的顺序启动。它还可以动态地更改参数，以便在运行时调整系统行为。
+> 从 roslaunch 的描述([https://wiki.ros.org/roslaunch](https://wiki.ros.org/roslaunch))：roslaunch 是 ROS 系统中一种用于启动和管理多个 ROS 节点的命令行工具。它可以同时加载和启动一组节点，并且可以自动处理依赖关系，以便节点在正确的顺序启动。它还可以动态地更改参数，以便在运行时调整系统行为。
 
 roslaunch is a tool for easily launching multiple ROS nodes locally and remotely via SSH, as well as setting parameters on the Parameter Server. It includes options to automatically respawn processes that have already died. roslaunch takes in one or more XML configuration files (with the .launch extension) that specify the parameters to set and nodes to launch, as well as the machines that they should be run on.
 
@@ -32,7 +31,7 @@ roslaunch is a tool for easily launching multiple ROS nodes locally and remotely
 
 This description lays out the main roles of `roslaunch` from ROS 1 as:
 
-> 这个描述概述了 ROS 1 中`roslaunch`的主要角色：
+> 这个描述概述了 ROS 1 中 `roslaunch` 的主要角色：
 
 - launch nodes
 - launching nodes remotely via SSH
@@ -42,23 +41,23 @@ This description lays out the main roles of `roslaunch` from ROS 1 as:
 
 Further more the wiki goes on to say ([https://wiki.ros.org/roslaunch/Architecture](https://wiki.ros.org/roslaunch/Architecture)): roslaunch was designed to fit the ROS architecture of complexity via composition: write a simple system first, then combine it with other simple systems to make more complex systems. In roslaunch, this is expressed through several mechanisms:
 
-> 更进一步，维基还说(https://wiki.ros.org/roslaunch/Architecture)：ROSlaunch旨在通过组合实现ROS复杂性的体系结构：首先编写一个简单的系统，然后将其与其他简单系统组合起来，以构建更复杂的系统。在roslaunch中，这一点通过几种机制表达出来：
+> 更进一步，维基还说([https://wiki.ros.org/roslaunch/Architecture](https://wiki.ros.org/roslaunch/Architecture))：ROSlaunch 旨在通过组合实现 ROS 复杂性的体系结构：首先编写一个简单的系统，然后将其与其他简单系统组合起来，以构建更复杂的系统。在 roslaunch 中，这一点通过几种机制表达出来：
 
-1. `<include>`s: you can easily include other .launch files and also assign them a namespace so that their names do not confict with yours.
+1. `<include>` s: you can easily include other .launch files and also assign them a namespace so that their names do not confict with yours.
 
 > 1. `<include>`: 你可以轻松地包含其他的.launch 文件，并且给它们分配一个命名空间，以便它们的名字不会与你的名字冲突。
 
-2. `<group>`s: you can group together a collection of nodes to give them the same name remappings.
+2. `<group>` s: you can group together a collection of nodes to give them the same name remappings.
 
-> 2. <群组>：您可以将一组节点组合起来，给它们相同的名称重映射。
+> 2. < 群组 >：您可以将一组节点组合起来，给它们相同的名称重映射。
 
-3. aliased `<machine>`s: you can separate machine definitions and node definitions into separate .launch files and use aliases to define which machines get used at runtime. This allows you to reuse the same node definitions for multiple robots. For example, instead of saying that a laser_assembler runs on 'foo.willowgarage.com', you can say that it runs on the 'tilt-laser' machine. The machine definitions then take care of which host is the 'tilt-laser' machine.
+3. aliased `<machine>` s: you can separate machine definitions and node definitions into separate .launch files and use aliases to define which machines get used at runtime. This allows you to reuse the same node definitions for multiple robots. For example, instead of saying that a laser_assembler runs on 'foo.willowgarage.com', you can say that it runs on the 'tilt-laser' machine. The machine definitions then take care of which host is the 'tilt-laser' machine.
 
 > 您可以将机器定义和节点定义分开放入单独的.launch 文件中，并使用别名来定义在运行时使用哪些机器。这样可以让您为多个机器重复使用相同的节点定义。例如，而不是说 laser_assembler 运行在'foo.willowgarage.com'上，您可以说它运行在'tilt-laser'机器上。然后机器定义将负责哪台主机是“tilt-laser”机器。
 
 roslaunch also contains a variety of tools to help you write your .launch files as portably as possible. You can use the `<env>` tag to specify environment variables that need to be set for a particular machine or node. The $(find pkg) syntax let you specify file paths relative to a ROS package, instead of specifying their location on a particular machine. You can also use the $(env ENVIRONMENT_VARIABLE) syntax within include tags to load in .launch files based on environment variables (e.g. MACHINE_NAME).
 
-> roslaunch 也包含各种工具，帮助您尽可能端口化地编写.launch 文件。您可以使用`<env>`标签指定特定机器或节点需要设置的环境变量。$(find pkg)语法允许您相对于ROS包指定文件路径，而不是指定其在特定机器上的位置。您还可以在include标签中使用$(env ENVIRONMENT_VARIABLE)语法来加载基于环境变量(例如 MACHINE_NAME)的.launch 文件。`
+> roslaunch 也包含各种工具，帮助您尽可能端口化地编写.launch 文件。您可以使用 `<env>` 标签指定特定机器或节点需要设置的环境变量。$(find pkg)语法允许您相对于ROS包指定文件路径，而不是指定其在特定机器上的位置。您还可以在include标签中使用$(env ENVIRONMENT_VARIABLE)语法来加载基于环境变量(例如 MACHINE_NAME)的.launch 文件。`
 
 From this, there are a few more design goals and roles for `roslaunch` from ROS 1:
 
@@ -73,7 +72,7 @@ From this, there are a few more design goals and roles for `roslaunch` from ROS 
 
 That covers most of the features and design goals of `roslaunch` from ROS 1, but in the next subsection we'll discuss what is different for the launch system in ROS 2 due to changes in ROS 2 and how it might improve on the launch system from ROS 1.
 
-> 这涵盖了 ROS 1 中`roslaunch`的大多数功能和设计目标，但在下一小节中，我们将讨论由于 ROS 2 的变化而对 ROS 2 中启动系统有何不同，以及它如何改进 ROS 1 中的启动系统。
+> 这涵盖了 ROS 1 中 `roslaunch` 的大多数功能和设计目标，但在下一小节中，我们将讨论由于 ROS 2 的变化而对 ROS 2 中启动系统有何不同，以及它如何改进 ROS 1 中的启动系统。
 
 ### Differences in ROS 2
 
@@ -91,9 +90,9 @@ Even for the ROS 1 feature called 'nodelet' (where you could emulate having more
 
 > 即使是 ROS 1 的一个叫做 **“nodelet”的功能(可以模拟一个进程中有多个节点)** ，节点或 nodelet 到进程的概念映射也是通过代理进程保留的。例如，你可以运行一个“NodeletManager”，然后为要在该管理器中运行的每个 nodelet 运行一个进程。这允许 ROS 1 中的 roslaunch 检测到退出的 nodelet，并允许它们响应代理进程发送的信号。
 
-Since you can have many nodes per process in ROS 2, it is no longer necessary to conflate nodes and processes. Due to this, the design and documentation for the launch system in ROS 2 will need to be clearer when talking about processes and nodes. Additionally, the way that configuration (e.g. parameters and remappings) get passed to nodes by the launch system needs to be adapted, though this part overlaps with the design documents for static remapping[^static_remapping] and for parameters[^parameters].
+Since you can have many nodes per process in ROS 2, it is no longer necessary to conflate nodes and processes. Due to this, the design and documentation for the launch system in ROS 2 will need to be clearer when talking about processes and nodes. Additionally, the way that configuration (e.g. parameters and remappings) get passed to nodes by the launch system needs to be adapted, though this part overlaps with the design documents for static remapping_remapping[remappingemapping] and for parameters[^parameters].
 
-> 由于 ROS 2 中每个进程可以拥有多个节点，因此不再需要把节点和进程合并。因此，ROS 2 中的启动系统的设计和文档在谈论进程和节点时需要更加清晰。此外，启动系统将配置(例如参数和重映射)传递给节点的方式也需要进行调整，尽管这部分与静态重映射[^static_remapping]和参数[^parameters]的设计文档有重叠。
+> 由于 ROS 2 中每个进程可以拥有多个节点，因此不再需要把节点和进程合并。因此，ROS 2 中的启动系统的设计和文档在谈论进程和节点时需要更加清晰。此外，启动系统将配置(例如参数和重映射)传递给节点的方式也需要进行调整，尽管这部分与静态重映射_remapping[remappingemapping]和参数[^parameters]的设计文档有重叠。
 
 Also, since there can be multiple nodes per process, shutting down a node no longer always means sending a unix signal to a single process. Other mechanisms might need to be used to have more granular shutdown control in multi-node processes.
 
@@ -113,7 +112,7 @@ In ROS 2, Windows has been added to the list of targeted platforms, and as of th
 
 In ROS 1, there was a global parameter server which stored all parameters and nodes would get and set all parameters through this server. The server was tightly integrated into `roslaunch` from ROS 1, and was also used by the other kind of parameters from ROS 1, which were called "dynamic reconfigure parameters".
 
-> 在 ROS 1 中，有一个全局参数服务器，它存储所有参数，节点可以通过这个服务器获取和设置所有参数。该服务器与 ROS 1 中的`roslaunch`紧密集成，也用于 ROS 1 中的其他类型参数，称为“动态重新配置参数”。
+> 在 ROS 1 中，有一个全局参数服务器，它存储所有参数，节点可以通过这个服务器获取和设置所有参数。该服务器与 ROS 1 中的 `roslaunch` 紧密集成，也用于 ROS 1 中的其他类型参数，称为“动态重新配置参数”。
 
 In ROS 2, there are only one kind of parameters and they work differently. In general they work more like "dynamic reconfigure parameters" from ROS 1, in that they are node specific (no truly global parameters) and they are managed by the node (the node can refuse changes and parameters can only be read and changed while the node is running). More details can be found in the parameters design document[^parameters].
 
@@ -121,7 +120,7 @@ In ROS 2, there are only one kind of parameters and they work differently. In ge
 
 There can (and probably will) still be a "global parameter server" in ROS 2, but it will simply be implemented as a node which accepts all changes and could be run along with the launch system automatically or could be invoked explicitly by the user (a la `roscore` from ROS 1), but it should not be required for basic functionality.
 
-> 在 ROS 2 中可能(也可能会)仍然有一个“全局参数服务器”，但它将被实现为一个节点，可以接受所有更改，可以与启动系统一起自动运行，或者可以被用户(类似 ROS 1 中的`roscore`)显式调用，但不需要基本功能。
+> 在 ROS 2 中可能(也可能会)仍然有一个“全局参数服务器”，但它将被实现为一个节点，可以接受所有更改，可以与启动系统一起自动运行，或者可以被用户(类似 ROS 1 中的 `roscore`)显式调用，但不需要基本功能。
 
 This fundamental difference in how parameters work will affect both the architecture of the launch system in ROS 2 and how users specify parameters for nodes via the launch system.
 
@@ -131,7 +130,7 @@ This fundamental difference in how parameters work will affect both the architec
 
 In `roslaunch` from ROS 1 there were only a few ways that it could react to changes in the system, and they were both related to a process "dieing" (either a clean or unclean exit):
 
-> 在 ROS 1 中的`roslaunch`中，只有几种反应系统变化的方式，它们都与一个进程“死亡”(无论是干净的还是不干净的退出)有关：
+> 在 ROS 1 中的 `roslaunch` 中，只有几种反应系统变化的方式，它们都与一个进程“死亡”(无论是干净的还是不干净的退出)有关：
 
 - respawn a process if it died
 - shutdown the whole launch system if a required process died
@@ -144,7 +143,7 @@ This is somewhere that the launch system in ROS 2 can hopefully improve on what 
 
 In the ROS 1 wiki for `roslaunch`, it says ([https://wiki.ros.org/roslaunch/Architecture](https://wiki.ros.org/roslaunch/Architecture)):
 
-> 在 ROS 1 的 wiki 上关于`roslaunch`，它说([https://wiki.ros.org/roslaunch/Architecture](https://wiki.ros.org/roslaunch/Architecture))：
+> 在 ROS 1 的 wiki 上关于 `roslaunch`，它说([https://wiki.ros.org/roslaunch/Architecture](https://wiki.ros.org/roslaunch/Architecture))：
 
 roslaunch does not guarantee any particular order to the startup of nodes -- although this is a frequently requested feature, it is not one that has any particular meaning in the ROS architecture as there is no way to tell when a node is initialized.
 
@@ -154,7 +153,7 @@ roslaunch 不能保证节点启动的任何特定顺序——尽管这是一个�
 
 Hopefully this is another case on which the launch system for ROS 2 can improve, at least for nodes with a lifecycle, a.k.a. Managed Nodes[^lifecycle]. For Managed Nodes, it would not be possible to apply constraints on when something is launched, rather than how it is in `roslaunch` from ROS 1, where things are run in a non-deterministic order.
 
-> 希望这是另一个可以改进 ROS 2 启动系统的案例，至少对于具有生命周期的节点，即托管节点[^lifecycle]。 对于托管节点，不可能应用约束来确定何时启动某些内容，而不是 ROS 1 中的`roslaunch`，其中内容以非确定性顺序运行。
+> 希望这是另一个可以改进 ROS 2 启动系统的案例，至少对于具有生命周期的节点，即托管节点[^lifecycle]。 对于托管节点，不可能应用约束来确定何时启动某些内容，而不是 ROS 1 中的 `roslaunch`，其中内容以非确定性顺序运行。
 
 In order to do this, the launch system in ROS 2 will need to model the dependencies between processes and/or nodes where they exist, and the constraints on those dependencies. For example, a user might express that an image processing node has a dependency on a camera driver node with the constraint that it should not be launched (what ever the action to do that might be, e.g. run a process or something else) until the camera driver node reaches the "Active" state. These constraints can be arbitrarily defined by the user or common constraints could be modeled directly by the launch system.
 
@@ -227,9 +226,9 @@ The purpose of the following sections is to enumerate what the launch system cou
 
 ## Calling Conventions
 
-In order for the launch system to execute a described system, it needs to understand how it can achieve the description. The phrase "calling conventions" is an existing phrase in Computer Science[^calling_convention_wikipedia], but this section is not talking specifically about the compiler defined calling convention, through it is appropriating the term to describe a similar relationship. In this case, the phrase "calling conventions" is meant to describe the "interface" or "contract" the launch system has with anything it is executing and monitoring. This contract covers initial execution, activity during runtime, signal handling and behavior of the launch system, and shutdown.
+In order for the launch system to execute a described system, it needs to understand how it can achieve the description. The phrase "calling conventions" is an existing phrase in Computer Science_convention_wikipedia[convention_wikipediawikipedia], but this section is not talking specifically about the compiler defined calling convention, through it is appropriating the term to describe a similar relationship. In this case, the phrase "calling conventions" is meant to describe the "interface" or "contract" the launch system has with anything it is executing and monitoring. This contract covers initial execution, activity during runtime, signal handling and behavior of the launch system, and shutdown.
 
-> 为了让 launch 系统执行一个描述的系统，它需要理解如何实现该描述。“调用约定”是计算机科学中一个现有的术语[^calling_convention_wikipedia]，但是本节没有具体谈论编译器定义的调用约定，尽管它拿来描述一种类似的关系。在这种情况下，“调用约定”的意思是描述 launch 系统与其执行和监视的任何东西之间的“接口”或“合同”。该合同涵盖了初始执行、运行时的活动、信号处理和 launch 系统的行为以及关闭。
+> 为了让 launch 系统执行一个描述的系统，它需要理解如何实现该描述。“调用约定”是计算机科学中一个现有的术语_convention_wikipedia[convention_wikipediawikipedia]，但是本节没有具体谈论编译器定义的调用约定，尽管它拿来描述一种类似的关系。在这种情况下，“调用约定”的意思是描述 launch 系统与其执行和监视的任何东西之间的“接口”或“合同”。该合同涵盖了初始执行、运行时的活动、信号处理和 launch 系统的行为以及关闭。
 
 ### Operating System Processes
 
@@ -276,7 +275,7 @@ During runtime, the launch system may monitor all operating system process's:
 
 The launch system may choose to either capture these pipes, for logging or suppressing output to the console, or it can connect the pipes to an existing `pty`, like the terminal's `stdout` and/or `stderr` pipes or a null pipe (e.g. `/dev/null`).
 
-> 系统可以选择捕获这些管道，用于记录或抑制输出到控制台，或者它可以将管道连接到现有的`pty`，比如终端的`stdout`和/或`stderr`管道或空管道(例如`/dev/null`)。
+> 系统可以选择捕获这些管道，用于记录或抑制输出到控制台，或者它可以将管道连接到现有的 `pty`，比如终端的 `stdout` 和/或 `stderr` 管道或空管道(例如 `/dev/null`)。
 
 When capturing the output pipes of a process, the launch system could report this data in a way that the user may process them in real-time or could pass the data through user defined filters, generating a user-handled event when the filter matches.
 
@@ -297,11 +296,11 @@ Regardless of how the user uses the launch system to interact with these items, 
 
 If the operating system process terminates, and therefore returns a return code, the launch system will report this event and it can be handled in a user defined way. Termination covers expected termination (e.g. return from `main()` or use `exit()`) and unexpected termination (e.g. the abort trap or a segmentation fault or bus error).
 
-> 如果操作系统进程终止并返回一个返回码，启动系统将报告此事件，用户可以以自定义的方式处理它。终止包括预期终止(例如从`main()`返回或使用`exit()`)和意外终止(例如中止陷阱或段错误或总线错误)。
+> 如果操作系统进程终止并返回一个返回码，启动系统将报告此事件，用户可以以自定义的方式处理它。终止包括预期终止(例如从 `main()` 返回或使用 `exit()`)和意外终止(例如中止陷阱或段错误或总线错误)。
 
 Historically, ROS 1's `roslaunch` allowed a few common exit handling cases:
 
-> 历史上，ROS 1 的`roslaunch`允许一些常见的退出处理情况：
+> 历史上，ROS 1 的 `roslaunch` 允许一些常见的退出处理情况：
 
 - `require=true`: if this process exits (any reason) shutdown everything else, as it's "required"
 - `respawn=true`: if this process exits (any reason) restart it with the same settings as startup
@@ -333,11 +332,11 @@ The launch system will initiate this process when an event (built-in or user gen
 
 If the launch system itself receives the `SIGTERM` signal it will send the `SIGKILL` signal to all child processes and exit immediately.
 
-> 如果启动系统本身接收到`SIGTERM`信号，它将向所有子进程发送`SIGKILL`信号，并立即退出。
+> 如果启动系统本身接收到 `SIGTERM` 信号，它将向所有子进程发送 `SIGKILL` 信号，并立即退出。
 
 The rationale for the previous rule is that if someone attempts to `SIGTERM` the launch system, they probably did so out of impatience after sending `SIGINT` to the launch system, and therefore the launch system should attempt to exit quickly. Exiting quickly will hopefully avoid encouraging a user to `SIGKILL` the launch system, which might cause the subprocesses to be improperly shutdown and perhaps even become zombie processes.
 
-> 上一条规则的理由是，如果有人试图向 launch 系统发送`SIGTERM`，他们可能是在发送`SIGINT`到 launch 系统后感到不耐烦，因此 launch 系统应尽快退出。希望快速退出能避免鼓励用户对 launch 系统发送`SIGKILL`，这可能会导致子进程被不正确关闭，甚至变成僵尸进程。
+> 上一条规则的理由是，如果有人试图向 launch 系统发送 `SIGTERM`，他们可能是在发送 `SIGINT` 到 launch 系统后感到不耐烦，因此 launch 系统应尽快退出。希望快速退出能避免鼓励用户对 launch 系统发送 `SIGKILL`，这可能会导致子进程被不正确关闭，甚至变成僵尸进程。
 
 #### Shell Evaluation
 
@@ -353,11 +352,13 @@ A kind of in-between entity is an operating system process which uses shell eval
 
 Any of the entities based on an operating system process can be made into a remote operating system process by simply adding the requirement information needed to gain access to the other machine and execute it. This is a feature that ROS 1's `roslaunch` has, and is useful in multi machine robots.
 
-> 任何基于操作系统进程的实体都可以通过简单地添加获取其他机器访问并执行所需信息的要求而变成远程操作系统进程。这是 ROS 1 的`roslaunch`具有的功能，对于多机器人来说很有用。
+> 任何基于操作系统进程的实体都可以通过简单地添加获取其他机器访问并执行所需信息的要求而变成远程操作系统进程。这是 ROS 1 的 `roslaunch` 具有的功能，对于多机器人来说很有用。
 
-    <div class="alert alert-warning" markdown="1">
-    TODO: figure out what we need to do here in terms of portability and configuration
-    </div>
+```
+<div class="alert alert-warning" markdown="1">
+TODO: figure out what we need to do here in terms of portability and configuration
+</div>
+```
 
 ### ROS Nodes
 
@@ -383,13 +384,13 @@ In addition to the "Execution" subsection of the "Operating System Processes" se
   - Remap topics, services, actions, parameters, etc...
   - Initialize parameter values
 
-The specific syntax of these extra environment variables and command line arguments are defined in other documents[^logging_wiki] [^static_remapping].
+The specific syntax of these extra environment variables and command line arguments are defined in other documents_wiki[wikiging_wiki] _remapping[remappingemapping].
 
-> 这些额外的环境变量和命令行参数的具体语法定义在其他文档[^logging_wiki] [^static_remapping]中。
+> 这些额外的环境变量和命令行参数的具体语法定义在其他文档_wiki[wikiging_wiki] _remapping[remappingemapping]中。
 
 In each of these cases, the ROS specific constructs can be expressed with the existing mechanisms described by the "Execution" subsection for "Operating System Processes", i.e. the ROS specific constructs can be expanded into either command line arguments or environment variables. Therefore the launch system is able to take ROS specific declarations, e.g. "remap 'image' to 'left/image'", and convert them implicitly into terms that a normal operating system process can consume like environment variables or command line arguments, e.g. adding `image:=left/image` to the command line arguments. However, what a given ROS specific declaration is converted into depends on how the nodes are used within the process, but later sections will go into details about that.
 
-> 在这些情况下，ROS 特定的构造可以用“操作系统进程”下的“执行”子节中描述的现有机制表达，即 ROS 特定的构造可以扩展为命令行参数或环境变量。因此，启动系统可以隐式地将 ROS 特定的声明(例如“remap 'image' to 'left/image'”)转换为正常操作系统进程可以使用的项，如环境变量或命令行参数，例如将`image:=left/image`添加到命令行参数中。但是，给定的 ROS 特定声明转换为什么取决于节点如何在进程中使用，但后面的章节将详细介绍。
+> 在这些情况下，ROS 特定的构造可以用“操作系统进程”下的“执行”子节中描述的现有机制表达，即 ROS 特定的构造可以扩展为命令行参数或环境变量。因此，启动系统可以隐式地将 ROS 特定的声明(例如“remap 'image' to 'left/image'”)转换为正常操作系统进程可以使用的项，如环境变量或命令行参数，例如将 `image:=left/image` 添加到命令行参数中。但是，给定的 ROS 特定声明转换为什么取决于节点如何在进程中使用，但后面的章节将详细介绍。
 
 #### Runtime
 
@@ -399,7 +400,7 @@ During runtime a "plain" ROS node doesn't expose anything new beyond what an ope
 
 It also does not react in any special way to `stdin`, but processes containing ROS nodes do tend to have a signal handler for `SIGINT` which does a more graceful shutdown, but that is not enforced. Sending the `SIGINT` signal typically causes most nodes to shutdown if they are using one of the "spin" functions in `rclcpp` or are polling `rclcpp::ok()`, as is recommended.
 
-> 它也不会对'stdin'做出特殊反应，但包含 ROS 节点的进程通常会为`SIGINT`设置一个信号处理程序，以实现更优雅的关机，但这不是强制的。发送`SIGINT`信号通常会导致大多数节点关闭，如果它们正在使用`rclcpp`中的“旋转”功能或正在轮询`rclcpp：：ok()`，如推荐的那样。
+> 它也不会对'stdin'做出特殊反应，但包含 ROS 节点的进程通常会为 `SIGINT` 设置一个信号处理程序，以实现更优雅的关机，但这不是强制的。发送 `SIGINT` 信号通常会导致大多数节点关闭，如果它们正在使用 `rclcpp` 中的“旋转”功能或正在轮询 `rclcpp：：ok()`，如推荐的那样。
 
 #### Termination
 
@@ -459,7 +460,7 @@ The first is a single process with a single ROS node within it. This was likely 
 
 Since there is only one ROS node, the command line arguments do not need to be explicit about to which node they apply. For example, changing the namespace of the single node could be expressed with the command line argument `__ns:=new_namespace`.
 
-> 由于只有一个 ROS 节点，命令行参数不需要明确指出它们适用于哪个节点。例如，可以使用命令行参数`__ns:=new_namespace`来改变单个节点的命名空间。
+> 由于只有一个 ROS 节点，命令行参数不需要明确指出它们适用于哪个节点。例如，可以使用命令行参数 `__ns:=new_namespace` 来改变单个节点的命名空间。
 
 Even though there is only one node in the process, that node does not need to start when the process starts, nor does the process need to end when the node is shutdown and/or destroyed. If it is a managed node, the lifecycle of the node is best tracked using the lifecycle events. In fact, a process with a single node could start a node, run for a while, later destroy it, and then create it again.
 
@@ -471,13 +472,13 @@ So the biggest impact of a single node process is that the configuration, in ter
 
 ### Process with Multiple Nodes
 
-In a process with multiple nodes, things are much the same as with a process with a single node, but the configuration, again in terms of command line arguments and environment variables, need to be more specific in order to discriminate between the various nodes being instantiated in the process. The remapping design document[^static_remapping] goes into detail on how you can selectively configure multiple nodes using command line arguments, so check there for up-to-date details.
+In a process with multiple nodes, things are much the same as with a process with a single node, but the configuration, again in terms of command line arguments and environment variables, need to be more specific in order to discriminate between the various nodes being instantiated in the process. The remapping design document_remapping[remappingemapping] goes into detail on how you can selectively configure multiple nodes using command line arguments, so check there for up-to-date details.
 
-> 在一个具有多个节点的流程中，情况和具有单个节点的流程相同，但是配置(以命令行参数和环境变量为准)需要更加具体以区分实例化的各个节点。[^static_remapping] 重新映射设计文档详细介绍了如何使用命令行参数有选择地配置多个节点，因此请查看最新详情。
+> 在一个具有多个节点的流程中，情况和具有单个节点的流程相同，但是配置(以命令行参数和环境变量为准)需要更加具体以区分实例化的各个节点。_remapping[remappingemapping] 重新映射设计文档详细介绍了如何使用命令行参数有选择地配置多个节点，因此请查看最新详情。
 
 However, as an example of a process with multiple nodes, consider a program that instantiates two camera driver nodes called "camera1" and "camera2" by default. You could configure their namespaces separately by doing something like `camera1:__ns:=left camera2:__ns:=right`.
 
-> 然而，作为多节点过程的一个例子，考虑一个程序，它默认情况下实例化两个称为“camera1”和“camera2”的摄像头驱动程序节点。您可以通过做一些像`camera1:__ns:=left camera2:__ns:=right`这样的事情来单独配置它们的名称空间。
+> 然而，作为多节点过程的一个例子，考虑一个程序，它默认情况下实例化两个称为“camera1”和“camera2”的摄像头驱动程序节点。您可以通过做一些像 `camera1:__ns:=left camera2:__ns:=right` 这样的事情来单独配置它们的名称空间。
 
 #### Dynamically loading Nodes
 
@@ -493,7 +494,7 @@ While there will be standard container processes, custom container processes wou
 
 The launch system must be able tell the container process what arguments to give to a dynamically loaded node. This includes command line arguments and client library specific options (e.g. `rclcpp` has `use_intra_process_comms`). Since the launch system cannot know about all custom containers, the API must include a way to pass unknown arguments (e.g. by passing key-value pairs).
 
-> 系统启动必须能够告诉容器进程应该给动态加载的节点提供什么参数。这包括命令行参数和客户端库特定选项(例如，`rclcpp`具有`use_intra_process_comms`)。由于启动系统不能了解所有自定义容器，因此 API 必须包括一种传递未知参数的方法(例如，通过传递键值对)。
+> 系统启动必须能够告诉容器进程应该给动态加载的节点提供什么参数。这包括命令行参数和客户端库特定选项(例如，`rclcpp` 具有 `use_intra_process_comms`)。由于启动系统不能了解所有自定义容器，因此 API 必须包括一种传递未知参数的方法(例如，通过传递键值对)。
 
 The API will not include setting environment variables per loaded node. Many languages have APIs to get environment variables, and there is no way to isolate them within a process. The following options for an API are being considered.
 
@@ -659,7 +660,7 @@ A container process must offer all of the following services.
 
 The services are hidden to avoid colliding with user created services. `load_node` will be called by the launch system when a composable node is to be dynamically loaded, and `unload_node` destroys a composable node. `list_nodes` is not called by launch system, and is only provided for introspection.
 
-> 服务被隐藏以避免与用户创建的服务发生冲突。当需要动态加载可组合节点时，会由启动系统调用`load_node`，而`unload_node`则用于销毁可组合节点。`list_nodes`不会被启动系统调用，只提供了内省功能。
+> 服务被隐藏以避免与用户创建的服务发生冲突。当需要动态加载可组合节点时，会由启动系统调用 `load_node`，而 `unload_node` 则用于销毁可组合节点。`list_nodes` 不会被启动系统调用，只提供了内省功能。
 
 1. load_node
 
@@ -677,9 +678,9 @@ The interface for this Service was added in ROS 2 Dashing:
 
 > 这个服务的界面已经在 ROS 2 Dashing 中添加了。
 
-https://github.com/ros2/rcl_interfaces/blob/dashing/composition_interfaces/srv/LoadNode.srv
+[https://github.com/ros2/rcl_interfaces/blob/dashing/composition_interfaces/srv/LoadNode.srv](https://github.com/ros2/rcl_interfaces/blob/dashing/composition_interfaces/srv/LoadNode.srv)
 
-> https://github.com/ros2/rcl_interfaces/blob/dashing/composition_interfaces/srv/LoadNode.srv 的简体中文翻译是：
+> [https://github.com/ros2/rcl_interfaces/blob/dashing/composition_interfaces/srv/LoadNode.srv](https://github.com/ros2/rcl_interfaces/blob/dashing/composition_interfaces/srv/LoadNode.srv) 的简体中文翻译是：
 
 LoadNode.srv：
 
@@ -700,9 +701,9 @@ The interface for this Service was added in ROS 2 Dashing:
 
 > 这个服务的界面已在 ROS 2 Dashing 中添加。
 
-https://github.com/ros2/rcl_interfaces/blob/dashing/composition_interfaces/srv/UnloadNode.srv
+[https://github.com/ros2/rcl_interfaces/blob/dashing/composition_interfaces/srv/UnloadNode.srv](https://github.com/ros2/rcl_interfaces/blob/dashing/composition_interfaces/srv/UnloadNode.srv)
 
-> https://github.com/ros2/rcl_interfaces/blob/dashing/composition_interfaces/srv/UnloadNode.srv
+> [https://github.com/ros2/rcl_interfaces/blob/dashing/composition_interfaces/srv/UnloadNode.srv](https://github.com/ros2/rcl_interfaces/blob/dashing/composition_interfaces/srv/UnloadNode.srv)
 > 卸载节点服务
 
 3. list_nodes
@@ -713,9 +714,9 @@ The interface for this Service was added in ROS 2 Dashing:
 
 > 这个服务的界面已经在 ROS 2 Dashing 中添加了。
 
-https://github.com/ros2/rcl_interfaces/blob/dashing/composition_interfaces/srv/ListNodes.srv
+[https://github.com/ros2/rcl_interfaces/blob/dashing/composition_interfaces/srv/ListNodes.srv](https://github.com/ros2/rcl_interfaces/blob/dashing/composition_interfaces/srv/ListNodes.srv)
 
-> https://github.com/ros2/rcl_interfaces/blob/dashing/composition_interfaces/srv/ListNodes.srv：列出节点服务
+> [https://github.com/ros2/rcl_interfaces/blob/dashing/composition_interfaces/srv/ListNodes.srv](https://github.com/ros2/rcl_interfaces/blob/dashing/composition_interfaces/srv/ListNodes.srv)：列出节点服务
 
 ###### Exit Code
 
@@ -765,7 +766,7 @@ However, these events can be more specific to the launch system, like when a lau
 
 Other events will be specific to any process that is executed by the launch system, like when a process is started or when a process exits. You could also imagine events which get fired when `stdout` or `stderr` data is received from the process by the launch system, assuming it captures that information.
 
-> 其他事件将特定于由启动系统执行的任何进程，例如当进程启动时或当进程退出时。您还可以想象当启动系统从进程接收到`stdout`或`stderr`数据时触发的事件，假设它捕获了该信息。
+> 其他事件将特定于由启动系统执行的任何进程，例如当进程启动时或当进程退出时。您还可以想象当启动系统从进程接收到 `stdout` 或 `stderr` 数据时触发的事件，假设它捕获了该信息。
 
 #### ROS Specific Events
 
@@ -819,9 +820,9 @@ While event handlers have no comparison operators between one another (so no sor
 
 ##### Event Filters
 
-Like the Qt event system, it will be possible to create event filters, which emulate the ability to accept events and prevent them from being sent "downstream". [^qt_event_filters]
+Like the Qt event system, it will be possible to create event filters, which emulate the ability to accept events and prevent them from being sent "downstream". _event_filters[event_filtersters]
 
-> 像 Qt 事件系统一样，可以创建事件过滤器，以模拟接受事件并阻止它们被发送到“下游”的能力。[^qt_event_filters]
+> 像 Qt 事件系统一样，可以创建事件过滤器，以模拟接受事件并阻止它们被发送到“下游”的能力。_event_filters[event_filtersters]
 
 Unlike the Qt event system, an event filter is simply like any other event handler, and will not prevent other event handlers from receiving the event. Instead, each event filter will have its own list of event handlers, each of which can accept or reject an event, allowing or denying further processing of the event within the event filter, respectively.
 
@@ -942,9 +943,9 @@ Another basic action would be to execute a subprocess, with arguments and emitte
 
 > 另一个基本操作是执行子进程，根据“操作系统进程”下的调用约定条款中描述的参数和发出的事件。
 
-This action will take a few required arguments, a few optional requirements, and also take settings from the launch system configurations if they're not explicitly given. The signature of this action should be similar to the API of Python's `subprocess.run` function[^subprocess_run]. Basically taking things like the executable file, arguments, working directory, environment, etc. as input and reporting the return code, stdout and stderr, and any errors as emitted events.
+This action will take a few required arguments, a few optional requirements, and also take settings from the launch system configurations if they're not explicitly given. The signature of this action should be similar to the API of Python's `subprocess.run` function_run[runbprocess_run]. Basically taking things like the executable file, arguments, working directory, environment, etc. as input and reporting the return code, stdout and stderr, and any errors as emitted events.
 
-> 这个操作需要几个必需的参数，一些可选的要求，如果没有明确给出，还可以从启动系统配置中获取设置。该操作的签名应类似于 Python 的`subprocess.run`函数[^subprocess_run]的 API。基本上把可执行文件、参数、工作目录、环境等作为输入，并报告返回码、stdout 和 stderr 以及任何错误作为发出的事件。
+> 这个操作需要几个必需的参数，一些可选的要求，如果没有明确给出，还可以从启动系统配置中获取设置。该操作的签名应类似于 Python 的 `subprocess.run` 函数_run[runbprocess_run]的 API。基本上把可执行文件、参数、工作目录、环境等作为输入，并报告返回码、stdout 和 stderr 以及任何错误作为发出的事件。
 
 Also, every executed process will automatically setup a few event handlers, so that the user can emit events to ask the launch system to terminate the process (following the signal escalation described in previous sections), signal the process explicitly, or write to the `stdin` of the process. More sophisticated calling conventions which are based on the "operating system process" may include other default event handlers.
 
@@ -987,7 +988,7 @@ However, to remove boilerplate code or to avoid programming in markup descriptio
 
 For example, there might be the `on_event` event handler signature, which then returns a given set of actions or groups the user provides. This signature might be useful to after ten seconds start a node or include another launch file, and in XML it might look like this:
 
-> 例如，可能会有`on_event`事件处理程序签名，然后返回用户提供的一组操作或组。这个签名可能有用，在 10 秒钟后启动一个节点或包括另一个启动文件，在 XML 中可能看起来像这样：
+> 例如，可能会有 `on_event` 事件处理程序签名，然后返回用户提供的一组操作或组。这个签名可能有用，在 10 秒钟后启动一个节点或包括另一个启动文件，在 XML 中可能看起来像这样：
 
 ```xml
     <!-- This is a made up example of a markup, consider it pseudo code... -->
@@ -1029,7 +1030,8 @@ TODO:
 
 > 待办：
 
-- can be broken into: - "namespace" (like roslaunch), - conditionals (`if` and `unless`) (see: https://wiki.ros.org/roslaunch/XML#if_and_unless_attributes), and - scope (push-pop for configurations) - should consider what we're discussing to do in https://github.com/ros2/launch/issues/313
+- can be broken into: - "namespace" (like roslaunch), - conditionals (`if` and `unless`) (see: [https://wiki.ros.org/roslaunch/XML#if_and_unless_attributes)](https://wiki.ros.org/roslaunch/XML#if_and_unless_attributes)), and - scope (push-pop for configurations) - should consider what we're discussing to do in [https://github.com/ros2/launch/issues/313](https://github.com/ros2/launch/issues/313)
+
 </div>
 
 #### Substitutions
@@ -1040,8 +1042,9 @@ TODO:
 
 > 待办：
 
-- equivalent to substitutions in ROS 1, see: https://wiki.ros.org/roslaunch/XML#substitution_args
+- equivalent to substitutions in ROS 1, see: [https://wiki.ros.org/roslaunch/XML#substitution_args](https://wiki.ros.org/roslaunch/XML#substitution_args)
 - they've already been implemented in the reference implementation, they should at least be summarized as built here
+
 </div>
 
 ### Mapping to Programming Languages and Markup Languages
@@ -1055,6 +1058,7 @@ TODO:
 - Explain in general how the features described in the previous sections would map to a programming language and/or markup language and any considerations therein.
 - How it would map to Python (likely implementation)
 - How it would map to XML (likely first markup language)
+
 </div>
 
 ## Execution and Verification of the System Description
@@ -1089,7 +1093,7 @@ Temporary summary:
 
 In ROS 1, `rostest` is an important extension of `roslaunch`, and so far in ROS 2 we're already using the foundation of launching (executing processes and reacting to their exit, return codes, and stdout/stderr), called `ros2/launch_testing` right now, to implement some tests. This section will cover how that happens and how it integrates with the static description files as well as the programmatic API, adding ROS specific concepts to what we're already doing with `ros2/launch_testing`.
 
-> 在 ROS 1 中，`rostest`是`roslaunch`的一个重要扩展，到目前为止，我们已经在 ROS 2 中使用启动(执行进程并对其退出、返回代码和 stdout / stderr 进行反应)的基础，称为`ros2 / launch_testing`，来实现一些测试。本节将介绍这种情况以及它如何与静态描述文件以及编程 API 集成，为我们正在使用`ros2 / launch_testing`的内容添加 ROS 特定的概念。
+> 在 ROS 1 中，`rostest` 是 `roslaunch` 的一个重要扩展，到目前为止，我们已经在 ROS 2 中使用启动(执行进程并对其退出、返回代码和 stdout / stderr 进行反应)的基础，称为 `ros2 / launch_testing`，来实现一些测试。本节将介绍这种情况以及它如何与静态描述文件以及编程 API 集成，为我们正在使用 `ros2 / launch_testing` 的内容添加 ROS 特定的概念。
 
 </div>
 
@@ -1127,37 +1131,55 @@ TODO: Anything we choose not to support in the requirements vs. the "separation 
 
 [^calling_convention_wikipedia]: [https://en.wikipedia.org/wiki/Calling_convention](https://en.wikipedia.org/wiki/Calling_convention)
 
+
 > [^calling_convention_wikipedia]: [https://zh.wikipedia.org/wiki/%E8%B0%83%E7%94%A8%E7%BB%93%E7%AE%97](https://zh.wikipedia.org/wiki/%E8%B0%83%E7%94%A8%E7%BB%93%E7%AE%97)
+>
 
 [^logging_wiki]: [https://github.com/ros2/ros2/wiki/Logging#console-output-configuration](https://github.com/ros2/ros2/wiki/Logging#console-output-configuration)
 
-> [^logging_wiki]: [https://github.com/ros2/ros2/wiki/Logging#console-output-configuration](https://github.com/ros2/ros2/wiki/Logging#console-output-configuration)
 
-[^logging_wiki]: [https://github.com/ros2/ros2/wiki/Logging#控制台输出配置](https://github.com/ros2/ros2/wiki/Logging#控制台输出配置)
+> [^logging_wiki]: [https://github.com/ros2/ros2/wiki/Logging#console-output-configuration](https://github.com/ros2/ros2/wiki/Logging#console-output-configuration)
+>
+
+[^logging_wiki]: [https://github.com/ros2/ros2/wiki/Logging#控制台输出配置](https://github.com/ros2/ros2/wiki/Logging#%E6%8E%A7%E5%88%B6%E5%8F%B0%E8%BE%93%E5%87%BA%E9%85%8D%E7%BD%AE)
+
+
 [^static_remapping]: [http://design.ros2.org/articles/static_remapping.html#remapping-rule-syntax](http://design.ros2.org/articles/static_remapping.html#remapping-rule-syntax)
 
+
 > [^static_remapping]: [http://design.ros2.org/articles/static_remapping.html#remapping-rule-syntax](http://design.ros2.org/articles/static_remapping.html#remapping-rule-syntax)
+>
 
 [^static_remapping]: [http://design.ros2.org/articles/static_remapping.html#remapping-rule-syntax](http://design.ros2.org/articles/static_remapping.html#remapping-rule-syntax)：静态重映射规则语法
+
+
 [^lifecycle]: [http://design.ros2.org/articles/node_lifecycle.html](http://design.ros2.org/articles/node_lifecycle.html)
 
+
 > [^生命周期]: [http://design.ros2.org/articles/node_lifecycle.html](http://design.ros2.org/articles/node_lifecycle.html)
+>
 
 [^parameters]: [http://design.ros2.org/articles/ros_parameters.html](http://design.ros2.org/articles/ros_parameters.html)
 
-> [参数]: [http://design.ros2.org/articles/ros_parameters.html](http://design.ros2.org/articles/ros_parameters.html)
+
+> [参数]: %5Bhttp://design.ros2.org/articles/ros_parameters.html%5D(http://design.ros2.org/articles/ros_parameters.html)
 
 [^qt_event_filters]: [https://doc.qt.io/archives/qt-4.8/eventsandfilters.html#event-filters](https://doc.qt.io/archives/qt-4.8/eventsandfilters.html#event-filters)
 
-> [^qt_event_filters]: [https://doc.qt.io/archives/qt-4.8/eventsandfilters.html#event-filters](https://doc.qt.io/archives/qt-4.8/eventsandfilters.html#event-filters)
 
-[^qt_event_filters]：[https://doc.qt.io/archives/qt-4.8/eventsandfilters.html#event-filters](https://doc.qt.io/archives/qt-4.8/eventsandfilters.html#event-filters)
+> [^qt_event_filters]: [https://doc.qt.io/archives/qt-4.8/eventsandfilters.html#event-filters](https://doc.qt.io/archives/qt-4.8/eventsandfilters.html#event-filters)
+>
+
+_event_filters[^qt_event_filters]：[https://doc.qt.io/archives/qt-4.8/eventsandfilters.html#event-filters](https://doc.qt.io/archives/qt-4.8/eventsandfilters.html#event-filters)
 
 [^subprocess_run]: [https://docs.python.org/3.6/library/subprocess.html#subprocess.run](https://docs.python.org/3.6/library/subprocess.html#subprocess.run)
 
+
 > [^subprocess_run]: [https://docs.python.org/3.6/library/subprocess.html#subprocess.run](https://docs.python.org/3.6/library/subprocess.html#subprocess.run)
+>
 
 [^subprocess_run]: [https://docs.python.org/3.6/library/subprocess.html#subprocess.run](https://docs.python.org/3.6/library/subprocess.html#subprocess.run) 简体中文版
+
 
 \*[operating system process]: Operating System Process
 

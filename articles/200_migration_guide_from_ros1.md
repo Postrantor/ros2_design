@@ -8,10 +8,9 @@ author: "[Dirk Thomas](https://github.com/dirk-thomas)"
 date_written: 2015-07
 last_modified: 2019-02
 ---
-
 {:toc}
 
-# {{ page.title }}
+#  {{ page.title }}
 
 <div class="abstract" markdown="1">
 {{ page.abstract }}

@@ -13,10 +13,9 @@ date_written: 2019-09
 last_modified: 2019-09
 published: true
 ---
-
 {:toc}
 
-# {{ page.title }}
+#  {{ page.title }}
 
 This is a **DRAFT DOCUMENT**.
 
@@ -45,6 +44,7 @@ This involves building a sysroot for the target platform, using QEMU and Docker,
 
 We propose adding a set of commands to wrap the instructions in the cross-compilation tutorial.
 These commands would use a new workspace directory for the target platform, determined by a convention based on the:
+
 - Target platform
 - Operating system
 - RMW implementation
@@ -79,12 +79,12 @@ colcon build --mixin cc-generic_armhf-ubuntu_bionic-fastrtps-crystal \
 Under the hood, the `create-cc-sysroot` command would do the following:
 
 1. Downloads a base ROS 2 Docker image for the target platform.
-1. Builds a workspace dependent sysroot image by using a Dockerfile that starts from that base image and:
+2. Builds a workspace dependent sysroot image by using a Dockerfile that starts from that base image and:
    1. Runs `COPY` to get the contents of the workspace into the container.
-   1. Uses `rosdep` to ensure no workspace system dependency is missing.
+   2. Uses `rosdep` to ensure no workspace system dependency is missing.
       Note we can run `rosdep` in Docker for architectures like ARM-HF thanks to [QEMU](https://www.qemu.org/).
-1. Launches a container for that image and exports its file system into a `sysroot` subdirectory of the cc-root.
-1. During a build, the colcon mixin sets the appropriate CMake arguments for cross compilation and/or point to a toolchain file (ex. [generic_linux.cmake](https://github.com/ros2/cross_compile/blob/master/cmake-toolchains/generic_linux.cmake)) using the `CMAKE_TOOLCHAIN_FILE` argument.
+3. Launches a container for that image and exports its file system into a `sysroot` subdirectory of the cc-root.
+4. During a build, the colcon mixin sets the appropriate CMake arguments for cross compilation and/or point to a toolchain file (ex. [generic_linux.cmake](https://github.com/ros2/cross_compile/blob/master/cmake-toolchains/generic_linux.cmake)) using the `CMAKE_TOOLCHAIN_FILE` argument.
 
 The ROS 2 base images are variants of [sysroot/Dockerfile_ubuntu_arm](https://github.com/ros2/cross_compile/blob/master/sysroot/Dockerfile_ubuntu_arm) from ros2/cross_compile which use the [Docker Official Images](https://hub.docker.com/_/ros).
 OSRF would publish base ROS 2 images with ROS 2 prebuilt, that should be used for cross compiling workspaces with user packages.
@@ -124,16 +124,16 @@ we would need to:
 We can then test cross-compile support for the new platform by:
 
 1. Building the base ROS 2 Docker image.
-1. Using `create-cc-sysroot` to build a custom sysroot image for some reference package, e.g. [ApexAI/performance_test](https://github.com/ApexAI/performance_test/), and export its file system into a sysroot.
-1. Cross-compiling that package using the sysroot.
-1. Launching a Docker container for that sysroot image and running `colcon test` using the cross-compiled binaries.
+2. Using `create-cc-sysroot` to build a custom sysroot image for some reference package, e.g. [ApexAI/performance_test](https://github.com/ApexAI/performance_test/), and export its file system into a sysroot.
+3. Cross-compiling that package using the sysroot.
+4. Launching a Docker container for that sysroot image and running `colcon test` using the cross-compiled binaries.
    The container would be launched with a [bind mount](https://docs.docker.com/storage/bind-mounts/) of the workspace so they have access to the compiled binaries.
 
 In order to simplify the development of base ROS 2 Docker images for new architecture-OS combinations, on a future iteration of this initiative we might add a new command `build-sysroot-base-image` that would:
 
 1. Copy the required QEMU files and ROS 2 source files into a temporary location.
-1. Build a Docker image from a specified Dockerfile, with access to the those resources.
-1. Optionally publish the image into a Docker registry, using a suitable naming convention that corresponds to the platform identifier.
+2. Build a Docker image from a specified Dockerfile, with access to the those resources.
+3. Optionally publish the image into a Docker registry, using a suitable naming convention that corresponds to the platform identifier.
 
 Dockerfiles compatible with that command would be kept on the `ros2/cross_compile` repository, so they can be used in CI/CD pipelines if needed.
 

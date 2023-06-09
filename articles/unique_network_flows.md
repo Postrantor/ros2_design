@@ -12,7 +12,6 @@ Authors: {{ page.author }}
 Date Written: {{ page.date_written }}
 Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
 ---
-
 # Unique Network Flows
 
 For performance, ROS2 applications require careful selection of QoS for publishers and subscriptions. Although networks offer various QoS options, ROS2 publishers and subscriptions are unable to use them due to non-unique flows. As a result, ROS2 publishers and subscriptions can only hope to obtain undifferentiated QoS from networks. This ultimately degrades the performance potential of ROS2 applications and wastes networking infrastructure investments.
@@ -45,7 +44,7 @@ The _5-tuple_ is a traditional unique identifier for flows. The 5-tuple consists
 
 IPv6 specifies a _3-tuple_ for uniquely identifying flows. The IPv6 3-tuple consists of the source IP address, destination IP address, and the Flow Label. The Flow Label [2] is a 20-bit field in the IPv6 header. It is typically set by the source of the flow. The default Flow Label is zero.
 
-> IPv6 为唯一标识流量指定了一个*3 元组*。IPv6 3 元组由源 IP 地址、目的 IP 地址和流标签组成。流标签[2]是 IPv6 头部中的 20 位字段。它通常由流的源设置。默认流标签为零。
+> IPv6 为唯一标识流量指定了一个 *3 元组*。IPv6 3 元组由源 IP 地址、目的 IP 地址和流标签组成。流标签[2]是 IPv6 头部中的 20 位字段。它通常由流的源设置。默认流标签为零。
 
 If the 5-tuple is not sufficient, then custom 6-tuples can be created by combining the 5-tuple with the IP Options field or the IP Differentiated Services Code Point sub-field. Such custom 6-tuples are typically used as workarounds for technical difficulties.
 
@@ -169,7 +168,7 @@ Network flows are defined for UDP/TCP and IP-based RMW implementations only. It 
 
 We construct a publisher/subscription creation-time option called `require_unique_network_flow_endpoints` as a candidate structure to enable unique identification of network flows. This option takes a value from the enumeration shown below.
 
-> 我们构建了一个发布/订阅创建时选项，名为`require_unique_network_flow_endpoints`，作为一种使网络流能够唯一标识的候选结构。该选项的值来自下面的枚举。
+> 我们构建了一个发布/订阅创建时选项，名为 `require_unique_network_flow_endpoints`，作为一种使网络流能够唯一标识的候选结构。该选项的值来自下面的枚举。
 
 ```cpp
 enum unique_network_flow_endpoints_requirement_t {
@@ -186,23 +185,23 @@ Upon receiving the publisher/subscription creation request, the RMW implementati
 
 The default value of the option is `UNIQUE_NETWORK_FLOW_ENDPOINTS_NOT_REQUIRED` which indicates to the RMW implementation that unique NFEs are not required.
 
-> 默认选项的值为`UNIQUE_NETWORK_FLOW_ENDPOINTS_NOT_REQUIRED`，这表明 RMW 实现不需要唯一的 NFEs。
+> 默认选项的值为 `UNIQUE_NETWORK_FLOW_ENDPOINTS_NOT_REQUIRED`，这表明 RMW 实现不需要唯一的 NFEs。
 
 The value `UNIQUE_NETWORK_FLOW_ENDPOINTS_STRICTLY_REQUIRED` indicates to the RMW implementation that unique NFEs are strictly required. If not feasible, the RMW implementation must flag an error and not create the associated publisher/subscription.
 
-> `UNIQUE_NETWORK_FLOW_ENDPOINTS_STRICTLY_REQUIRED`的值表明 RMW 实现必须严格要求唯一的 NFEs。如果不可行，RMW 实现必须标记一个错误，而不能创建相关的发布者/订阅者。
+> `UNIQUE_NETWORK_FLOW_ENDPOINTS_STRICTLY_REQUIRED` 的值表明 RMW 实现必须严格要求唯一的 NFEs。如果不可行，RMW 实现必须标记一个错误，而不能创建相关的发布者/订阅者。
 
 The value `UNIQUE_NETWORK_FLOW_ENDPOINTS_OPTIONALLY_REQUIRED` enables the RMW implementation to create unique NFEs if feasible. If not feasible, it can continue to create the associated publisher/subscription and not flag an error.
 
-> `UNIQUE_NETWORK_FLOW_ENDPOINTS_OPTIONALLY_REQUIRED`的值使 RMW 实现能够在可行的情况下创建唯一的 NFE。如果不可行，它可以继续创建相关的发布者/订阅，而不会标记错误。
+> `UNIQUE_NETWORK_FLOW_ENDPOINTS_OPTIONALLY_REQUIRED` 的值使 RMW 实现能够在可行的情况下创建唯一的 NFE。如果不可行，它可以继续创建相关的发布者/订阅，而不会标记错误。
 
 The value `UNIQUE_NETWORK_FLOW_ENDPOINTS_SYSTEM_DEFAULT` delegates the decision to create unique NFEs fully to the RMW implementation. The RMW implementation can decide internally on its own or be coerced through side-loading mechanisms to create unique NFEs for the associated publisher/subscription.
 
-> `UNIQUE_NETWORK_FLOW_ENDPOINTS_SYSTEM_DEFAULT`的值完全将决定创建唯一的 NFE 的权力委托给 RMW 实现。RMW 实现可以自行内部决定，或者通过旁路机制来强制为相关的发布者/订阅创建唯一的 NFE。
+> `UNIQUE_NETWORK_FLOW_ENDPOINTS_SYSTEM_DEFAULT` 的值完全将决定创建唯一的 NFE 的权力委托给 RMW 实现。RMW 实现可以自行内部决定，或者通过旁路机制来强制为相关的发布者/订阅创建唯一的 NFE。
 
 The example C++ snippet below shows a node creating two subscriptions and a publisher. Subscription `sub_x_` strictly requires unique NFEs whereas `sub_y_` is indifferent. Publisher `pub_z_` optionally requires a unique NFE.
 
-> 下面的 C++代码片段示例展示了**一个节点创建两个订阅和一个发布者**。订阅'sub*x*'严格要求唯一的 NFE，而'sub*y*'则漠不关心。发布者'pub*z*'可选择性要求唯一的 NFE。
+> 下面的 C++ 代码片段示例展示了**一个节点创建两个订阅和一个发布者**。订阅'sub*x*'严格要求唯一的 NFE，而'sub*y*'则漠不关心。发布者'pub*z*'可选择性要求唯一的 NFE。
 
 ```cpp
     // Unique network flow endpoints strictly required
@@ -239,7 +238,7 @@ A strongly unique network flow is created by making both publisher and subscript
 
 We list few candidate alternatives next for RMW implementations to implement the `require_unique_network_flow_endpoint` option.
 
-> 我们接下来列出几个候选替代方案，以实施`require_unique_network_flow_endpoint`选项的 RMW 实现。
+> 我们接下来列出几个候选替代方案，以实施 `require_unique_network_flow_endpoint` 选项的 RMW 实现。
 
 - A simple option that works for both IPv6 and IPv4 is to select a unique transport port (UDP/TCP) and accordingly update the port field in the transport protocol header.
 - If the node is communicating using IPv6, then the RMW implementation can write a unique value (such as a suitable derivative of the RTPS entity ID) in the Flow Label field.
@@ -277,11 +276,11 @@ if (a_nfe_x.size() > 0 && a_nfe_y.size() > 0) {
 
 The proposed method `get_network_flow_endpoints()` requires RMW implementations to return NFEs of the associated publisher/subscription. The data structure of the NFE is specified concretely by the `rmw` layer.
 
-> 所提出的方法`get_network_flow_endpoints()`需要 RMW 实现返回相关发布者/订阅的 NFE。NFE 的数据结构由`rmw`层具体指定。
+> 所提出的方法 `get_network_flow_endpoints()` 需要 RMW 实现返回相关发布者/订阅的 NFE。NFE 的数据结构由 `rmw` 层具体指定。
 
 To reiterate, the NFEs returned by `get_network_flow_endpoints()` for a publisher represents the NFEs created on the publisher-side only (local). It does not contain information about NFEs of matched subscriptions. Similarly, the NFEs returned by `get_network_flow_endpoints()` for a subscription are localized with no information about matched publishers.
 
-> 重申一下，`get_network_flow_endpoints()`返回的 NFEs 仅代表发布者端（本地）创建的 NFEs。它不包含匹配订阅的 NFEs 的信息。同样，`get_network_flow_endpoints()`返回的 NFEs 只是本地化的，没有匹配发布者的信息。
+> 重申一下，`get_network_flow_endpoints()` 返回的 NFEs 仅代表发布者端（本地）创建的 NFEs。它不包含匹配订阅的 NFEs 的信息。同样，`get_network_flow_endpoints()` 返回的 NFEs 只是本地化的，没有匹配发布者的信息。
 
 DDS-based RMW implementations can obtain required information using the DDS-standard `Locator_t` structure when `get_network_flow_endpoints()` is called.
 

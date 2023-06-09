@@ -1,5 +1,5 @@
 ---
-  tip: translate by openai@2023-05-28 10:46:40
+tip: translate by openai@2023-05-28 10:46:40
     layout: default
     title: Zero Copy via Loaned Messages
     permalink: articles/zero_copy.html
@@ -13,7 +13,6 @@
     Date Written: {{ page.date_written }}
     Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
 ---
-
 ## Overview
 
 There is a need to eliminate unnecessary copies throughout the ROS 2 stack to maximize performance and determinism.
@@ -48,7 +47,7 @@ These enhancements would allow ROS 2 to take advantage of the shared memory mech
 
 Examples of zero-copy transfer are [RTI Connext DDS Micro](https://community.rti.com/static/documentation/connext-micro/3.0.0/doc/html/usersmanual/zerocopy.html) and [Eclipse iceoryx](https://github.com/eclipse/iceoryx).
 
-> 例子中的零复制传输有[RTI Connext DDS Micro](https://community.rti.com/static/documentation/connext-micro/3.0.0/doc/html/usersmanual/zerocopy.html)和[Eclipse iceoryx](https://github.com/eclipse/iceoryx)。
+> 例子中的零复制传输有 [RTI Connext DDS Micro](https://community.rti.com/static/documentation/connext-micro/3.0.0/doc/html/usersmanual/zerocopy.html) 和 [Eclipse iceoryx](https://github.com/eclipse/iceoryx)。
 
 ### Publisher Use Cases
 
@@ -66,7 +65,7 @@ There are two primary kinds of use cases when publishing data which are relevant
 
 Currently, only the first case is possible with the `rclcpp` API.
 
-> 目前，只有使用`rclcpp` API 才可能实现第一种情况。
+> 目前，只有使用 `rclcpp` API 才可能实现第一种情况。
 
 After calling publish, the user still owns the message and may reuse it immediately.
 
@@ -220,7 +219,7 @@ These requirements are driven by idiosyncrasies of various middleware implementa
 
 - Needs to keep sample and sample info together, therefore `rclcpp` loaned message sequence needs to own both somehow.
 
-> 需要把样本和样本信息放在一起，因此`rclcpp`借来的消息序列需要以某种方式拥有它们。
+> 需要把样本和样本信息放在一起，因此 `rclcpp` 借来的消息序列需要以某种方式拥有它们。
 
 Connext Micro Specific (ZeroCopy):
 
@@ -382,7 +381,7 @@ In order to support loaned messages in `rclcpp`, we introduce the concept of a `
 
 A `LoanedMessage` provides a wrapper around the underlying loan mechanisms, and manages the loan's lifecycle.
 
-> 一个`LoanedMessage`提供了一个包裹基础贷款机制的外壳，并管理贷款的生命周期。
+> 一个 `LoanedMessage` 提供了一个包裹基础贷款机制的外壳，并管理贷款的生命周期。
 
 ```cpp
     template <class MsgT, typename Alloc = std::allocator<void>>
@@ -471,11 +470,11 @@ This design document is limited to handling POD message types only.
 
 When performing a loan on a non-POD message, there is the additional consideration of ensuring that the allocators match between the `rclcpp` implementation and the underlying middleware.
 
-> 在对非 POD 消息执行贷款时，还需要考虑确保`rclcpp`实现与底层中间件之间的分配器匹配。
+> 在对非 POD 消息执行贷款时，还需要考虑确保 `rclcpp` 实现与底层中间件之间的分配器匹配。
 
 With the current message structures, the allocator itself may have an impact on the `sizeof()` the message type.
 
-> 在当前的消息结构中，分配器本身可能会对消息类型的`sizeof()`产生影响。
+> 在当前的消息结构中，分配器本身可能会对消息类型的 `sizeof()` 产生影响。
 
 This is best illustrated via the following example:
 
@@ -523,7 +522,7 @@ This is best illustrated via the following example:
 
 Example output using `g++ --std=c++14`
 
-> 示例输出使用`g++ --std=c++14`
+> 示例输出使用 `g++ --std=c++14`
 
 ```cpp
     sizeof(foo) == 72
@@ -536,7 +535,7 @@ Example output using `g++ --std=c++14`
 
 Example output using `clang++-7 -stdlib=libc++`
 
-> 示例输出使用`clang++-7 -stdlib=libc++`
+> 示例输出使用 `clang++-7 -stdlib=libc++`
 
 ```cpp
     sizeof(foo) == 56

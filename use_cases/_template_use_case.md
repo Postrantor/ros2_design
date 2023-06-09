@@ -2,7 +2,6 @@
 layout: default
 title: TITLE HERE
 ---
-
 # Use Cases
 
 Enter one line here:

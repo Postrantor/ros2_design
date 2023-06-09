@@ -19,7 +19,6 @@ Authors: {{ page.author }}
 Date Written: {{ page.date_written }}
 Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
 ---
-
 ## Scope
 
 This article specifies the generated Python code for ROS interface types defined in the [interface definition article](interface_definition.html).
@@ -39,10 +38,12 @@ All code of a ROS package should be defined in a Python package with the same na
 > - ROS 消息模块：`<package_name>.msg`。
 > - ROS 服务的模块：<package_name>.srv
 
-    <div class="alert alert-warning" markdown="1">
-      <b>NOTE:</b> The names are currently identical to the ones used in ROS 1.
-      Therefore it is not possible to import both in a Python application.
-    </div>
+```
+<div class="alert alert-warning" markdown="1">
+  <b>NOTE:</b> The names are currently identical to the ones used in ROS 1.
+  Therefore it is not possible to import both in a Python application.
+</div>
+```
 
 ## Generated files
 
@@ -54,8 +55,8 @@ Following the Python conventions the namespace hierarchy is mapped to a folder s
 
 For a message a Python `class` with the same name as the message is generated in the file `_<my_message_name>.py`. The Python module `<package_name>.msg` / `<package_name>.srv` exports all message / service classes without the message module name to shorten import statements, e.g. `import <package_name>.msg.<MyMessageName>`
 
-> 对于一条消息，Python 中会生成一个与消息同名的`class`，它会被存储在文件`_<my_message_name>.py`中。
-> 模块`<package_name>.msg` / `<package_name>.srv`导出所有消息/服务类，而不带有消息模块名称，以简化导入语句，例如`import <package_name>.msg.<MyMessageName>`。
+> 对于一条消息，Python 中会生成一个与消息同名的 `class`，它会被存储在文件 `_<my_message_name>.py` 中。
+> 模块 `<package_name>.msg` / `<package_name>.srv` 导出所有消息/服务类，而不带有消息模块名称，以简化导入语句，例如 `import <package_name>.msg.<MyMessageName>`。
 
 ### Types
 
@@ -116,15 +117,17 @@ Since this would discourage evolution of message definitions the data structures
 
 ### Magic methods
 
-    <div class="alert alert-warning" markdown="1">
-      <b>TODO:</b> decide which magic methods should be provided
-    </div>
+```
+<div class="alert alert-warning" markdown="1">
+  <b>TODO:</b> decide which magic methods should be provided
+</div>
+```
 
 ## Services
 
 For a service a `class` with the same name is generated. The class contains only two `types`:
 
-> 为了提供服务，会生成一个同名的`类`。
+> 为了提供服务，会生成一个同名的 `类`。
 > 这个类只包含两种类型：
 
 - `Request` which is the type of the request part of the service
@@ -141,4 +144,4 @@ The generated code is split across multiple files the same way as message are.
 
 For the request and response parts of a service separate messages are being generated. These messages are named after the service and have either a `_Request` or `_Response` suffix. They are are still defined in the `srv` sub namespace.
 
-> 对于服务的请求和响应部分，会生成单独的消息。 这些消息以服务命名，并以“\_Request”或“\_Response”为后缀。 他们仍然定义在`srv`子命名空间中。
+> 对于服务的请求和响应部分，会生成单独的消息。 这些消息以服务命名，并以“\_Request”或“\_Response”为后缀。 他们仍然定义在 `srv` 子命名空间中。

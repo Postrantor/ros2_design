@@ -9,7 +9,6 @@ category_order:
   - Interfaces
   - Security
 ---
-
 # ROS 2 Design
 
 This site is repository of articles which are designed to inform and guide the ROS 2 design efforts.
@@ -52,59 +51,64 @@ List the categorized articles under their category headers:
 {% endcomment %}
 
 {% for category in page.category_order %}
-### {{ category }}
-    {% for p in sorted_pages %}
-        {% if p.categories contains category %}
 
-----
+###  {{ category }}
 
-#### [{{ p.title }}]({{ p.url }})
+```
+{% for p in sorted_pages %}
+    {% if p.categories contains category %}
+```
+
+---
+
+#### [ {{ p.title }}]( {{ p.url }})
 
 > {{ p.abstract }}
-        {% endif %}
-    {% endfor %}
-{% endfor %}
+> {% endif %}
+> {% endfor %}
+> {% endfor %}
 
 {% comment %}
 List the uncategorized articles:
 {% endcomment %}
 
 ### Uncategorized
-{% for p in sorted_pages %}
-    {% unless p.categories %}
-        {% if p.url contains 'articles/' and p.published == true %}
-----
 
-#### [{{ p.title }}]({{ p.url }})
+ {% for p in sorted_pages %}
+ {% unless p.categories %}
+ {% if p.url contains 'articles/' and p.published == true %}
+---
+
+#### [ {{ p.title }}]( {{ p.url }})
 
 > {{ p.abstract }}
-        {% endif %}
-    {% endunless %}
-{% endfor %}
+> {% endif %}
+> {% endunless %}
+> {% endfor %}
 
-----
+---
 
 <div class="unpublished" style="display: none;" markdown="1">
 # Unpublished Articles
 
 These articles are not finished or maybe not even started yet:
 
-{% assign sorted_pages = site.pages | sort:"name" %}
-{% for p in sorted_pages %}
-    {% if p.url contains 'articles/' and p.published != true %}
-----
+ {% assign sorted_pages = site.pages | sort:"name" %}
+ {% for p in sorted_pages %}
+ {% if p.url contains 'articles/' and p.published != true %}
+---
 
-#### [{{ p.title }}]({{ p.url }})
+#### [ {{ p.title }}]( {{ p.url }})
 
 > {{ p.abstract }}
-    {% endif %}
-{% endfor %}
+> {% endif %}
+> {% endfor %}
 
-----
+---
+
 </div>
 
 # Additional Resources
 
-- [Why You Want to Use ROS 2: ROSCon 2014 presentation](http://www.osrfoundation.org/wordpress2/wp-content/uploads/2015/04/ROSCON-2014-Why-you-want-to-use-ROS-2.pdf) 
+- [Why You Want to Use ROS 2: ROSCon 2014 presentation](http://www.osrfoundation.org/wordpress2/wp-content/uploads/2015/04/ROSCON-2014-Why-you-want-to-use-ROS-2.pdf)
 - [State of ROS 2 - demos and the technology behind: ROSCon 2015 presentation](http://roscon.ros.org/2015/presentations/state-of-ros2.pdf)
-

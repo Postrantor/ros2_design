@@ -12,7 +12,6 @@ tip: translate by openai@2023-05-29 08:23:51
   Date Written: {{ page.date_written }}
   Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
 ---
-
 ## Background
 
 ROS 2 is lacking a process for the conglomeration of package documentation.
@@ -45,11 +44,11 @@ In general, the vision for the system is:
 
 - Package documentation (API documentation, other package related content) from the repositories is built on the ROS 2 infrastructure and deployed to the ROS 2 documentation site in an automatic process maintainers can opt in to by adding a `doc` block to the `distribution.yaml`
 
-> 在自动过程中，维护者可以通过在`distribution.yaml`中添加`doc`块，将存储库中的包文档（API 文档，其他与包相关的内容）构建到 ROS 2 基础架构上，并部署到 ROS 2 文档站点。
+> 在自动过程中，维护者可以通过在 `distribution.yaml` 中添加 `doc` 块，将存储库中的包文档（API 文档，其他与包相关的内容）构建到 ROS 2 基础架构上，并部署到 ROS 2 文档站点。
 
 - See [REP 141](https://www.ros.org/reps/rep-0141.html) for more context.
 
-> 请参阅[REP 141](https://www.ros.org/reps/rep-0141.html)以获取更多上下文信息。
+> 请参阅 [REP 141](https://www.ros.org/reps/rep-0141.html) 以获取更多上下文信息。
 
 - Package documentation is indexed alongside ROS 2's generic content on the docs site
 
@@ -71,7 +70,7 @@ The per-package documentation plan is an extension of the general ROS 2 document
 
 - The URL structure will be `docs.ros.org/<lang>/<distro>/...` for generic documentation and `docs.ros.org/<lang>/<distro>/p/<package_name>/...` for package documentation
 
-> URL 的结构将是`docs.ros.org/<lang>/<distro>/...`用于一般文档，`docs.ros.org/<lang>/<distro>/p/<package_name>/...`用于软件包文档。
+> URL 的结构将是 `docs.ros.org/<lang>/<distro>/...` 用于一般文档，`docs.ros.org/<lang>/<distro>/p/<package_name>/...` 用于软件包文档。
 
 - See the diagram below for more context on where documentation will fall under this URL structure:
 
@@ -115,7 +114,7 @@ Its presence as part of the docs site should be made well-known from the site's 
 
 Every package's "home page" should be reachable with minimal effort by the scheme `docs.ros.org/<lang>/<distro>/p/<package_name>/`
 
-> 每个软件包的“主页”都可以通过方案`docs.ros.org/<lang>/<distro>/p/<package_name>/`轻松访问。
+> 每个软件包的“主页”都可以通过方案 `docs.ros.org/<lang>/<distro>/p/<package_name>/` 轻松访问。
 
 **1.3 Package documentation must be maintainable in its repository without going through a third party**
 
@@ -131,11 +130,11 @@ The details of building and hosting will not be a concern of package maintainers
 
 Despite being hosted alongside the generic documentation, working on a package's documentation will not require any work on the repositories of the generic documentation (currently `ros2/ros2_documentation`) or the site repository (currently `ros-infrastructure/rosindex`).
 
-> 尽管与通用文档一起托管，但在包文档上的工作不需要对通用文档的存储库（目前为`ros2/ros2_documentation`）或站点存储库（目前为`ros-infrastructure/rosindex`）进行任何工作。
+> 尽管与通用文档一起托管，但在包文档上的工作不需要对通用文档的存储库（目前为 `ros2/ros2_documentation`）或站点存储库（目前为 `ros-infrastructure/rosindex`）进行任何工作。
 
 **1.4 The system must support C++ and Python API docs generation**
 
-> **1.4 系统必须支持 C++和 Python API 文档生成**
+> **1.4 系统必须支持 C++ 和 Python API 文档生成**
 
 The system will automatically extract API docs for these languages from the source code in package repositories and build the output on the docs site.
 
@@ -199,7 +198,7 @@ A stable linking process will be in place to cross-reference between package doc
 
 When writing package documentation, maintainers should not have to concern themselves with auto-generated content, like the current `/changelogs` and `/symbols` directories in the current `docs.ros.org` API docs structure for ROS 1.
 
-> 在编写软件包文档时，维护者不必担心自动生成的内容，比如当前 ROS 1.0 文档结构中的`/changelogs`和`/symbols`目录。
+> 在编写软件包文档时，维护者不必担心自动生成的内容，比如当前 ROS 1.0 文档结构中的 `/changelogs` 和 `/symbols` 目录。
 
 ### 2. Secondary requirements
 
@@ -251,7 +250,7 @@ In summary, the design for the system is:
 
 - Utilize [Sphinx][1], [Doxygen][2] and [Breathe][3] tools to satisfy both C++ and Python API documentation (1.4), cross-referencing across packages (1.9) and consistent use of RST (1.5)
 
-> 使用[Sphinx][1]、[Doxygen][2]和[Breathe][3]工具满足 C++和 Python API 文档（1.4），跨包交叉引用（1.9）和 RST 的一致使用（1.5）。
+> 使用 [Sphinx][1]、[Doxygen][2] 和 [Breathe][3] 工具满足 C++ 和 Python API 文档（1.4），跨包交叉引用（1.9）和 RST 的一致使用（1.5）。
 
 - Develop a new doc tool integrated into the build system (1.7) for maintainers to run on their packages (1.3) that encompasses Sphinx, Doxygen and Breathe, and builds the docs locally (2.3).
 
@@ -265,7 +264,9 @@ In summary, the design for the system is:
 
 > 一个包按照正常的发布流程被包含在 rosdistro 中，将会将其文档版本号设置为该发行版本号（1.6），并将该包列入该发行版的包列表（1.8）中，可以在 docs.ros.org 上查看。
 
-    - Via the inclusion of a doc block in a distribution.yaml in [github.com/ros/rosdistro](https://github.com/ros/rosdistro)
+```
+- Via the inclusion of a doc block in a distribution.yaml in [github.com/ros/rosdistro](https://github.com/ros/rosdistro)
+```
 
 The design description is laid out in the following subsections:
 
@@ -297,7 +298,7 @@ It can be run on any ROS 2 package.
 
 The tool may be developed to run standalone, or it may be necessary for maintainers to add a one liner to their package.xml, rosdoc.yaml, etc. telling the tool whether it should be building C++ docs, Python docs, or both.
 
-> 工具可以开发为独立运行，或者维护者可能需要在他们的 package.xml、rosdoc.yaml 等文件中添加一行，告诉工具是否应该构建 C++文档、Python 文档或两者都要。
+> 工具可以开发为独立运行，或者维护者可能需要在他们的 package.xml、rosdoc.yaml 等文件中添加一行，告诉工具是否应该构建 C++ 文档、Python 文档或两者都要。
 
 The tool works by first building the package to ensure all the generated code is accounted for and able to be documented.
 
@@ -305,7 +306,7 @@ The tool works by first building the package to ensure all the generated code is
 
 Then, the tool checks for a `doxyfile` or C++ code.
 
-> 然后，工具会检查`doxyfile`或 C++代码。
+> 然后，工具会检查 `doxyfile` 或 C++ 代码。
 
 If either are present, the tool will run Doxygen.
 
@@ -313,7 +314,7 @@ If either are present, the tool will run Doxygen.
 
 If the package maintainer wants their C++ code documented, they should include a `doxyfile`.
 
-> 如果软件包维护者想要对他们的 C++代码进行文档化，他们应该包含一个`doxyfile`。
+> 如果软件包维护者想要对他们的 C++ 代码进行文档化，他们应该包含一个 `doxyfile`。
 
 We can provide a standard template for the `doxyfile`, which maintainers can then customize the contents of, to the specifications of their package’s needs.
 
@@ -321,7 +322,7 @@ We can provide a standard template for the `doxyfile`, which maintainers can the
 
 Maintainers can also choose to not include a `doxyfile`, in which case the tool will substitute a default doxyfile if it finds C++ code, providing standard configuration for the package.
 
-> 维护者也可以选择不包含`doxyfile`，在这种情况下，如果工具发现 C++代码，它将提供标准配置的默认 doxyfile，以提供该软件包的标准配置。
+> 维护者也可以选择不包含 `doxyfile`，在这种情况下，如果工具发现 C++ 代码，它将提供标准配置的默认 doxyfile，以提供该软件包的标准配置。
 
 Doxygen will produce API docs for any C++ code it is run on, and the maintainer has the option to further elaborate on their API docs by including Doxygen comment blocks within their source code.
 
@@ -329,7 +330,7 @@ Doxygen will produce API docs for any C++ code it is run on, and the maintainer 
 
 Once Doxygen is completed, or if it never ran because the tool did not find any `doxyfile` or C++ code, the tool will proceed to running Breathe and Sphinx.
 
-> 一旦 Doxygen 完成，或者如果由于工具没有找到任何`doxyfile`或 C++代码而从未运行，该工具将继续运行 Breathe 和 Sphinx。
+> 一旦 Doxygen 完成，或者如果由于工具没有找到任何 `doxyfile` 或 C++ 代码而从未运行，该工具将继续运行 Breathe 和 Sphinx。
 
 Breathe imports the symbols from Doxygen’s output to Sphinx.
 
@@ -341,7 +342,7 @@ It will allow C++ API docs to be built by Sphinx to maintain consistency across 
 
 If there is no Doxygen output (no C++ documentation), Sphinx will run without Breathe.
 
-> 如果没有 Doxygen 输出（没有 C++文档），Sphinx 将在没有 Breathe 的情况下运行。
+> 如果没有 Doxygen 输出（没有 C++ 文档），Sphinx 将在没有 Breathe 的情况下运行。
 
 All packages will need a Sphinx configuration file.
 
@@ -361,7 +362,7 @@ Once complete, the tool will output the package documentation build locally.
 
 Users will be able to see any build errors as well as how their documentation will look once built to `docs.ros.org`.
 
-> 用户可以查看任何构建错误，以及构建到`docs.ros.org`时文档的外观。
+> 用户可以查看任何构建错误，以及构建到 `docs.ros.org` 时文档的外观。
 
 ##### Support for other languages
 
@@ -409,7 +410,7 @@ Supporting multiple documentation engines will require that each generator outpu
 
 To opt in to having documentation built on docs.ros.org, maintainers will have to add a `doc` block to their `distribution.yaml` file that indicates the rosdistro branch and a path to the repository.
 
-> 要选择在 docs.ros.org 上建立文档，维护者必须在他们的`distribution.yaml`文件中添加一个`doc`块，指明 rosdistro 分支和存储库的路径。
+> 要选择在 docs.ros.org 上建立文档，维护者必须在他们的 `distribution.yaml` 文件中添加一个 `doc` 块，指明 rosdistro 分支和存储库的路径。
 
 Opting-in this way will cause the tool to automatically generate an index landing page for the package.
 
@@ -433,7 +434,7 @@ Some files will be auto-generated during this process (changelogs, tag files, et
 
 The auto-generated content won’t be saved to the upstream repositories, but it will be built to `docs.ros.org`.
 
-> 自动生成的内容不会保存到上游仓库，但它将构建到`docs.ros.org`上。
+> 自动生成的内容不会保存到上游仓库，但它将构建到 `docs.ros.org` 上。
 
 There is a possibility of collision occurring between maintainer created files and generated files.
 
@@ -441,7 +442,7 @@ There is a possibility of collision occurring between maintainer created files a
 
 To prevent this to the best of the system's ability, the system will place auto-generated content in a restricted directory (see [URL Structure - /generated](#generated)).
 
-> 为了尽可能有效地防止这种情况，系统将在受限目录中放置自动生成的内容（参见[URL 结构 - /generated](#generated)）。
+> 为了尽可能有效地防止这种情况，系统将在受限目录中放置自动生成的内容（参见 [URL 结构 - /generated](#generated)）。
 
 ##### Cross-referencing between sibling packages
 
@@ -469,11 +470,11 @@ How exactly this will be executed will be determined.
 
 The index pages indicate the default page that is rendered when the directory level immediately before is visited without any specific `.html` page following.
 
-> 索引页面表明，当访问直接位于其之前的目录而不带任何特定的`.html`页面时，会呈现默认页面。
+> 索引页面表明，当访问直接位于其之前的目录而不带任何特定的 `.html` 页面时，会呈现默认页面。
 
 For example, visiting docs.ros.org/en/foxy would render `index1`, docs.ros.org/en/foxy/p would render `index2`, and docs.ros.org/en/foxy/p/<package_name> would render `index3`.
 
-> 例如，访问 docs.ros.org/en/foxy 将渲染`index1`，docs.ros.org/en/foxy/p 将渲染`index2`，而 docs.ros.org/en/foxy/p/<package_name>将渲染`index3`。
+> 例如，访问 docs.ros.org/en/foxy 将渲染 `index1`，docs.ros.org/en/foxy/p 将渲染 `index2`，而 docs.ros.org/en/foxy/p/<package_name> 将渲染 `index3`。
 
 `index1` is the general ROS 2 documentation overview page, what is currently seen when visiting index.ros.org/doc/ros2/
 
@@ -497,7 +498,7 @@ When functionality is added to the documentation system for more than one versio
 
 For example, `/p/rclcpp` can have versioned content added to `/p/rclcpp-2.1.0` and `/p/rclcpp-3.0.0`.
 
-> 例如，可以向`/p/rclcpp-2.1.0`和`/p/rclcpp-3.0.0`添加版本内容`/p/rclcpp`。
+> 例如，可以向 `/p/rclcpp-2.1.0` 和 `/p/rclcpp-3.0.0` 添加版本内容 `/p/rclcpp`。
 
 After enabling versioning, the unversioned URL will be a link to the version currently indexed in the rosdistro.
 
@@ -529,11 +530,11 @@ The index page for each package will link to the generated API docs, changelogs,
 
 Within a package’s repo, the tool will generate a `/docs` directory where maintainers can place any manually created rst files they would like, like tutorials, architecture articles, etc.
 
-> 在包的存储库中，该工具将生成一个`/docs`目录，维护者可以在其中放置任何手动创建的 rst 文件，如教程、架构文章等。
+> 在包的存储库中，该工具将生成一个 `/docs` 目录，维护者可以在其中放置任何手动创建的 rst 文件，如教程、架构文章等。
 
 The tool will direct Sphinx to generate the content in the `/docs` directory, which will output to the top level when deployed (sibling to `/generated` and `index3`).
 
-> 这个工具会指导 Sphinx 在`/docs`目录下生成内容，部署时会输出到最顶层（与`/generated`和`index3`同级）。
+> 这个工具会指导 Sphinx 在 `/docs` 目录下生成内容，部署时会输出到最顶层（与 `/generated` 和 `index3` 同级）。
 
 However, it may become evident during development of the system that it is necessary to add an additional subdirectory/subdirectories at this level to contain the manually created content.
 
@@ -551,7 +552,7 @@ For now, the URL structure uses `user generated` as a placeholder for either cas
 
 Besides the addition of `/en`, the structure and functionality of ROS 1’s API documentation will remain the same.
 
-> 除了添加`/en`之外，ROS 1 的 API 文档的结构和功能将保持不变。
+> 除了添加 `/en` 之外，ROS 1 的 API 文档的结构和功能将保持不变。
 
 Necessary redirects will be implemented.
 
@@ -577,11 +578,11 @@ This ensures the robustness of the system more so than any of the non-standard t
 
 With Breathe, it is simple to satisfy the requirement of coordinating C++ and Python documentation, and basing the system off of Sphinx allows simple customization with Python modules.
 
-> 用 Breathe，可以很容易地满足协调 C++和 Python 文档的要求，而基于 Sphinx 的系统可以使用 Python 模块进行简单的定制。
+> 用 Breathe，可以很容易地满足协调 C++ 和 Python 文档的要求，而基于 Sphinx 的系统可以使用 Python 模块进行简单的定制。
 
 Another tool, [Exhale][4] has been considered for future addition to the system.
 
-> 另一个工具[Exhale][4]已被考虑用于未来添加到系统中。
+> 另一个工具 [Exhale][4] 已被考虑用于未来添加到系统中。
 
 Exhale adds some extra features available in pure Doxygen that Breathe alone doesn’t import into Sphinx.
 
@@ -613,7 +614,7 @@ The tool should mostly mask the complexities of the Sphinx/Breathe/Doxygen syste
 
 To satisfy secondary requirement 2.6, the first obvious consideration for the structure was `.../p/<package_name>/<version>`, but, as indicated in the URL structure section above, the decision is to use `.../p/<package_name-version.number.n>`.
 
-> 为了满足次要要求 2.6，结构的第一个显而易见的考虑是`.../p/<package_name>/<version>`，但是，正如上文 URL 结构部分所指出的，决定使用`.../p/<package_name-version.number.n>`。
+> 为了满足次要要求 2.6，结构的第一个显而易见的考虑是 `.../p/<package_name>/<version>`，但是，正如上文 URL 结构部分所指出的，决定使用 `.../p/<package_name-version.number.n>`。
 
 The chosen structure doesn’t force another directory, which allows versioned package documentation to be added later on in the development of the system without leaving an unused directory level in the meantime.
 
@@ -621,22 +622,18 @@ The chosen structure doesn’t force another directory, which allows versioned p
 
 Adding package versions in the future will not disrupt the meaning of the URL structure, because `/<package_name>/` without any appended `-version.number.n` will always implicitly indicate the latest version.
 
-> 在将来添加包版本不会破坏 URL 结构的意义，因为没有任何追加的`-version.number.n`的`/<package_name>/`将始终隐含表示最新版本。
+> 在将来添加包版本不会破坏 URL 结构的意义，因为没有任何追加的 `-version.number.n` 的 `/<package_name>/` 将始终隐含表示最新版本。
 
 <!-- ## Reference -->
 
 [1]: https://www.sphinx-doc.org/en/master/
-
 > [1]: https://www.sphinx-doc.org/zh_CN/master/
 
 [2]: https://www.doxygen.nl/index.html
-
 > [2]: https://www.doxygen.nl/index.html 中文：https://www.doxygen.nl/zh/index.html
 
 [3]: https://breathe.readthedocs.io/en/latest/
-
 > [3]: https://breathe.readthedocs.io/en/latest/zh_CN/
 
 [4]: https://exhale.readthedocs.io/en/latest/
-
 > [4]: https://exhale.readthedocs.io/zh_CN/latest/

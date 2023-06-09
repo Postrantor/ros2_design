@@ -14,7 +14,6 @@ Authors: {{ page.author }}
 Date Written: {{ page.date_written }}
 Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
 ---
-
 ## Why remap names
 
 Remapping names allows reusing the same node executable in different parts of the system. A robot that has multiple sensors of the same type could launch multiple instances of the same node with outputs remapped to different topics.
@@ -89,7 +88,7 @@ Nodes are said to be in a namespace or have a **default namespace**. This namesp
 
 A popular ROS 1 package [actionlib](http://wiki.ros.org/actionlib) creates 5 topics with the same namespace. In ROS 1 remapping an actionlib client or server means creating 5 remapping rules. In ROS 2 just one rule could remap them all.
 
-> 一个流行的 ROS 1 包[actionlib](http://wiki.ros.org/actionlib)创建了 5 个具有相同命名空间的主题。在 ROS 1 中，重新映射 actionlib 客户端或服务器意味着创建 5 个重新映射规则。在 ROS 2 中，只需一条规则就可以重新映射它们。
+> 一个流行的 ROS 1 包 [actionlib](http://wiki.ros.org/actionlib) 创建了 5 个具有相同命名空间的主题。在 ROS 1 中，重新映射 actionlib 客户端或服务器意味着创建 5 个重新映射规则。在 ROS 2 中，只需一条规则就可以重新映射它们。
 
 _Example:_
 
@@ -178,7 +177,7 @@ _Example:_
 
 The default namespace is the one in which relative names get expanded to. This should be changeable without affecting FQN. ROS 1 has this feature using either the environment variable `ROS_NAMESPACE` or the argument `__ns`.
 
-> 默认命名空间是相对名称扩展的命名空间。这应该可以改变而不影响 FQN。ROS 1 有这个功能，使用环境变量`ROS_NAMESPACE`或参数`__ns`。
+> 默认命名空间是相对名称扩展的命名空间。这应该可以改变而不影响 FQN。ROS 1 有这个功能，使用环境变量 `ROS_NAMESPACE` 或参数 `__ns`。
 
 _Example:_
 
@@ -190,7 +189,7 @@ _Example:_
 
 The node name is used in log messages and to create private names. ROS 1 has this feature using the argument `__name`.
 
-> 节点名称用于日志消息和创建私有名称。 ROS 1 具有使用参数`__name`的此功能。
+> 节点名称用于日志消息和创建私有名称。 ROS 1 具有使用参数 `__name` 的此功能。
 
 _Example:_
 
@@ -247,7 +246,7 @@ Not supported:
 
 The structure of a remapping rule is `match:=replacement`. `match` tests if a name should be remapped. `replacement` says what the new name will be. `:=` behaves the same as it does in ROS 1.
 
-> 翻译规则的结构是`match:=replacement`。`match`测试是否需要重新映射名称。`replacement`表示新名称将是什么。`:=`在 ROS 1 中的行为与其相同。
+> 翻译规则的结构是 `match:=replacement`。`match` 测试是否需要重新映射名称。`replacement` 表示新名称将是什么。`:=` 在 ROS 1 中的行为与其相同。
 
 Example rules are:
 
@@ -270,11 +269,11 @@ The match part of a rule uses these operators:
 
 The operators `*` and `**` are similar to the globbing behavior in bash. `**` behaves similar to its use in bash>=4.0 with the globstar option set.
 
-> 运算符`*`和`**`类似于 bash 中的 globbing 行为。`**`的行为类似于 bash>=4.0 中设置了 globstar 选项时的行为。
+> 运算符 `*` 和 `**` 类似于 bash 中的 globbing 行为。`**` 的行为类似于 bash>=4.0 中设置了 globstar 选项时的行为。
 
 The URL schemes `rosservice://` and `rostopic://` may only be given to topic or service name rules. They may not be prefixed to a node name or namespace replacement rule (`__name`, `__node`, or `__ns`). If both a node name prefix and URL scheme are given, the node name prefix must come first.
 
-> URL 方案`rosservice://`和`rostopic://`只能给主题或服务名规则使用，不能加在节点名或命名空间替换规则（`__name`，`__node`或`__ns`）之前。如果给出了节点名前缀和 URL 方案，则节点名前缀必须先出现。
+> URL 方案 `rosservice://` 和 `rostopic://` 只能给主题或服务名规则使用，不能加在节点名或命名空间替换规则（`__name`，`__node` 或 `__ns`）之前。如果给出了节点名前缀和 URL 方案，则节点名前缀必须先出现。
 
 `*`, and `**` match whole tokens only. `*bar` looks like it would match `foobar`, but that would mean matching a partial token. To avoid confusion they are required to be separated from tokens, substitutions, and each other by a `/`. For example `*/bar` `**/*` `~/*` are allowed, but `*bar` `***` `~*` are invalid.
 
@@ -296,7 +295,7 @@ The syntax for `\1` through `\9` was taken from backreferences in POSIX BRE. How
 
 These references are required to be separated from tokens by a `/`. When this creates a name with `//` one slash is automatically deleted. For example `**/bar:=/bar/\1` matches the name `/foo/bar` with `**` capturing `/foo`, but the new name is `/bar/foo`.
 
-> 这些引用需要与标记用“/”分隔。当创建一个带有“//”的名称时，会自动删除一个斜线。例如，“**/bar:=/bar/\1”将名称“/foo/bar”与“**`捕获“/foo”匹配，但新名称为“/bar/foo”。
+> 这些引用需要与标记用“/”分隔。当创建一个带有“//”的名称时，会自动删除一个斜线。例如，“**/bar:=/bar/\1”将名称“/foo/bar”与“**` 捕获“/foo”匹配，但新名称为“/bar/foo”。
 
 The replacement part of a rule may not have a URL scheme. This is to avoid a mismatch between the scheme type of the match side and of the replacement side.
 
@@ -497,7 +496,7 @@ The syntax doesn't have a way to specify that a rule should be applied Prior to 
 
 A syntax like fnmatch is being considered. The character for the wild card `*` was chosen to match fnmatch. Because remapping needs to capture text to use during replacement, the C function `fnmatch()` cannot be used as the implementation. The extra wildcards `?` and `[]` don't appear to enable more uses cases above. Fnmatch syntax may or may not match text with slashes depending on the option `FNM_PATHNAME`.
 
-> 正在考虑使用类似 fnmatch 的语法。通配符“\*”的字符被选择为匹配 fnmatch。因为重映射需要捕获文本以在替换过程中使用，所以不能将 C 函数“fnmatch（）”用作实现。额外的通配符`？`和“[]”似乎无法启用以上更多的用例。Fnmatch 语法可能匹配带斜线的文本，也可能不匹配，具体取决于选项“FNM_PATHNAME”。
+> 正在考虑使用类似 fnmatch 的语法。通配符“\*”的字符被选择为匹配 fnmatch。因为重映射需要捕获文本以在替换过程中使用，所以不能将 C 函数“fnmatch（）”用作实现。额外的通配符 `？` 和“[]”似乎无法启用以上更多的用例。Fnmatch 语法可能匹配带斜线的文本，也可能不匹配，具体取决于选项“FNM_PATHNAME”。
 
 ## Static Versus Dynamic Remapping
 

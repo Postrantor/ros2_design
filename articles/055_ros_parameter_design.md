@@ -14,7 +14,6 @@ Authors: {{ page.author }}
 Date Written: {{ page.date_written }}
 Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
 ---
-
 ## Background
 
 In ROS 1 the parameters were implemented in a 'blackboard model' with unrestricted read and write access from all nodes. The data model proved useful in many cases, but there were many cases where the lack of control or ownership proved to be a problem. One of the common shortcomings was for setting parameters on drivers. A tool called dynamic_reconfigure was developed to address this use case. It provided a service based interface to interact with parameters of other nodes.
@@ -29,11 +28,10 @@ Other resources related to the parameter design process for ROS 2 include:
 
 - Gonzalo's research on parameters.
 
-  - Discussion: <https://groups.google.com/forum/#!topic/ros-sig-ng-ros/YzCmoIsN0o8> and <https://groups.google.com/forum/#!searchin/ros-sig-ng-ros/parameter/ros-sig-ng-ros/fwDBcei5Ths/L6ORPfjUDXYJ>
-  - Prototype: <https://github.com/abellagonzalo/dynamic_config>
+  - Discussion: [https://groups.google.com/forum/#!topic/ros-sig-ng-ros/YzCmoIsN0o8](https://groups.google.com/forum/#!topic/ros-sig-ng-ros/YzCmoIsN0o8) and [https://groups.google.com/forum/#!searchin/ros-sig-ng-ros/parameter/ros-sig-ng-ros/fwDBcei5Ths/L6ORPfjUDXYJ](https://groups.google.com/forum/#!searchin/ros-sig-ng-ros/parameter/ros-sig-ng-ros/fwDBcei5Ths/L6ORPfjUDXYJ)
+  - Prototype: [https://github.com/abellagonzalo/dynamic_config](https://github.com/abellagonzalo/dynamic_config)
   - Final Notes: [http://wiki.ros.org/sig/NextGenerationROS/Parameters](http://wiki.ros.org/sig/NextGenerationROS/Parameters)
-
-- Thibault's nodeparam draft REP: <https://github.com/tkruse/rep/blob/nodeparam/nodeparam-REP.rst>
+- Thibault's nodeparam draft REP: [https://github.com/tkruse/rep/blob/nodeparam/nodeparam-REP.rst](https://github.com/tkruse/rep/blob/nodeparam/nodeparam-REP.rst)
 
 ## Ideal System
 
@@ -66,7 +64,6 @@ It is useful to consider an ideal system to understand how it would work and how
 > 由于参数的数量可能很大，因此需要能够提供参数的子集。例如，可以逐步查询参数以获得树形图形用户界面。
 
 - Provide notifications when parameters are added and removed or their value has been changed
-
 - Reject changes to parameter values
 
 This implies that some entity has the authority to reject or accept a change based on arbitrary criteria. This would also include the ability to convey at least part of the criteria for the acceptance of a change to external actors. For example, communicating the range for an integer or a few choices for a string. This type of information would be used to generate generic user interfaces, but might not capture all criteria. Since the validation criteria can be arbitrary complex and can potentially not be communicated to a client the parameter server could offer to validate an atomic set of parameters and respond with a boolean flag if the values would be accepted (based on the current criteria). Obviously the result might be different when the values are set shortly after but it would allow to implement validators in e.g. a GUI generically.
@@ -89,7 +86,7 @@ This implies that some entity has the authority to reject or accept a change bas
 
   For example, one of the challenges of the current system is that there is a naming ambiguity between nodes and parameters `/foo/bar/baz` could be a node `/foo/bar/baz` or a private parameter `baz` on node `/foo/bar`.
 
-> 例如，目前系统的一个挑战是，节点和参数之间存在命名模糊，`/foo/bar/baz`可以是节点`/foo/bar/baz`，也可以是节点`/foo/bar`上的私有参数`baz`。
+> 例如，目前系统的一个挑战是，节点和参数之间存在命名模糊，`/foo/bar/baz` 可以是节点 `/foo/bar/baz`，也可以是节点 `/foo/bar` 上的私有参数 `baz`。
 
 - Be logged for playback and analysis
 
@@ -202,7 +199,7 @@ There are use cases where the older behavior with parameter server was useful. B
 
 A pattern developed in ROS 1.0 was the `searchParam` mode where a parameter could be set in a namespace and the parameter query would walk up the namespace to search for the parameter. A similar behavior can be implemented by allowing the search parameter implementation to walk across the different nodes in hierarchical order.
 
-> 在 ROS 1.0 中开发的一种模式是`searchParam`模式，在该模式下，可以在命名空间中设置一个参数，参数查询将沿着命名空间向上搜索参数。可以通过允许搜索参数实现以分层顺序跨越不同节点来实现类似的行为。
+> 在 ROS 1.0 中开发的一种模式是 `searchParam` 模式，在该模式下，可以在命名空间中设置一个参数，参数查询将沿着命名空间向上搜索参数。可以通过允许搜索参数实现以分层顺序跨越不同节点来实现类似的行为。
 
 ### Parameter API
 
@@ -226,7 +223,7 @@ When logging an entire system, the parameter changes can be logged via standard 
 
 The above specification has been prototyped; the implementation can be found in [rclcpp](https://github.com/ros2/rclcpp). The definition of the services to use for interacting remotely are contained in the [rcl_interfaces package](https://github.com/ros2/rcl_interfaces)
 
-> 以上规范已经原型化；实现可以在[rclcpp](https://github.com/ros2/rclcpp)中找到。用于远程交互的服务定义包含在[rcl_interfaces package](https://github.com/ros2/rcl_interfaces)中。
+> 以上规范已经原型化；实现可以在 [rclcpp](https://github.com/ros2/rclcpp) 中找到。用于远程交互的服务定义包含在 [rcl_interfaces package](https://github.com/ros2/rcl_interfaces) 中。
 
 ### Unimplemented
 

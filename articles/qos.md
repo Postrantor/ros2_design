@@ -13,7 +13,6 @@ Authors: {{ page.author }}
 Date Written: {{ page.date_written }}
 Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
 ---
-
 With the advent of inexpensive robots using unreliable wireless networks, developers and users need mechanisms to control how traffic is prioritized across network links.
 
 > 随着廉价机器人使用不可靠的无线网络的出现，开发者和用户需要机制来控制如何优先处理网络链接上的流量。
@@ -55,13 +54,11 @@ The base QoS profile includes settings for the following policies:
 - Keep all: store all samples, subject to the configured resource limits of the DDS vendor.
 - Depth.
 - Size of the queue: only honored if used together with "keep last".
-
 - Reliability.
 - Best effort: attempt to deliver samples, but may lose them if the network is not robust.
 - Reliable: guarantee that samples are delivered, may retry multiple times.
-
 - Durability.
-- Transient local: _only applies to `DataWriter`s_.
+- Transient local: _only applies to `DataWriter` s_.
   `DataWriter` becomes responsible of persisting samples until a corresponding `DataReader` becomes available.
 - Volatile: no attempt is made to persist samples.
 
@@ -74,7 +71,7 @@ The base QoS profile includes settings for the following policies:
 > 尽最大努力：尝试提供样本，但如果网络不稳定，可能会丢失样本。
 > 可靠：保证样品可以送达，可以多次重试。
 > 耐久性。
-> 本地瞬态：仅适用于`DataWriter`s。
+> 本地瞬态：仅适用于 `DataWriter` s。
 > 易变的：不会尝试持久化样本。
 
 > [NOTE]:
@@ -140,12 +137,12 @@ In environments where DDS is already deployed and also to enable more extensibil
 
 However, this mechanism will not be added into the common ROS 2 API so as to keep the `rmw` layer transport agnostic and let future developers implement it for other transports (e.g. ZeroMQ, TCPROS, etc.)
 
-> 然而，为了保持`rmw`层传输与特定实现无关，这种机制不会被添加到常见的 ROS 2 API 中，以便让未来的开发人员为其他传输（例如 ZeroMQ、TCPROS 等）实现它。
+> 然而，为了保持 `rmw` 层传输与特定实现无关，这种机制不会被添加到常见的 ROS 2 API 中，以便让未来的开发人员为其他传输（例如 ZeroMQ、TCPROS 等）实现它。
 
 To honor the QoS settings of the system, developers can use the `rmw_qos_profile_system_default` QoS profile which delegates the responsibility of the QoS machinery to the underlying DDS vendor.
 
 > [!NOTE]:
-> **为了尊重系统的 QoS 设置，开发人员可以使用`rmw_qos_profile_system_default` QoS 配置文件，将 QoS 机制的责任委托给底层 DDS 供应商。**
+> **为了尊重系统的 QoS 设置，开发人员可以使用 `rmw_qos_profile_system_default` QoS 配置文件，将 QoS 机制的责任委托给底层 DDS 供应商。**
 
 This allows developers to deploy ROS 2 applications and use DDS vendor tools to configure the QoS settings.
 
@@ -184,17 +181,15 @@ How should the integration of the QoS machinery with intraprocess communication 
 
 - [OpenDDS - QoS Policy Usages](http://www.opendds.org/qosusages.html)
 - [OpenDDS - QoS Policy Compliance](http://www.opendds.org/qospolicies.html)
-
 - Angelo Corsaro, [DDS QoS Unleashed](http://www.slideshare.net/Angelo.Corsaro/dds-qos-unleashed)
 
 > -安杰洛·科萨罗（Angelo Corsaro），《DDS QoS 解放》（[DDS QoS Unleashed](http://www.slideshare.net/Angelo.Corsaro/dds-qos-unleashed)）
 
 - Angelo Corsaro, [The DDS Tutorial Part II](http://www.slideshare.net/Angelo.Corsaro/the-dds-tutorial-part-ii)
 
-> - 亚洛·科萨罗（Angelo Corsaro）的《DDS 教程第二部分》（The DDS Tutorial Part II）：http://www.slideshare.net/Angelo.Corsaro/the-dds-tutorial-part-ii
+> - 亚洛·科萨罗（Angelo Corsaro）的《DDS 教程第二部分》（The DDS Tutorial Part II）：[http://www.slideshare.net/Angelo.Corsaro/the-dds-tutorial-part-ii](http://www.slideshare.net/Angelo.Corsaro/the-dds-tutorial-part-ii)
 
 - [DDS Spec, section 2.2.3](http://www.omg.org/spec/DDS/1.4/PDF/)
-
 - Heidi Schubert, [QoS policies for configuring reliability](https://community.rti.com/content/forum-topic/qos-policies-configuring-reliability)
 
 > - Heidi Schubert，[配置可靠性的服务质量策略](https://community.rti.com/content/forum-topic/qos-policies-configuring-reliability)

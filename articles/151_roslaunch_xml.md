@@ -13,14 +13,13 @@ Authors: {{ page.author }}
 Date Written: {{ page.date_written }}
 Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
 ---
-
 # ROS 2 Launch XML Format v0.1.0
 
 ## Rationale
 
 As an alternative to a programmatic approach to the ROS 2 launch system's API, a declarative description features a WYSIWYG approach, easier to read, audit and maintain. This is the preferred approach for ROS 1 `roslaunch` launch files, thus some degree of familiarity is expected (and relied upon).
 
-> 作为 ROS 2 启动系统 API 的编程方法的替代方案，声明式描述具有 WYSIWYG 方法，更容易阅读，审计和维护。这是 ROS 1 `roslaunch`启动文件的首选方法，因此有一定程度的熟悉度是期望的（并依赖于）。
+> 作为 ROS 2 启动系统 API 的编程方法的替代方案，声明式描述具有 WYSIWYG 方法，更容易阅读，审计和维护。这是 ROS 1 `roslaunch` 启动文件的首选方法，因此有一定程度的熟悉度是期望的（并依赖于）。
 
 The body of such a description is mainly comprised of statically declared launch actions with a prescribed configuration. To that, runtime value substitution is added in order to fullfill common dynamic (re)configuration needs like conditional execution, resource lookups, etc. It is intended for these entities to map to those of the underlying implementation, reducing support to file parsing.
 
@@ -195,7 +194,7 @@ The `<remap>` tag allows for ROS name remapping of a `<node>` instance.
 
 The `<env>` tag allows for modifying an OS process environment. It can be used nested in `node` or `executable` tags. It doesn't allow conditional execution.
 
-> `<env>`标记允许修改操作系统进程环境。它可以嵌套在“node”或“executable”标记中使用。它不允许有条件执行。
+> `<env>` 标记允许修改操作系统进程环境。它可以嵌套在“node”或“executable”标记中使用。它不允许有条件执行。
 
 ##### Examples
 

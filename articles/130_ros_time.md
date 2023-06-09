@@ -13,7 +13,6 @@ Authors: {{ page.author }}
 Date Written: {{ page.date_written }}
 Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
 ---
-
 ## Background
 
 Many robotics algorithms inherently rely on timing as well as synchronization. To this end we require that nodes running in the ROS network have a synchronized system clock such that they can accurately report timestamps for events.
@@ -76,7 +75,7 @@ The final challenge is that the time abstraction must be able to jump backwards 
 
 There will be at least three versions of these abstractions with the following types, `SystemTime`, `SteadyTime` and `ROSTime`. These choices are designed to parallel the [`std::chrono`][] [`system_clock`][] and [`steady_clock`][]. It is expected that the default choice of time will be to use the `ROSTime` source, however the parallel implementations supporting `steady_clock` and `system_clock` will be maintained for use cases where the alternate time source is required.
 
-> 预计默认的时间选择将是使用`ROSTime`源，但是为了满足需要使用替代时间源的使用场景，将维护支持`steady_clock`和`system_clock`的并行实现。这些抽象将至少有三个版本，类型为`SystemTime`、`SteadyTime`和`ROSTime`，这些选择旨在与[`std::chrono`][]的[`system_clock`][]和[`steady_clock`][]并行。
+> 预计默认的时间选择将是使用 `ROSTime` 源，但是为了满足需要使用替代时间源的使用场景，将维护支持 `steady_clock` 和 `system_clock` 的并行实现。这些抽象将至少有三个版本，类型为 `SystemTime`、`SteadyTime` 和 `ROSTime`，这些选择旨在与[`std::chrono`][]的[`system_clock`][]和[`steady_clock`][]并行。
 
 #### System Time
 
@@ -88,7 +87,7 @@ For convenience in these cases we will also provide the same API as above, but u
 
 The `ROSTime` will report the same as `SystemTime` when a ROS Time Source is not active. When the ROS time source is active `ROSTime` will return the latest value reported by the Time Source. `ROSTime` is considered active when the parameter `use_sim_time` is set on the node.
 
-> 当 ROS 时间源未激活时，`ROSTime`将与`SystemTime`报告相同。当 ROS 时间源处于活动状态时，`ROSTime`将返回时间源报告的最新值。当节点上的参数`use_sim_time`设置为活动状态时，`ROSTime`被认为是活动的。
+> 当 ROS 时间源未激活时，`ROSTime` 将与 `SystemTime` 报告相同。当 ROS 时间源处于活动状态时，`ROSTime` 将返回时间源报告的最新值。当节点上的参数 `use_sim_time` 设置为活动状态时，`ROSTime` 被认为是活动的。
 
 #### Steady Time
 
@@ -98,7 +97,7 @@ Example use cases for this include hardware drivers which are interacting with p
 
 In nodes which require the use of `SteadyTime` or `SystemTime` for interacting with hardware or other peripherals it is expected that they do a best effort to isolate any `SystemTime` or `SteadyTime` information inside their implementation and translate external interfaces to use the ROS time abstraction when communicating over the ROS network.
 
-> 在需要使用`SteadyTime`或`SystemTime`与硬件或其他外设交互的节点中，期望它们尽最大努力将`SystemTime`或`SteadyTime`信息隔离在实现内部，并将外部接口在通过 ROS 网络进行通信时转换为 ROS 时间抽象。
+> 在需要使用 `SteadyTime` 或 `SystemTime` 与硬件或其他外设交互的节点中，期望它们尽最大努力将 `SystemTime` 或 `SteadyTime` 信息隔离在实现内部，并将外部接口在通过 ROS 网络进行通信时转换为 ROS 时间抽象。
 
 ### ROS Time Source
 
@@ -110,7 +109,7 @@ To implement the time abstraction the following approach will be used.
 
 The time abstraction can be published by one source on the `/clock` topic. The topic will contain the most up to date time for the ROS system. If a publisher exists for the topic, it will override the system time when using the ROS time abstraction. If `/clock` is being published, calls to the ROS time abstraction will return the latest time received from the `/clock` topic. If time has not been set it will return zero if nothing has been received. A time value of zero should be considered an error meaning that time is uninitialized.
 
-> 时间抽象可以在`/clock`主题上由一个源发布。该主题将包含 ROS 系统的最新时间。如果主题存在发布者，则在使用 ROS 时间抽象时会覆盖系统时间。如果正在发布`/clock`，则对 ROS 时间抽象的调用将返回从`/clock`主题接收到的最新时间。如果没有设置时间，如果没有收到任何内容，则返回零。时间值为零应被视为错误，表示时间未初始化。
+> 时间抽象可以在 `/clock` 主题上由一个源发布。该主题将包含 ROS 系统的最新时间。如果主题存在发布者，则在使用 ROS 时间抽象时会覆盖系统时间。如果正在发布 `/clock`，则对 ROS 时间抽象的调用将返回从 `/clock` 主题接收到的最新时间。如果没有设置时间，如果没有收到任何内容，则返回零。时间值为零应被视为错误，表示时间未初始化。
 
 If the time on the clock jumps backwards, a callback handler will be invoked and be required to complete before any calls to the ROS time abstraction report the new time. Calls that come in before that must block. The developer has the opportunity to register callbacks with the handler to clear any state from their system if necessary before time will be in the past.
 
@@ -118,13 +117,13 @@ If the time on the clock jumps backwards, a callback handler will be invoked and
 
 The frequency of publishing the `/clock` as well as the granularity are not specified as they are application specific.
 
-> 发布`/clock`的频率以及粒度并未详细说明，因为这些都是应用特定的。
+> 发布 `/clock` 的频率以及粒度并未详细说明，因为这些都是应用特定的。
 
 ##### No Advanced Estimating Clock By Default
 
 There are more advanced techniques which could be included to attempt to estimate the propagation properties and extrapolate between time ticks. However all of these techniques will require making assumptions about the future behavior of the time abstraction. And in the case that playback or simulation is instantaneously paused, it will break any of these assumptions. There are techniques which would allow potential interpolation, however to make these possible it would require providing guarantees about the continuity of time into the future. For more accuracy the progress of time can be slowed, or the frequency of publishing can be increased. Tuning the parameters for the `/clock` topic lets you trade off time for computational effort and/or bandwidth.
 
-> 有更先进的技术可以用来估计传播特性并在时间刻度之间进行外推。但是，所有这些技术都需要对时间抽象的未来行为做出假设。如果回放或模拟瞬间暂停，它将打破这些假设。有技术可以实现潜在的插值，但是要实现这一点，需要对未来时间的连续性提供保证。为了更准确，可以减慢时间的进度，或者增加发布的频率。调整`/clock`主题的参数可以让您在时间和计算工作量/带宽之间进行权衡。
+> 有更先进的技术可以用来估计传播特性并在时间刻度之间进行外推。但是，所有这些技术都需要对时间抽象的未来行为做出假设。如果回放或模拟瞬间暂停，它将打破这些假设。有技术可以实现潜在的插值，但是要实现这一点，需要对未来时间的连续性提供保证。为了更准确，可以减慢时间的进度，或者增加发布的频率。调整 `/clock` 主题的参数可以让您在时间和计算工作量/带宽之间进行权衡。
 
 #### Custom Time Source
 
@@ -138,7 +137,7 @@ It is possible to use an external time source such as GPS as a ROSTime source, b
 
 For the current implementation a `TimeSource` API will be defined such that it can be overridden in code. If in the future a common implementation is found that would be generally useful it could be extended to optionally dynamically select the alternative TimeSource via a parameter similar to enabling the simulated time.
 
-> 对于当前的实现，将定义一个`TimeSource` API，以便可以在代码中重写它。如果将来发现一个通用的实现，可以通过类似于启用模拟时间的参数来选择可选的替代 TimeSource。
+> 对于当前的实现，将定义一个 `TimeSource` API，以便可以在代码中重写它。如果将来发现一个通用的实现，可以通过类似于启用模拟时间的参数来选择可选的替代 TimeSource。
 
 ## Implementation
 
@@ -152,11 +151,11 @@ The `SystemTime`, `SteadyTime`, and `ROSTime` API's will be provided by each cli
 
 The implementation from client library will provide `Time`, `Duration`, and `Rate` datatypes, for all three time source abstractions.
 
-> 客户端库的实现将提供`时间`、`持续时间`和`速率`数据类型，用于所有三种时间源抽象。
+> 客户端库的实现将提供 `时间`、`持续时间` 和 `速率` 数据类型，用于所有三种时间源抽象。
 
 The `Clock` will support a `sleep_for` function as well as a `sleep_until` method using a `Duration` or `Time` argument respectively. The implementation will also provide a `Timer` object which will provide periodic callback functionality for all the abstractions.
 
-> 时钟也将提供`sleep_for`函数和`sleep_until`方法，分别使用`Duration`或`Time`参数。实现还将提供一个`Timer`对象，为所有抽象提供周期性回调功能。
+> 时钟也将提供 `sleep_for` 函数和 `sleep_until` 方法，分别使用 `Duration` 或 `Time` 参数。实现还将提供一个 `Timer` 对象，为所有抽象提供周期性回调功能。
 
 It will also support registering callbacks for before and after a time jump. The first callback will be to allow proper preparations for a time jump. The latter will allow code to respond to the change in time and include the new time specifically as well as a quantification of the jump.
 
@@ -170,15 +169,17 @@ Any API which is blocking will allow a set of flags to indicate the appropriate 
 
 In `rcl` there will be datatypes and methods to implement each of the three time abstractions for each of the core datatypes. However at the `rcl` level the implementation will be incomplete as it will not have a threading model and will rely on the higher level implementation to provide any threading functionality which is required by sleep methods. It also will require appropriate threading to support the reception of `TimeSource` data.
 
-> 在`rcl`中，将会有数据类型和方法来实现每个核心数据类型的三种时间抽象。但是在`rcl`层面，实现将是不完整的，因为它不具备线程模型，并且需要更高级别的实现来提供任何睡眠方法所需的线程功能。它还需要适当的线程来支持`TimeSource`数据的接收。
+> 在 `rcl` 中，将会有数据类型和方法来实现每个核心数据类型的三种时间抽象。但是在 `rcl` 层面，实现将是不完整的，因为它不具备线程模型，并且需要更高级别的实现来提供任何睡眠方法所需的线程功能。它还需要适当的线程来支持 `TimeSource` 数据的接收。
 
 It will provide implementations parallel to the public datastructures and storage which the client library can depend upon and to which it can delegate. The underlying datatypes will also provide ways to register notifications, however it is the responsibility of the client library implementation to collect and dispatch user callbacks.
 
 > 它将提供与客户端库可以依赖并可以委托的公共数据结构和存储的实现。底层数据类型也将提供注册通知的方式，但是收集和调度用户回调的责任在客户端库实现中。
 
-    <div class="alert alert-warning" markdown="1">
-      <b>TODO:</b> Enumerate the <code>rcl</code> datastructures and methods here.
-    </div>
+```
+<div class="alert alert-warning" markdown="1">
+  <b>TODO:</b> Enumerate the <code>rcl</code> datastructures and methods here.
+</div>
+```
 
 ## References
 
@@ -186,10 +187,12 @@ The default time source is modeled on the ROS Clock and ROS Time system used in 
 
 > 默认的时间源是基于 ROS Clock 和 ROS Time 系统，这是 ROS 1.0 所使用的。要了解 ROS 1.0 中的实现，请参阅：
 
-    - [ROS Clock Documentation](http://wiki.ros.org/Clock)
-    - [rospy Time Documentation](http://wiki.ros.org/rospy/Overview/Time)
-    - [roscpp Time Documentation](http://wiki.ros.org/roscpp/Overview/Time)
+```
+- [ROS Clock Documentation](http://wiki.ros.org/Clock)
+- [rospy Time Documentation](http://wiki.ros.org/rospy/Overview/Time)
+- [roscpp Time Documentation](http://wiki.ros.org/roscpp/Overview/Time)
 
-    [`std::chrono`]: http://en.cppreference.com/w/cpp/chrono
-    [`steady_clock`]: http://en.cppreference.com/w/cpp/chrono/steady_clock
-    [`system_clock`]: http://en.cppreference.com/w/cpp/chrono/system_clock
+[`std::chrono`]: http://en.cppreference.com/w/cpp/chrono
+[`steady_clock`]: http://en.cppreference.com/w/cpp/chrono/steady_clock
+[`system_clock`]: http://en.cppreference.com/w/cpp/chrono/system_clock
+```

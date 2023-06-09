@@ -15,7 +15,6 @@ Authors: {{ page.author }}
 Date Written: {{ page.date_written }}
 Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
 ---
-
 > [!NOTE]
 > deadline、liveliness 对应的 pub/sub 双方
 > lifespan 是针对 sub 的，超过这个限制将不再接受消息
@@ -288,7 +287,7 @@ This policy is useful for cases where a Topic is expected to have each instance 
 
 When the DDS Service ‘matches’ a DataWriter and a DataReader it checks whether the settings are compatible (i.e., offered deadline period<= requested deadline period) if they are not, the two entities are informed (via the listener or condition mechanism) of the incompatibility of the QoS settings and communication will not occur.
 
-> 当 DDS 服务“匹配”一个数据写入者和一个数据读取者时，它会检查设置是否兼容(即，提供的截止期限<=请求的截止期限)，如果不兼容，这两个实体将通过监听器或条件机制被通知 QoS 设置的不兼容性，通信将不会发生。
+> 当 DDS 服务“匹配”一个数据写入者和一个数据读取者时，它会检查设置是否兼容(即，提供的截止期限 <=请求的截止期限)，如果不兼容，这两个实体将通过监听器或条件机制被通知 QoS 设置的不兼容性，通信将不会发生。
 
 Assuming that the 'DataReader' and 'DataWriter' ends have compatible settings, the fulfillment of this contract is monitored by the DDS Service and the application is informed of any violations by means of the proper listener or condition.
 
@@ -358,7 +357,7 @@ Each data sample written by the DataWriter has an associated ‘expiration time�
 
 > [!NOTE]
 > 这个 QOS 策略是针对 sub 而言的，是从 data_reader 中移除信息。
-> 果然这里参数是对于pub进行设置的，应该避免对 sub进行设置，参考：`C:\Users\trantor\Documents\Hirain\Project\doc\ros2_design\articles\qos_configurability.md:480`
+> 果然这里参数是对于 pub 进行设置的，应该避免对 sub 进行设置，参考：`C:\Users\trantor\Documents\Hirain\Project\doc\ros2_design\articles\qos_configurability.md:480`
 
 The ‘expiration time’ of each sample is computed by adding the duration specified by the LIFESPAN QoS to the source timestamp. The source timestamp is either automatically computed by the DDS Service each time the DataWriter write operation is called, or else supplied by the application by means of the write_w_timestamp operation.
 

@@ -13,7 +13,6 @@ Authors: {{ page.author }}
 Date Written: {{ page.date_written }}
 Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
 ---
-
 > [!NOTE]
 > 在 action 中也有提到这类 `Introspection tools`，考虑也实现一套，还是 ros2 中已经具备？
 > 用于对 error 状态的节点进行检查，可以用于调试，而不是直接销毁。
@@ -42,8 +41,6 @@ The most important concept of this document is that a managed node presents a kn
 ![The proposed node life cycle state machine](/img/node_lifecycle/life_cycle_sm.png "The proposed node life cycle state machine")
 
 There are 4 primary states:
-
-> 有 4 个主要状态：
 
 - `Unconfigured`
 - `Inactive`
@@ -158,13 +155,13 @@ This state exists to support debugging and introspection. A node which has faile
 
 - A node may be deallocated via the `destroy` transition.
 
-> 一个节点可以通过`destroy`转换来释放。
+> 一个节点可以通过 `destroy` 转换来释放。
 
 ### Transition State: `Configuring`
 
 In this transition state the node's `onConfigure` callback will be called to allow the node to load its configuration and conduct any required setup.
 
-> 在这个转换状态下，将调用节点的`onConfigure`回调，以允许节点加载其配置并进行任何必要的设置。
+> 在这个转换状态下，将调用节点的 `onConfigure` 回调，以允许节点加载其配置并进行任何必要的设置。
 
 The configuration of a node will typically involve those tasks that must be performed once during the node's life time, such as obtaining permanent memory buffers and setting up topic publications/subscriptions that do not change.
 
@@ -184,15 +181,15 @@ The node uses this to set up any resources it must hold throughout its life (irr
 - If the `onConfigure` callback results in a failure code (TODO specific code) the node will transition back to `Unconfigured`.
 - If the `onConfigure` callback raises or results in any other result code the node will transition to `ErrorProcessing`
 
-> 如果`onConfigure`回调成功，节点将转换为`Inactive`状态。
-> 如果`onConfigure`回调结果返回失败代码（TODO 具体代码），节点将会重新转换回“未配置”状态。
-> 如果`onConfigure`回调引发或产生任何其他结果代码，节点将转换为`ErrorProcessing`。
+> 如果 `onConfigure` 回调成功，节点将转换为 `Inactive` 状态。
+> 如果 `onConfigure` 回调结果返回失败代码（TODO 具体代码），节点将会重新转换回“未配置”状态。
+> 如果 `onConfigure` 回调引发或产生任何其他结果代码，节点将转换为 `ErrorProcessing`。
 
 ### Transition State: `CleaningUp`
 
 In this transition state the node's callback `onCleanup` will be called. This method is expected to clear all state and return the node to a functionally equivalent state as when first created. If the cleanup cannot be successfully achieved it will transition to `ErrorProcessing`.
 
-> 在此转换状态下，将调用节点的回调`onCleanup`。该方法预期会清除所有状态，并将节点返回到与创建时功能等效的状态。如果无法成功完成清理，它将转换为`ErrorProcessing`。
+> 在此转换状态下，将调用节点的回调 `onCleanup`。该方法预期会清除所有状态，并将节点返回到与创建时功能等效的状态。如果无法成功完成清理，它将转换为 `ErrorProcessing`。
 
 > [!NOTE]
 > 这样的话，初始状态就要保存在一些公共的地方，就是要有备份了
@@ -202,50 +199,50 @@ In this transition state the node's callback `onCleanup` will be called. This me
 - If the `onCleanup` callback succeeds the node will transition to `Unconfigured`.
 - If the `onCleanup` callback raises or results in any other return code the node will transition to `ErrorProcessing`.
 
-> 如果`onCleanup`回调成功，节点将转换为`未配置`状态。
-> 如果`onCleanup`回调引发或导致任何其他返回代码，节点将转换为`ErrorProcessing`。
+> 如果 `onCleanup` 回调成功，节点将转换为 `未配置` 状态。
+> 如果 `onCleanup` 回调引发或导致任何其他返回代码，节点将转换为 `ErrorProcessing`。
 
 ### Transition State: `Activating`
 
 In this transition state the callback `onActivate` will be executed. This method is expected to do any final preparations to start executing. This may include acquiring resources that are only held while the node is actually active, such as access to hardware. Ideally, no preparation that requires significant time (such as lengthy hardware initialisation) should be performed in this callback.
 
-> 在这个转换状态下，回调`onActivate`将被执行。此方法预期将做出任何最终准备来开始执行。这可能包括**获取仅在节点实际活动时持有的资源，例如对硬件的访问权限**。理想情况下，**不应该在此回调中执行需要大量时间（例如长时间的硬件初始化）的准备工作**。
+> 在这个转换状态下，回调 `onActivate` 将被执行。此方法预期将做出任何最终准备来开始执行。这可能包括**获取仅在节点实际活动时持有的资源，例如对硬件的访问权限**。理想情况下，**不应该在此回调中执行需要大量时间（例如长时间的硬件初始化）的准备工作**。
 
 #### Valid transitions out if `Activating`
 
 - If the `onActivate` callback succeeds the node will transition to `Active`.
 - If the `onActivate` callback raises or results in any other return code the node will transition to `ErrorProcessing`.
 
-> 如果`onActivate`回调成功，节点将转换为`Active`状态。
-> 如果`onActivate`回调引发或产生任何其他返回码，节点将转换为`ErrorProcessing`。
+> 如果 `onActivate` 回调成功，节点将转换为 `Active` 状态。
+> 如果 `onActivate` 回调引发或产生任何其他返回码，节点将转换为 `ErrorProcessing`。
 
 ### Transition State: Deactivating
 
 In this transition state the callback `onDeactivate` will be executed. This method is expected to do any cleanup to start executing, and should reverse the `onActivate` changes.
 
-> 在这个转换状态下，回调`onDeactivate`将被执行。此方法旨在执行任何清理工作，并且应该撤销`onActivate`所做的更改。
+> 在这个转换状态下，回调 `onDeactivate` 将被执行。此方法旨在执行任何清理工作，并且应该撤销 `onActivate` 所做的更改。
 
 #### Valid transitions out of Deactivating
 
 - If the `onDeactivate` callback succeeds the node will transition to `Inactive`.
 - If the `onDeactivate` callback raises or results in any other return code the node will transition to `ErrorProcessing`.
 
-> 如果`onDeactivate`回调成功，节点将转换为“非活动”状态。
-> 如果`onDeactivate`回调引发或导致任何其他返回代码，节点将转换为`ErrorProcessing`。
+> 如果 `onDeactivate` 回调成功，节点将转换为“非活动”状态。
+> 如果 `onDeactivate` 回调引发或导致任何其他返回代码，节点将转换为 `ErrorProcessing`。
 
 ### Transition State: ShuttingDown
 
 In this transition state the callback `onShutdown` will be executed. This method is expected to do any cleanup necessary before destruction. It may be entered from any Primary State except `Finalized`, the originating state will be passed to the method.
 
-> 在这个过渡状态中，回调`onShutdown`将被执行。这个方法预计会在销毁之前做任何必要的清理工作。它可以从任何主状态进入，除了`Finalized`，原始状态将被传递给该方法。
+> 在这个过渡状态中，回调 `onShutdown` 将被执行。这个方法预计会在销毁之前做任何必要的清理工作。它可以从任何主状态进入，除了 `Finalized`，原始状态将被传递给该方法。
 
 #### Valid transitions out of ShuttingDown
 
 - If the `onShutdown` callback succeeds the node will transition to `Finalized`.
 - If the `onShutdown` callback raises or results in any other return code the node will transition to `ErrorProcessing`.
 
-> 如果`onShutdown`回调成功，节点将转换为`Finalized`。
-> 如果`onShutdown`回调引发或导致任何其他返回码，节点将转换为`ErrorProcessing`。
+> 如果 `onShutdown` 回调成功，节点将转换为 `Finalized`。
+> 如果 `onShutdown` 回调引发或导致任何其他返回码，节点将转换为 `ErrorProcessing`。
 
 ### Transition State: ErrorProcessing
 
@@ -255,22 +252,22 @@ This transition state is where any error can be cleaned up. It is possible to en
 
 Transitions to `ErrorProcessing` may be caused by error return codes in callbacks as well as methods within a callback or an uncaught exception.
 
-> 转换到“ErrorProcessing”可能是由回调中的错误返回码或回调中的方法或未捕获的异常引起的。
+> 转换到 `ErrorProcessing` 可能是由回调中的错误返回码或回调中的方法或未捕获的异常引起的。
 
 #### Valid transitions out of ErrorProcessing
 
 - If the `onError` callback succeeds the node will transition to `Unconfigured`.
   It is expected that the `onError` will clean up all state from any previous state.
 
-> 如果`onError`回调成功，节点将转换为“未配置”。
-> 预计`onError`将清理所有之前状态的状态。
+> 如果 `onError` 回调成功，节点将转换为“未配置”。
+> 预计 `onError` 将清理所有之前状态的状态。
 
 As such if entered from `Active` it must provide the cleanup of both `onDeactivate` and `onCleanup` to return success.
 
 - If the `onShutdown` callback raises or results in any other result code the node will transition to `Finalized`.
 
 > 如此，如果从“活动”状态输入，则必须提供“onDeactivate”和“onCleanup”的清理，以返回成功。
-> 如果`onShutdown`回调引发或产生任何其他结果码，节点将转换为`Finalized`。
+> 如果 `onShutdown` 回调引发或产生任何其他结果码，节点将转换为 `Finalized`。
 
 ### Destroy Transition
 
@@ -296,7 +293,7 @@ A managed node will be exposed to the ROS ecosystem by the following interface, 
 
 It is expected that a common pattern will be to have a container class which loads a managed node implementation from a library and through a plugin architecture automatically exposes the required management interface via methods and the container is not subject to the lifecycle management. However, it is fully valid to consider any implementation which provides this interface and follows the lifecycle policies a managed node. Conversely, any object that provides these services but does not behave in the way defined in the life cycle state machine is malformed.
 
-> 预期的一种常见模式是拥有一个容器类，它从库中加载受管理的节点实现，并通过插件架构自动暴露所需的管理接口，容器不受生命周期管理的约束。然而，完全合法地考虑任何提供这种接口并遵循生命周期策略的实现都是受管理的节点。反之，任何提供这些服务但不按照生命周期状态机中定义的方式行事的对象都是不正确的。
+> 预期的一种常见模式是拥有一个容器类，它从库中加载受管理的节点实现，并通过插件架构自动暴露所需的管理接口，**容器不受生命周期管理的约束**。然而，完全合法地考虑任何提供这种接口并遵循生命周期策略的实现都是受管理的节点。反之，任何提供这些服务但不按照生命周期状态机中定义的方式行事的对象都是不正确的。
 
 These services may also be provided via attributes and method calls (for local management) in addition to being exposed ROS messages and topics/services (for remote management). In the case of providing a ROS middleware interface, specific topics must be used, and they should be placed in a suitable namespace.
 
@@ -310,7 +307,7 @@ Each possible supervisory transition will be provided as a service by the name o
 
 A topic should be provided to broadcast the new life cycle state when it changes. This topic must be latched. The topic must be named `lifecycle_state` it will carry both the end state and the transition, with result code. It will publish every time that a transition is triggered, whether successful or not.
 
-> 每次生命周期状态发生变化时，应提供一个主题来广播新的生命周期状态。**此主题必须被锁定。该主题必须命名为`lifecycle_state`**，它将携带终止状态和转换，以及结果代码。每次触发转换时，无论是否成功，都将发布。
+> 每次生命周期状态发生变化时，应提供一个主题来广播新的生命周期状态。**此主题必须被锁定。该主题必须命名为 `lifecycle_state`**，它将携带终止状态和转换，以及结果代码。每次触发转换时，无论是否成功，都将发布。
 
 ## Node Management
 
@@ -320,7 +317,7 @@ There are several different ways in which a managed node may transition between 
 
 There is one transition expected to originate locally, which is the `ERROR` transition. A managed node may also want to expose arguments to automatically configure and activate when run in an unmanaged system.
 
-> 有一个预期从本地发起的转换，即`ERROR`转换。管理节点还可能希望暴露参数，以便在非管理系统中自动配置和激活。
+> 有一个预期从本地发起的转换，即 `ERROR` 转换。管理节点还可能希望暴露参数，以便在非管理系统中自动配置和激活。
 
 ## Extensions
 

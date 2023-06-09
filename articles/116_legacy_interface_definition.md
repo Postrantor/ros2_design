@@ -14,7 +14,6 @@ Authors: {{ page.author }}
 Date Written: {{ page.date_written }}
 Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
 ---
-
 ## Scope
 
 This article specifies the file format coming from ROS 1 describing the data structures which are being used to exchange information between components. The data structures are defined in a programming language agnostic way. The format is based on the [<code>.msg</code> format definition](http://wiki.ros.org/msg#Message_Description_Specification) from ROS 1.
@@ -97,7 +96,7 @@ Beside the primitive types other messages can be referenced to describe the type
 
 A static array has exactly `N` elements of the specified type. `N` must be greater than `0`.
 
-> 一个静态数组有指定类型的`N`个元素，`N`必须大于`0`。
+> 一个静态数组有指定类型的 `N` 个元素，`N` 必须大于 `0`。
 
 #### Arrays with dynamic size
 
@@ -143,7 +142,7 @@ A field can optionally specify a default value. If no default value is specified
 
 A field of type `array` can optionally specify a default value.
 
-> 一个类型为`array`的字段可以选择性地指定默认值。
+> 一个类型为 `array` 的字段可以选择性地指定默认值。
 
 - default values for an array must start with an opening square bracket (`[`) and end with a closing square bracket (`]`)
 - each value within the array must be separated with a comma (`,`)
@@ -153,9 +152,9 @@ A field of type `array` can optionally specify a default value.
 
 Additional rule for `string` arrays:
 
-> 对于`string`数组的额外规则：
+> 对于 `string` 数组的额外规则：
 
-- string arrays must contain only `string`s respecting the following rules:
+- string arrays must contain only `string` s respecting the following rules:
   - a string value which can optionally be quoted with either single quotes (`'`) or double quotes (`"`)
   - a double-quoted (`"`) string (respectively single-quoted (`'`)) should have any inner double quotes (respectively single quotes) escaped
 
@@ -180,7 +179,7 @@ Constants are defined by a _primitive type_, a _name_, and a _fixed value_. If t
 
 Each file contains a single message or service. Message files use the extension `.msg`, service files use the extension `.srv`.
 
-> 每个文件包含一条消息或服务。消息文件使用`.msg`扩展名，服务文件使用`.srv`扩展名。
+> 每个文件包含一条消息或服务。消息文件使用 `.msg` 扩展名，服务文件使用 `.srv` 扩展名。
 
 Both file names must use an upper camel case name and only consist of alphanumeric characters.
 
@@ -208,7 +207,7 @@ The message and service definitions are text files.
 
 The character `#` starts a comment, which terminates at the end of the line on which it occurs.
 
-> 字符`#`开始一个注释，在其出现的行结束时终止。
+> 字符 `#` 开始一个注释，在其出现的行结束时终止。
 
 ### Message file format
 
@@ -222,7 +221,9 @@ A field definition has the following structure:
 
 > 一个字段定义的结构如下：
 
-    <type> <name> <optional_default_value>
+```
+<type> <name> <optional_default_value>
+```
 
 #### Constant definition
 
@@ -230,13 +231,15 @@ A constant definition has the following structure:
 
 > 一个常量定义的结构如下：
 
-    <type> <name>=<value>
+```
+<type> <name>=<value>
+```
 
 #### Types
 
 A `<type>` is defined by its _base type_ and optional _array specifier_.
 
-> 一个<类型>由它的基本类型和可选的数组规格说明来定义。
+> 一个 < 类型 > 由它的基本类型和可选的数组规格说明来定义。
 
 The _base type_ can be one of the following:
 
@@ -266,31 +269,24 @@ Depending on the type the following values are valid:
 
   - `true`, `1`
   - `false`, `0`
-
 - `byte`:
 
   - an opaque 8-bit quantity with a numerical value in the following interval `[0, 255]`
-
 - `char`:
 
   - an unsigned integer value in the following interval `[0, 255]`
-
 - `float32` and `float64`:
 
   - a decimal number using a dot (`.`) as the separator between the integer-part and fractional-part.
-
 - `int8`, `int16`, `int32` and `int64`:
 
   - an integer value in the following interval `[- 2 ^ (N - 1), 2 ^ (N - 1) - 1]` where `N` is the number of bits behind `int`
-
 - `uint8`, `uint16`, `uint32` and `uint64`:
 
   - an unsigned integer value in the following interval `[0, 2 ^ N - 1]` where `N` is the number of bits behind `uint`
-
 - `string`:
 
   - a string value which can optionally be quoted with either single quotes (`'`) or double quotes (`"`)
-
   - a double-quoted (`"`) string (respectively single-quoted (`'`)) should have any inner double quotes (respectively single quotes) escaped:
 
     - `string my_string "I heard \"Hello\""` is valid
@@ -306,40 +302,44 @@ A service file contains two message definitions which are separated by a line wh
 
 > 一个服务文件包含两个消息定义，它们由只包含三个破折号的一行分隔开：
 
-    ---
+```
+---
+```
 
 ## Conversion to IDL
 
 Code is generated for defined interfaces to be usable by different client libraries. Interfaces described using the above format are first converted to [IDL](idl_interface_definition.html). Code generation uses the generated file.
 
-> 代码为定义的接口生成，以便不同的客户端库可以使用。使用上述格式描述的接口首先被转换为[IDL](idl_interface_definition.html)。代码生成使用生成的文件。
+> 代码为定义的接口生成，以便不同的客户端库可以使用。使用上述格式描述的接口首先被转换为 [IDL](idl_interface_definition.html)。代码生成使用生成的文件。
 
 <div class="alert alert-info" markdown="1">
 
 A structure defined in the above format can be empty / contain no members. In that case the generated `.idl` structure will have a dummy member (`uint8 structure_needs_at_least_one_member`) to satisfy the requirement from IDL of not being empty.
 
-> 结构可以按照上述格式定义，也可以为空/不包含任何成员。在这种情况下，生成的`.idl`结构将有一个哑成员（`uint8 structure_needs_at_least_one_member`）来满足 IDL 的要求，不能为空。
+> 结构可以按照上述格式定义，也可以为空/不包含任何成员。在这种情况下，生成的 `.idl` 结构将有一个哑成员（`uint8 structure_needs_at_least_one_member`）来满足 IDL 的要求，不能为空。
 
 </div>
 
 ### Mapping to IDL types
 
-    | ROS type | IDL type           |
-    | -------- | ------------------ |
-    | bool     | boolean            |
-    | byte     | octet              |
-    | char     | uint8              |
-    | float32  | float              |
-    | float64  | double             |
-    | int8     | int8               |
-    | uint8    | uint8              |
-    | int16    | short              |
-    | uint16   | unsigned short     |
-    | int32    | long               |
-    | uint32   | unsigned long      |
-    | int64    | long long          |
-    | uint64   | unsigned long long |
-    | string   | string             |
+```
+| ROS type | IDL type           |
+| -------- | ------------------ |
+| bool     | boolean            |
+| byte     | octet              |
+| char     | uint8              |
+| float32  | float              |
+| float64  | double             |
+| int8     | int8               |
+| uint8    | uint8              |
+| int16    | short              |
+| uint16   | unsigned short     |
+| int32    | long               |
+| uint32   | unsigned long      |
+| int64    | long long          |
+| uint64   | unsigned long long |
+| string   | string             |
+```
 
 <div class="alert alert-info" markdown="1">
 
@@ -353,13 +353,15 @@ The mapping of <code>byte</code> uses a different type than in ROS 1 while still
 
 While the mapping of <code>char</code> is unintuitive it preserves compatibility with the [definition in ROS 1](http://wiki.ros.org/msg#Field_Types): "deprecated alias for <code>uint8</code>".
 
-> 尽管<code>char</code>的映射不直观，但它与[ROS 1 中的定义](http://wiki.ros.org/msg#Field_Types)保持兼容：“<code>uint8</code>的弃用别名”。
+> 尽管<code>char</code>的映射不直观，但它与 [ROS 1 中的定义](http://wiki.ros.org/msg#Field_Types)保持兼容：“<code>uint8</code>的弃用别名”。
 
 </div>
 
-    | ROS type                | IDL type         |
-    | ----------------------- | ---------------- |
-    | static array            | array            |
-    | unbounded dynamic array | sequence         |
-    | bounded dynamic array   | bounded sequence |
-    | bounded string          | bounded string   |
+```
+| ROS type                | IDL type         |
+| ----------------------- | ---------------- |
+| static array            | array            |
+| unbounded dynamic array | sequence         |
+| bounded dynamic array   | bounded sequence |
+| bounded string          | bounded string   |
+```

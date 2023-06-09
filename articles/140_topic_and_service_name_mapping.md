@@ -1,7 +1,6 @@
 ---
 translate by baidu@2023-05-30 23:32:05
 ---
-
 The special single character token `~` will be replaced with a namespace snippet that is a concatenation of the namespace for the node and the node name. For example, a node `node1` in a namespace `/foo` would result in `~` being replaced with `/foo/node1`. As another example, a node `node1` in a namespace `foo/bar` would result in `~` being replaced with `foo/bar/node1`. It must be used at the beginning of a non-fully qualified name, if at all. Here is a table with some example expansions:
 
 > 特殊的单字符标记“~”将替换为名称空间片段，该片段是节点的名称空间和节点名称的串联。例如，名称空间“/foo”中的节点“node1”将导致“~”被替换为“/foo/node1”。另一个例子是，名称空间“foo/bar”中的节点“node1”将导致“~”被“foo/bar/node1”替换。它必须用于非完全限定名称的开头(如果有的话)。下面是一个带有一些扩展示例的表：
@@ -41,7 +40,7 @@ Any topic or service name that contains any tokens (either namespaces or a topic
 
 The ROS topic and service name constraints allow more types of characters than the DDS topic names because ROS additionally allows the forward slash (`/`), the tilde (`~`), and the balanced curly braces (`{}`). These must be substituted or otherwise removed during the process of converting the topic or service name to DDS concepts. Since ROS 2 topic and service names are expanded to fully qualified names, any balanced bracket (`{}`) substitutions and tildes (`~`) will have been expanded. Additionally any URL related syntax, e.g. the `rostopic://` prefix, will be removed once parsed. Previously forward slashes (`/`) were disallowed in DDS topic names, now the restriction has been lifted (see [issue](https://issues.omg.org/issues/lists/dds-rtf5#issue-42236) on omg.org) and therefore the ROS topic names are first prefixed with ROS Specific Namespace prefix (described below) are then mapped directly into DDS topic names.
 
-> ROS 主题和服务名称约束允许比 DDS 主题名称更多类型的字符，因为 ROS 还允许正斜杠(`/`)、波浪号(`~`)和平衡大括号(`{}`)。在将主题或服务名称转换为 DDS 概念的过程中，必须替换或删除这些内容。由于 ROS 2 主题和服务名称被扩展为完全限定名称，任何平衡括号(“｛｝”)替换和波浪号(“~”)都将被扩展。此外，任何与 URL 相关的语法，例如“rostopic://”前缀，一旦解析就会被删除。以前 DDS 主题名称中不允许使用正斜杠(`/`)，现在取消了限制(请参阅[问题](https://issues.omg.org/issues/lists/dds-rtf5#issue-42236)，因此ROS主题名称首先加上ROS特定命名空间前缀(如下所述)，然后直接映射到DDS主题名称中。
+> ROS 主题和服务名称约束允许比 DDS 主题名称更多类型的字符，因为 ROS 还允许正斜杠(`/`)、波浪号(`~`)和平衡大括号(`{}`)。在将主题或服务名称转换为 DDS 概念的过程中，必须替换或删除这些内容。由于 ROS 2 主题和服务名称被扩展为完全限定名称，任何平衡括号(“｛｝”)替换和波浪号(“~”)都将被扩展。此外，任何与 URL 相关的语法，例如“rostopic://”前缀，一旦解析就会被删除。以前 DDS 主题名称中不允许使用正斜杠(`/`)，现在取消了限制(请参阅[问题](https://issues.omg.org/issues/lists/dds-rtf5#issue-42236)，因此 ROS 主题名称首先加上 ROS 特定命名空间前缀(如下所述)，然后直接映射到 DDS 主题名称中。
 
 ### ROS Specific Namespace Prefix
 
@@ -116,11 +115,12 @@ For example:
 #### Alternative(Idea)
 
 > [NOTE]:
-> | ROS Name | DDS Topic |
-> |---------------------------------------|---------------------|
-> | `rostopic://image` | `rt/image` |
-> | `rostopic+exact://image` | `image` |
-> | `rostopic+exact://camera_left/image` | `camera_left/image` |
+>
+> | ROS Name                              | DDS Topic           |
+> | ------------------------------------- | ------------------- |
+> | `rostopic://image`                    | `rt/image`          |
+> | `rostopic+exact://image`              | `image`             |
+> | `rostopic+exact://camera_left/image`  | `camera_left/image` |
 > | `rostopic+exact:///camera_left/image` | `camera_left/image` |
 
 ## Compare and Contrast with ROS 1
@@ -132,15 +132,12 @@ In order to support a mapping to the - slightly more - restrictive DDS topic nam
 - must separate the tilde (`~`) from the rest of the name with a forward slash (`/`)
 
   - This is done to avoid inconsistency with how `~foo` works in filesystem paths versus when used in a ROS name.
-
 - may contain substitutions which are delimited with balanced curly braces (`{}`)
 
   - This is a more generic extension of the idea behind the tilde (`~`).
-
 - have length limits
 
   - This is driven by the topic name length limit of DDS.
-
 - may be indicated as "hidden" by using a leading underscore (`_`) in one of the namespaces
 
   - This is used to hide common but infrequently introspected topics and services.
@@ -209,7 +206,7 @@ Previously the usage of forward slashes (`/`) was disallowed in DDS topic name a
 
 DDS partitions are implemented as an array of strings within the `DDS::Publisher` and `DDS::Subscriber` QoS settings and have no hierarchy or order, Each entry in the partition array is directly combined with the DDS topic and they are not sequentially combined. If a publisher has two partition entries, e.g. `foo` and `bar` with a base name of `baz`, this would be equivalent to having two different publishers on these topics: `/foo/baz` and `/bar/baz`. Therefore this proposal used only one of the strings in the partitions array to hold the entire ROS name's namespace.
 
-> DDS 分区被实现为`DDS:：Publisher`和`DDS:：Subscriber` QoS 设置中的字符串数组，并且没有层次结构或顺序。分区数组中的每个条目都与 DDS 主题直接组合，并且它们不按顺序组合。如果一个发布者有两个分区条目，例如基本名称为“baz”的“foo”和“bar”，这相当于在这些主题上有两个不同的发布者：“/foo/baz”和”/bar/baz“。因此，该提议仅使用分区数组中的一个字符串来保存整个 ROS 名称的命名空间。
+> DDS 分区被实现为 `DDS:：Publisher` 和 `DDS:：Subscriber` QoS 设置中的字符串数组，并且没有层次结构或顺序。分区数组中的每个条目都与 DDS 主题直接组合，并且它们不按顺序组合。如果一个发布者有两个分区条目，例如基本名称为“baz”的“foo”和“bar”，这相当于在这些主题上有两个不同的发布者：“/foo/baz”和”/bar/baz“。因此，该提议仅使用分区数组中的一个字符串来保存整个 ROS 名称的命名空间。
 
 You can read more about partitions in RTI's documentation:
 
@@ -235,7 +232,7 @@ Rationale:
 
 A previous proposal was to substitute the namespace delimiter, i.e. forward slash (`/`), with something that is allowed in DDS topic names, and then only use the DDS topic name to represent the full ROS name. For example in the simplest case, a topic `/foo/bar/baz` might become `__foo__bar__baz`, where the forward slash (`/`) is being replaced with a double underscore (`__`) and double underscores (`__`) were not allowed in ROS topic and service names.
 
-> 以前的一个建议是用 DDS 主题名称中允许的东西来替换名称空间分隔符，即正斜杠(`/`)，然后只使用 DDS 主题名称来表示完整的 ROS 名称。例如，在最简单的情况下，主题“/foo/bar/baz”可能会变成“**foo**bar**baz”，其中正斜杠(“/`”)被双下划线(“**`”)取代，并且ROS主题和服务名称中不允许使用双下划线('__`)。
+> 以前的一个建议是用 DDS 主题名称中允许的东西来替换名称空间分隔符，即正斜杠(`/`)，然后只使用 DDS 主题名称来表示完整的 ROS 名称。例如，在最简单的情况下，主题“/foo/bar/baz”可能会变成“**foo**bar**baz”，其中正斜杠(“/`”)被双下划线(“**`”)取代，并且 ROS 主题和服务名称中不允许使用双下划线('__`)。
 
 Trade-offs (in comparison to the use of DDS partitions):
 
@@ -274,7 +271,7 @@ Preventing users from using capital letters was too constraining for the added b
 
 This is another variation that was proposed in the context of the alternative described in the above section called "Alternative Substitute the Namespace Delimiter". This alternative differs only in that it uses a single underscore in the prefix, i.e. `rt_` rather than `rt__` (`rt` + the leading `/`).
 
-> 这是在上一节“替换命名空间分隔符的替代方案”中描述的替代方案的背景下提出的另一个变体。这种替代方案的不同之处在于，它在前缀中使用了一个下划线，即“rt\_”而不是“rt\_\_”(“rt”+前导“/”)。
+> 这是在上一节“替换命名空间分隔符的替代方案”中描述的替代方案的背景下提出的另一个变体。这种替代方案的不同之处在于，它在前缀中使用了一个下划线，即“rt\_”而不是“rt\_\_”(“rt”+ 前导“/”)。
 
 Trade-offs:
 
@@ -311,9 +308,7 @@ Trade-offs:
   - e.g. DDS publisher on topic `image` could be subscribed to in ROS using just `image`
   - however, the types would need to match as well
   - in the current proposal the ROS topic `image` would become `rt__image`, so DDS topics would need to follow the ROS topic conversion scheme to interoperate with ROS components
-
 - it would be hard to distinguish ROS created DDS topics and normal DDS topics
-
 - services would still need to be differentiated
 
   - e.g. service `/foo` would need to make two topics, something like `foo_Request` and `foo_Reply`
@@ -335,7 +330,6 @@ This alternative would:
 > 这种替代方案将：
 
 - not prefix topics
-
 - restructure prefixes to instead be suffixes, i.e. `rX<topic>` -> `<topic>_rX_`
 
   - this would be unique to user defined names because they cannot have a trailing underscore (`_`)
@@ -345,7 +339,6 @@ Trade-offs:
 > 权衡：
 
 - more difficult to distinguish ROS created DDS topics from normal or built-in DDS topics when listing them using DDS tools because they are not sorted by a ROS specific prefix
-
 - if the service name is suffixed again by the DDS vendor (like in Connext's implementation of Request-Reply) then it would be potentially difficult to differentiate from a user's topic name
 
   - e.g. service `/foo` might become topics: `foo_s_Request` and `foo_s_Reply` and the user could create a topic called `/foo_s_Request` too.
@@ -376,7 +369,6 @@ Trade-offs:
 > 权衡：
 
 - same trade-offs as the "Suffix Alternative"
-
 - but also easier to have ROS subscribe to a DDS created topic
 
   - e.g. DDS publisher on topic `image` could be subscribed to in ROS using just `image`

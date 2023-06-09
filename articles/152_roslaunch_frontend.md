@@ -12,7 +12,6 @@ Authors: {{ page.author }}
 Date Written: {{ page.date_written }}
 Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
 ---
-
 ## Context
 
 Static launch descriptions are an integral part to ROS 2 launch system, and the natural path to transition from predominant ROS 1 `roslaunch` XML description. This document describes parsing and integration approaches of different front ends i.e. different markup languages, with a focus on extensibility and scalability.
@@ -37,7 +36,7 @@ It's worth noting some things they all have in common:
 
 How that registry is populated and provided to the parser may vary. For instance, in Python class decorators may populate a global dict or even its import mechanism may be used if suitable, while in C++ convenience macros may expand into demangled registration hooks that can later be looked up by a dynamic linker (assuming launch entities libraries are shared libraries).
 
-> 注册表的填充方式和提供给解析器的方式可能会有所不同。例如，在 Python 类中，decorator 可以填充全局 dict，或者如果合适的话，甚至可以使用其导入机制，而在 C++中，方便宏可以扩展为非映射的注册挂钩，稍后可以由动态链接器查找（假设启动实体库是共享库）。
+> 注册表的填充方式和提供给解析器的方式可能会有所不同。例如，在 Python 类中，decorator 可以填充全局 dict，或者如果合适的话，甚至可以使用其导入机制，而在 C++ 中，方便宏可以扩展为非映射的注册挂钩，稍后可以由动态链接器查找（假设启动实体库是共享库）。
 
 ### Forward Description Mapping (FDM)
 

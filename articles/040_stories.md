@@ -14,7 +14,6 @@ Authors: {{ page.author }}
 Date Written: {{ page.date_written }}
 Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
 ---
-
 The article enumerates a few stories which sketch what will be possible with ROS in the future. The list is by no means exhaustive.
 
 > 文章列举了一些故事，勾勒出 ROS 在未来将有可能实现的功能。这份清单并不是全面的。
@@ -67,9 +66,6 @@ Once a ROS system is using the above features ([Nodelet-style nodes](#delay-deci
 > 一旦 ROS 系统使用上述功能（[Nodelet 样式节点]（#delay-decision-on-process-layout-to-deploy-time）和[可访问的生命周期]（#delay-decision-on-process-layout-to-deploy-time）），就可以利用内省和编排的能力构建更复杂的系统。 以下仅是一些受全面内省和调试能力支持的示例场景：
 
 - The state of each node can be monitored and based on the information specific actions can be triggered. E.g. certain error conditions can be signaled to the user, or in case fall back behaviors are available they can be selected to provide a degraded continuation of the system.
-
 - The resource usage of the system could be monitored at runtime. Based on the available information the system can be dynamically reconfigured e.g. by enabling / disabling specific nodes, altering any kind of parameter (e.g. frame rate, or any other threshold).
-
 - In case of a single process containing multiple nodes crashing the system should decide to not only restart these nodes but also separate them into individual processes to isolate the problem in future cases.
-
 - If the system load on a single computer exceeds a certain threshold an orchestration entity can trigger the following steps: pause all nodes through the life cycle interface, shutdown a specific node, spawning the node on a separate machine and passing the same configuration / parameters, and once all communication channels have been established resume all nodes.

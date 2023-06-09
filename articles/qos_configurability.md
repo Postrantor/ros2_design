@@ -13,7 +13,6 @@ Authors: {{ page.author }}
 Date Written: {{ page.date_written }}
 Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
 ---
-
 ## Summary
 
 Provide an standard way to configure QoS settings of different entities in the ROS graph at startup time, overriding the settings specified in code.
@@ -43,11 +42,8 @@ Here are some examples applying these mechanisms:
 > 这里有一些应用这些机制的例子：
 
 - rosbag2 has an ad-hoc mechanism to override QoS profiles when recording or doing playback ([docs](https://index.ros.org/doc/ros2/Tutorials/Ros2bag/Overriding-QoS-Policies-For-Recording-And-Playback/)).
-
 - Image pipeline nodes use some parameters to allow changing some of the policies ([PR](https://github.com/ros-perception/image_pipeline/pull/521)).
-
 - Ouster drivers also use some parameters to allow changing some policies ([PR](https://github.com/ros-drivers/ros2_ouster_drivers/pull/26)).
-
 - Gazebo ROS packages allows configuring QoS profiles of the plugins in the SDF file ([issue](https://github.com/ros-simulation/gazebo_ros_pkgs/issues/1079)).
 
 > - rosbag2 有一种临时机制可以在录制或播放时覆盖 QoS 配置文件([文档](https://index.ros.org/doc/ros2/Tutorials/Ros2bag/Overriding-QoS-Policies-For-Recording-And-Playback/))。
@@ -76,7 +72,6 @@ For example, the node's implementer may have assumed that the data was durable a
 > 例如，节点的实施者可能假定数据是持久的而不是易失的。
 
 - QoS should not be dynamically reconfigurable.
-
 - Rationale: Allowing runtime reconfiguration of QoS is complex, and in many cases it involves tearing down the previous entity and creating a new one.
 
 > QoS 不应该动态重新配置。
@@ -204,7 +199,7 @@ The user provided QoS callback will be internally used as a [parameters callback
 
 ROS 2 currently provides read only parameters. They can be modified when constructing a node by providing overrides (e.g. `--ros-args -p <param_name> <param_value>`), but they cannot be dynamically changed after the node was constructed.
 
-> ROS 2 目前只提供只读参数。它们可以通过提供覆盖来在构建节点时修改(例如`--ros-args -p <param_name> <param_value>`)，但在构建节点后不能动态更改。
+> ROS 2 目前只提供只读参数。它们可以通过提供覆盖来在构建节点时修改(例如 `--ros-args -p <param_name> <param_value>`)，但在构建节点后不能动态更改。
 
 This perfectly matches the goal of the proposal of not making QoS settings reconfigurable during runtime.
 
@@ -267,7 +262,7 @@ In that way, we avoid installing a parameter callback that will be triggered whe
 
 `declare_parameters_atomically` would be needed, if not you cannot have conditions like `history == keep_all or history_depth > 10`.
 
-> 如果没有`declare_parameters_atomically`，就不能有像`history == keep_all 或 history_depth > 10`这样的条件。
+> 如果没有 `declare_parameters_atomically`，就不能有像 `history == keep_all 或 history_depth > 10` 这样的条件。
 
 ### Parameters URIs
 
@@ -301,11 +296,11 @@ rosparam://asd/bsd/my_node/qos_overrides.publisher./foo/bar/topic_name.reliabili
 
 The `/` in one of the subgroups looks odd, but it's currently accepted.
 
-> 这个子组中的`/`看起来有点奇怪，但目前还是被接受的。
+> 这个子组中的 `/` 看起来有点奇怪，但目前还是被接受的。
 
 If in the future the addressing changes described in [#241](https://github.com/ros2/design/pull/241) are implemented, the URI would be:
 
-> 如果将来实施[#241](https://github.com/ros2/design/pull/241)中描述的地址变更，URI 将是：
+> 如果将来实施[#241](https://github.com/ros2/design/pull/241) 中描述的地址变更，URI 将是：
 
 ```
 rosparam://asd.bsd.my_node/qos_overrides/publisher/foo/bar/topic_name/reliability

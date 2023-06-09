@@ -15,10 +15,9 @@ last_modified: 2020-07
 published: true
 categories: Security
 ---
-
 {:toc}
 
-# {{ page.title }}
+#  {{ page.title }}
 
 <div class="abstract" markdown="1">
 {{ page.abstract }}
@@ -124,15 +123,17 @@ Let's delve further into these.
 RCL supports finding security files in one directory that is inside the reserved `enclaves` subfolder, within the root keystore, corresponding to the fully-qualified path of every enclave.
 For example, for the `/front/camera` enclave, the directory structure would look like:
 
-    <root>
-    ├── enclaves
-    │   └── front
-    │       └── camera
-    │           ├── cert.pem
-    │           ├── key.pem
-    │           ├── ...
-    └── public
-        ├── ...
+```
+<root>
+├── enclaves
+│   └── front
+│       └── camera
+│           ├── cert.pem
+│           ├── key.pem
+│           ├── ...
+└── public
+    ├── ...
+```
 
 The set of files expected within each enclave instance directory are:
 

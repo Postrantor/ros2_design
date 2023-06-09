@@ -14,7 +14,6 @@ Authors: {{ page.author }}
 Date Written: {{ page.date_written }}
 Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
 ---
-
 ## Background
 
 There are three forms of communication in ROS: topics, services, and actions. Topic publishers broadcast to multiple subscribers, but communication is one-way. Service clients send a request to a service server and get a response, but there is no information about the progress. Similar to services, action clients send a request to an action server in order to achieve some goal and will get a result. Unlike services, while the action is being performed an action server sends progress feedback to the client.
@@ -73,7 +72,7 @@ It is responsible for:
 
 > 发送目标到动作服务器
 > 可选择监控用户定义的来自动作服务器的目标反馈。
-> 可选地监控从行动服务器接受目标的当前状态(参见[目标状态](＃目标状态))
+> 可选地监控从行动服务器接受目标的当前状态(参见[目标状态](%EF%BC%83%E7%9B%AE%E6%A0%87%E7%8A%B6%E6%80%81))
 > 可选择要求动作服务器取消一个活动目标。
 > 选择性地检查从动作服务器接收到的目标的结果
 
@@ -83,7 +82,7 @@ It is responsible for:
 
 In ROS 1, actions are implemented as a separate library, [actionlib](http://wiki.ros.org/actionlib) that is built on top of the client libraries. This was done to avoid increasing the work required to create a client library in a new language, but actions turned out to be very important to packages like the [Navigation Stack](http://wiki.ros.org/navigation) and [MoveIt!](https://moveit.ros.org/)<sup>[1](#separatelib)</sup>.
 
-> **在 ROS 1 中**，**动作被实现**为一个单独的库[actionlib](http://wiki.ros.org/actionlib)，它**建立在客户端库之上**。这样做是为了避免增加在新语言中创建客户端库所需的工作，但是动作最终被证明对[导航堆栈](http://wiki.ros.org/navigation)和[MoveIt！](https://moveit.ros.org/)<sup>[1](#separatelib)</sup>等软件包非常重要。
+> **在 ROS 1 中**，**动作被实现**为一个单独的库 [actionlib](http://wiki.ros.org/actionlib)，它**建立在客户端库之上**。这样做是为了避免增加在新语言中创建客户端库所需的工作，但是动作最终被证明对[导航堆栈](http://wiki.ros.org/navigation)和 [MoveIt！](https://moveit.ros.org/)<sup>[1](#separatelib)</sup>等软件包非常重要。
 
 In ROS 2, actions will be included in the client library implementations. The work of writing a client library in a new language will be reduced by creating a common implementation in C.
 
@@ -111,13 +110,13 @@ In ROS 2, action clients will be the sole entities responsible for generating th
 
 Multiple message and service definitions are generated from a single action definition. In ROS 1, the generated messages were prefixed with the name of the action to avoid conflicts with other messages and services. In ROS 2, the generated service and message definitions will exist in a different namespace to be impossible to conflict with non-action message and service definitions. For example, in Python the code from the generated definitions should be in the module `action` instead of `srv` and `msg`. In C++, the generated code should be in the namespace and folder `action` instead of `srv` and `msg`.
 
-> 当一个动作定义被生成时，多个消息和服务定义也会被生成。在 ROS 1 中，生成的消息会被加上动作的名字以避免与其他消息和服务的冲突。在 ROS 2 中，**生成的服务和消息定义会存在于一个不同的命名空间中**，这样就不可能与非动作消息和服务定义冲突。例如，在 Python 中，生成的定义代码应该在模块`action`中，而不是`srv`和`msg`中。在 C++中，生成的代码应该在命名空间和文件夹`action`中，而不是`srv`和`msg`中。
+> 当一个动作定义被生成时，多个消息和服务定义也会被生成。在 ROS 1 中，生成的消息会被加上动作的名字以避免与其他消息和服务的冲突。在 ROS 2 中，**生成的服务和消息定义会存在于一个不同的命名空间中**，这样就不可能与非动作消息和服务定义冲突。例如，在 Python 中，生成的定义代码应该在模块 `action` 中，而不是 `srv` 和 `msg` 中。在 C++ 中，生成的代码应该在命名空间和文件夹 `action` 中，而不是 `srv` 和 `msg` 中。
 
 ### Visibility of Action Services and Topics
 
 In ROS 1, `rostopic list` would show all action topics in its output. In ROS 2, `ros2 topic list` and `ros2 service list` will not show topics and services used by actions by default. They can still be shown by passing an option to the commands to show hidden services and topics. The tool `ros2 action list` will produce list of action names provided by action servers (see [Introspection tools](#introspection-tools)).
 
-> 在 ROS 1 中，`rostopic list`会在其输出中显示所有动作主题。在 ROS 2 中，`ros2 topic list`和`ros2 service list`默认不会显示动作使用的主题和服务。仍然可以通过传递选项给命令来显示隐藏的服务和主题。工具`ros2 action list`将产生由动作服务器提供的动作名称列表(参见[内省工具](#introspection-tools))。
+> 在 ROS 1 中，`rostopic list` 会在其输出中显示所有动作主题。在 ROS 2 中，`ros2 topic list` 和 `ros2 service list` 默认不会显示动作使用的主题和服务。仍然可以通过传递选项给命令来显示隐藏的服务和主题。工具 `ros2 action list` 将产生由动作服务器提供的动作名称列表(参见[内省工具](#introspection-tools))。
 
 ## Action Interface Definition
 
@@ -148,7 +147,7 @@ This describes the progress towards completing an action. It is sent to the clie
 > 这描述了完成一项行动的进展情况。
 > 这是从行动服务器发送给行动客户端的，在开始行动执行和行动完成之前。
 > 这些数据被客户用来了解执行操作的进度。
-> 任何这些部分都可以为空。每三个部分之间都有一行包含三个连字符，`---`。动作规范存储在以`.action`结尾的文件中。每个`.action`文件有一个动作规范。
+> 任何这些部分都可以为空。每三个部分之间都有一行包含三个连字符，`---`。动作规范存储在以 `.action` 结尾的文件中。每个 `.action` 文件有一个动作规范。
 
 ### Example
 
@@ -310,7 +309,7 @@ The QoS settings of this service should be set so the client is guaranteed to re
 
 The purpose of this service is to request the cancellation of one or more goals on the action server. The response code indicates any failures in processing the request (e.g. `OK`, `REJECTED` or `INVALID_GOAL_ID`). The list of goals in the response indicates which goals will be attempted to be canceled. Whether or not a goal transitions to the CANCELED state is indicated by the status topic and the result service.
 
-> 此服务的目的是请求取消动作服务器上的一个或多个目标。响应代码表示处理请求时的任何失败(例如`OK`、`REJECTED`或`INVALID_GOAL_ID`)。响应中的目标列表指示将尝试取消哪些目标。目标是否转换为 CANCELED 状态由状态主题和结果服务指示。
+> 此服务的目的是请求取消动作服务器上的一个或多个目标。响应代码表示处理请求时的任何失败(例如 `OK`、`REJECTED` 或 `INVALID_GOAL_ID`)。响应中的目标列表指示将尝试取消哪些目标。目标是否转换为 CANCELED 状态由状态主题和结果服务指示。
 
 The cancel request policy is the same as in ROS 1.
 
@@ -351,7 +350,7 @@ The server should cache the result once it is ready so multiple clients have to 
 
 To free up resources, the server should discard the result after a configurable timeout period. The timeout can be set as part of options to the action server. If the timeout is configured to have value **-1**, then goal results will be "kept forever" (until the action server shuts down). If the timeout is configured to have value **0**, then goal results are discarded immediately (after responding to any pending result requests).
 
-> 为了释放资源，服务器应该在可配置的超时期限之后丢弃结果。超时可以作为动作服务器的选项之一设置。如果超时被配置为**-1**，那么目标结果将被“永久保留”(直到动作服务器关闭)。如果超时被配置为**0**，那么目标结果将立即被丢弃(在响应任何待处理结果请求之后)。
+> 为了释放资源，服务器应该在可配置的超时期限之后丢弃结果。超时可以作为动作服务器的选项之一设置。如果超时被配置为**-1**，那么目标结果将被“永久保留”(直到动作服务器关闭)。如果超时被配置为 **0**，那么目标结果将立即被丢弃(在响应任何待处理结果请求之后)。
 
 ### Goal Status Topic
 
@@ -435,7 +434,7 @@ Here is a more complex example involving multiple goals.
 
 Topic and service names for actions will include a token `_action`. The leading underscore makes the name hidden, and the combined text allows tools to identify topics and services used by actions. Topic and Service names will be generated by prefixing the action name to one of `/_action/status`, `/_action/feedback`, `/_action/get_result`, `/_action/cancel_goal`, or `/_action/send_goal`. The resulting topic or service name is expanded to a fully qualified name as usual.
 
-> 主题和服务名称的行动将包括一个令牌`_action`。前导下划线使名称隐藏，组合文本允许工具识别行动使用的主题和服务。主题和服务名称将通过将行动名称前缀添加到`/_action/status`、`/_action/feedback`、`/_action/get_result`、`/_action/cancel_goal`或`/_action/send_goal`之一而生成。随后，扩展的主题或服务名称通常会进行完全限定。
+> 主题和服务名称的行动将包括一个令牌 `_action`。前导下划线使名称隐藏，组合文本允许工具识别行动使用的主题和服务。主题和服务名称将通过将行动名称前缀添加到 `/_action/status`、`/_action/feedback`、`/_action/get_result`、`/_action/cancel_goal` 或 `/_action/send_goal` 之一而生成。随后，扩展的主题或服务名称通常会进行完全限定。
 
 #### Example: fully qualified action name
 
@@ -564,12 +563,12 @@ As one of the original developers of actionlib, I can most definitely tell you t
 
 Design Feedback
 
-I totally understand the benefits of keeping much of the internals of actionlib the same between ROS1 & ROS2 (ease of portability, easy of interoperability, etc). However, if you are considering making more drastic changes (which may be necessary given some of the additional features in the design doc), I’d seriously consider redefining the client state machine. As stands, implementing a SimpleActionClient is unnecessarily complex, since the SimpleActionClient states are not a straight reduction of the ActionClient states. This means that the simple action client needs to know about both the current action client state and the previous action client state in order to compute the current simple action client state (see diagram on the wiki http://wiki.ros.org/actionlib/DetailedDescription#Simple_Action_Client 48).
+I totally understand the benefits of keeping much of the internals of actionlib the same between ROS1 & ROS2 (ease of portability, easy of interoperability, etc). However, if you are considering making more drastic changes (which may be necessary given some of the additional features in the design doc), I’d seriously consider redefining the client state machine. As stands, implementing a SimpleActionClient is unnecessarily complex, since the SimpleActionClient states are not a straight reduction of the ActionClient states. This means that the simple action client needs to know about both the current action client state and the previous action client state in order to compute the current simple action client state (see diagram on the wiki [http://wiki.ros.org/actionlib/DetailedDescription#Simple_Action_Client](http://wiki.ros.org/actionlib/DetailedDescription#Simple_Action_Client) 48).
 
-> 我完全理解将 Actionlib 内部数量保持相同的好处（ROS1 和 ROS2（易移动性，易于互操作性等））。但是，如果您正在考虑做出更大的更改（鉴于设计文档中的某些其他功能，这是必要的），我会认真考虑重新定义客户端状态计算机。如上所示，实现 SimpleActionClient 是不必要的复杂的，因为 SimpleActionClient 状态并不是动作量状态的直接降低。这意味着简单的操作客户端需要了解当前的操作客户端状态和先前的操作客户端状态，以计算当前的简单操作客户端状态（请参阅 Wiki 上的图http://wiki.ros.org/actionlib/详细信息＃simple_action_client 48）。
+> 我完全理解将 Actionlib 内部数量保持相同的好处（ROS1 和 ROS2（易移动性，易于互操作性等））。但是，如果您正在考虑做出更大的更改（鉴于设计文档中的某些其他功能，这是必要的），我会认真考虑重新定义客户端状态计算机。如上所示，实现 SimpleActionClient 是不必要的复杂的，因为 SimpleActionClient 状态并不是动作量状态的直接降低。这意味着简单的操作客户端需要了解当前的操作客户端状态和先前的操作客户端状态，以计算当前的简单操作客户端状态（请参阅 Wiki 上的图 [http://wiki.ros.org/actionlib/](http://wiki.ros.org/actionlib/)详细信息＃simple_action_client 48）。
 
 Contributing
 
-The Virtana team (www.virtanatech.com 19) has several early career roboticists who’d love to get more open source contributions under their belts. Once the ROS2 actionlib team gets more of the implementation & design firmed up, we’d love to pitch-in in places that might fit the “good first issue” label.
+The Virtana team ([www.virtanatech.com](http://www.virtanatech.com) 19) has several early career roboticists who’d love to get more open source contributions under their belts. Once the ROS2 actionlib team gets more of the implementation & design firmed up, we’d love to pitch-in in places that might fit the “good first issue” label.
 
-> Virtana 团队（www.virtanatech.com 19）有几位早期的职业机器人主义者，他们希望获得更多的开源贡献。一旦 ROS2 ActionLib 团队获得了更加坚定的实施和设计，我们就可以在可能符合“良好第一期”标签的地方进行投入。
+> Virtana 团队（[www.virtanatech.com](http://www.virtanatech.com) 19）有几位早期的职业机器人主义者，他们希望获得更多的开源贡献。一旦 ROS2 ActionLib 团队获得了更加坚定的实施和设计，我们就可以在可能符合“良好第一期”标签的地方进行投入。

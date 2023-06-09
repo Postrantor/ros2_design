@@ -16,7 +16,6 @@ Authors: {{ page.author }}
 Date Written: {{ page.date_written }}
 Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
 ---
-
 [SROS 2](/articles/ros2_dds_security.html) introduces several security properties, including encryption, authentication, and authorization.
 
 > SROS 2 引入了几种安全属性，包括加密、身份验证和授权。
@@ -117,7 +116,7 @@ Formalizing the description of the data using a precise schema allows for separa
 
 In XML, this is achieved using [XSD](https://en.wikipedia.org/wiki/XML_schema); allowing the policy markup to be defined by an extendable standard definition rather than a canonical implementation.
 
-> 在 XML 中，这是通过使用[XSD](https://en.wikipedia.org/wiki/XML_schema)来实现的；允许政策标记由可扩展的标准定义而不是规范实现来定义。
+> 在 XML 中，这是通过使用 [XSD](https://en.wikipedia.org/wiki/XML_schema) 来实现的；允许政策标记由可扩展的标准定义而不是规范实现来定义。
 
 ### Transformation
 
@@ -135,7 +134,7 @@ Formalizing this [data transformation](https://en.wikipedia.org/wiki/Data_transf
 
 In XML, this is achieved using [XSLT](https://en.wikipedia.org/wiki/XML_transformation_language); allowing the policy markup to be easily transpiled for various transports by simply swapping or extending transforms.
 
-> 在 XML 中，可以使用[XSLT](https://en.wikipedia.org/wiki/XML_transformation_language)来实现这一目标；通过简单地替换或扩展转换，可以轻松地将策略标记转换为各种传输格式。
+> 在 XML 中，可以使用 [XSLT](https://en.wikipedia.org/wiki/XML_transformation_language) 来实现这一目标；通过简单地替换或扩展转换，可以轻松地将策略标记转换为各种传输格式。
 
 ### Composition
 
@@ -143,13 +142,13 @@ When formulating an access control policy, many subjects may share fundamental p
 
 > 当制定访问控制策略时，许多主体可能共享基本访问权限。
 
-To avoid unnecessary repetition that could exacerbate human errors or other discrepancies, policies should possess sufficient [expressive power](<https://en.wikipedia.org/wiki/Expressive_power_(computer_science)>) to remain [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself).
+To avoid unnecessary repetition that could exacerbate human errors or other discrepancies, policies should possess sufficient [expressive power](https://en.wikipedia.org/wiki/Expressive_power_(computer_science)) to remain [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself).
 
 > 为了避免不必要的重复，可能会加剧人为错误或其他差异，政策应具有足够的表达能力，以保持 DRY（不重复自己）。
 
 In XML, this is achieved using [XInclude](https://en.wikipedia.org/wiki/XInclude); allowing the policy markup to easily include or substitute external reference to particular profiles and permissions that repeat across separate policies or profiles.
 
-> 在 XML 中，可以使用[XInclude]（https://en.wikipedia.org/wiki/XInclude）来实现；允许策略标记轻松地包含或替换跨越不同策略或配置文件的特定档案和权限的外部参考。
+> 在 XML 中，可以使用[XInclude]（[https://en.wikipedia.org/wiki/XInclude](https://en.wikipedia.org/wiki/XInclude)）来实现；允许策略标记轻松地包含或替换跨越不同策略或配置文件的特定档案和权限的外部参考。
 
 ## Schema
 
@@ -195,7 +194,7 @@ Encapsulates a sequence of unique enclaves.
 
 This method of nesting sequences allows for additional tags to be extended to the `<policy>` root.
 
-> 这种嵌套序列的方法允许将额外的标签扩展到`<policy>`根。
+> 这种嵌套序列的方法允许将额外的标签扩展到 `<policy>` 根。
 
 ### `<enclave>` Tag
 
@@ -240,7 +239,7 @@ Encapsulates a sequence of unique profiles and designated metadata.
 
 This method of nesting sequences allows for additional tags to be extended to the `<enclave>` root, as well as associating particular metadata or constraints to the contained profile elements.
 
-> 这种嵌套序列的方法允许将额外的标签扩展到`<enclave>`根，以及将特定的元数据或约束关联到包含的配置文件元素。
+> 这种嵌套序列的方法允许将额外的标签扩展到 `<enclave>` 根，以及将特定的元数据或约束关联到包含的配置文件元素。
 
 Attributes:
 
@@ -304,7 +303,7 @@ This could include transport specific permission details applicable to sibling p
 
 There can only one `metadata` element per `profiles` parent element.
 
-> 每个`profiles`父元素只能有一个`metadata`元素。
+> 每个 `profiles` 父元素只能有一个 `metadata` 元素。
 
 Attributes:
 
@@ -364,7 +363,7 @@ Each rule includes a sequence of objects that the permissions apply.
 
 For some secure transports, such as [Secure DDS](https://www.omg.org/spec/DDS-SECURITY/About-DDS-SECURITY), matching expressions may also be used to expand the scope further using globbing patterns, specifically those supported by [fnmatch](https://pubs.opengroup.org/onlinepubs/9699919799/functions/fnmatch.html) as specified in the POSIX standard.
 
-> 对于某些安全传输，比如[安全 DDS](https://www.omg.org/spec/DDS-SECURITY/About-DDS-SECURITY)，也可以使用匹配表达式来进一步扩展范围，使用[fnmatch](https://pubs.opengroup.org/onlinepubs/9699919799/functions/fnmatch.html)支持的 globbing 模式，根据 POSIX 标准指定。
+> 对于某些安全传输，比如[安全 DDS](https://www.omg.org/spec/DDS-SECURITY/About-DDS-SECURITY)，也可以使用匹配表达式来进一步扩展范围，使用 [fnmatch](https://pubs.opengroup.org/onlinepubs/9699919799/functions/fnmatch.html) 支持的 globbing 模式，根据 POSIX 标准指定。
 
 However, caution should be taken when using expression matching, as discussed further in the concerns section.
 
@@ -376,7 +375,7 @@ Basic fnmatch-style patterns are supported:
 
 | Pattern     | Meaning                               |
 | ----------- | ------------------------------------- |
-| \*          | Matches everything                    |
+| \*           | Matches everything                    |
 | ?           | Matches any single character          |
 | [sequence]  | Matches any character in sequence     |
 | [!sequence] | Matches any character not in sequence |
@@ -385,7 +384,7 @@ Basic fnmatch-style patterns are supported:
 
 A group of `<topic>` tags with the specified permissions.
 
-> 一组具有指定权限的`<主题>`标签。
+> 一组具有指定权限的 `<主题>` 标签。
 
 Attributes:
 
@@ -419,7 +418,7 @@ Attributes:
 
 A group of `<service>` tags with the specified permissions.
 
-> 一组具有指定权限的<服务>标签。
+> 一组具有指定权限的 < 服务 > 标签。
 
 Attributes:
 
@@ -453,7 +452,7 @@ Attributes:
 
 A group of `<action>` tags with the specified permissions.
 
-> 一组具有指定权限的`<动作>`标签。
+> 一组具有指定权限的 `<动作>` 标签。
 
 Attributes:
 
@@ -559,7 +558,7 @@ This section lists concerns about the proposed design and alternatives that were
 
 Although the policy model used in [SROS 1](http://wiki.ros.org/SROS/Concepts/PolicyDissemination) was semantically equivalent, the YAML format lent it being quite verbose due to repetition of permissions per namespaced resource given the lack of clear element attributes.
 
-> 尽管[SROS 1](http://wiki.ros.org/SROS/Concepts/PolicyDissemination)中使用的策略模型在语义上是等价的，但由于缺乏明确的元素属性，YAML 格式使其变得相当冗长，每个命名空间资源重复出现权限。
+> 尽管 [SROS 1](http://wiki.ros.org/SROS/Concepts/PolicyDissemination) 中使用的策略模型在语义上是等价的，但由于缺乏明确的元素属性，YAML 格式使其变得相当冗长，每个命名空间资源重复出现权限。
 
 For SROS 2 we decided switched away from YAML to XML for many of the reasons weighed in the following pros and cons:
 
@@ -570,11 +569,11 @@ For SROS 2 we decided switched away from YAML to XML for many of the reasons wei
 > 优点
 
 - Human Readable: Minimal Line Noise
+
   - YAML has very minimal syntax and is targeted for human editable configuration files, making it simple to read and write manually.
 - Data Model: Intuitive Interpretation
 
   - YAML has very simple data model forming tree structure using key-value pair dictionaries and lists making it quite approachable.
-
 - Cons
 
 > 缺点
@@ -607,7 +606,7 @@ As an alternative to choosing an existing markup format, it would be possible to
 
 An example of a MAC based policy language would include that which is used in [AppArmor](https://gitlab.com/apparmor/apparmor/wikis/home).
 
-> 一个基于 MAC 的策略语言的示例包括[AppArmor](https://gitlab.com/apparmor/apparmor/wikis/home)中使用的语言。
+> 一个基于 MAC 的策略语言的示例包括 [AppArmor](https://gitlab.com/apparmor/apparmor/wikis/home) 中使用的语言。
 
 Although affording the flexibility to succinctly express profile permission while minimizing general syntactic overhead, this approach was not pursued for many of the reasons weighed in the following pros and cons:
 
@@ -620,7 +619,6 @@ Although affording the flexibility to succinctly express profile permission whil
 - Expressiveness: Succinct Representation
 
   - Complete control of syntax and interpretation, allowing for domain specific optimizations for SROS policy representation.
-
 - Cons
 
 > 缺点
@@ -652,7 +650,7 @@ While this greatly extends the flexibility given the nesting of imported sun-pro
 
 In an effort to strike a balance between simplicity and flexibility, a flat sequence of single level profiles was opted for SROS 2 instead, allowing the policy format to serve as both a grounded intermediate representation for higher level policy languages and tools to build upon, such as [XACML](https://en.wikipedia.org/wiki/XACML) or [Keymint](https://github.com/keymint/keymint_tools), while remaining succinctly expressive of ROS concepts for general use.
 
-> 为了在简单性和灵活性之间取得平衡，SROS 2 选择了一个单层次的平面序列来提供策略格式，以作为更高级别的策略语言和工具的基础表示，例如[XACML](https://en.wikipedia.org/wiki/XACML)或[Keymint](https://github.com/keymint/keymint_tools)，同时又保持简洁表达 ROS 概念，以便普遍使用。
+> 为了在简单性和灵活性之间取得平衡，SROS 2 选择了一个单层次的平面序列来提供策略格式，以作为更高级别的策略语言和工具的基础表示，例如 [XACML](https://en.wikipedia.org/wiki/XACML) 或 [Keymint](https://github.com/keymint/keymint_tools)，同时又保持简洁表达 ROS 概念，以便普遍使用。
 
 ## Concerns
 
@@ -672,7 +670,7 @@ As an example, if granting access to all topics and services starting with `/foo
 
 Such can be exacerbated when using globbing expressions that include matching patterns, such as with `fnmatch`, leading to innocuous and sound policies being inaccurately applied to the underlying transport security.
 
-> 当使用包含匹配模式的通配符表达式（如`fnmatch`）时，这种情况可能会加剧，导致无害而又合理的策略不准确地应用于底层传输安全性。
+> 当使用包含匹配模式的通配符表达式（如 `fnmatch`）时，这种情况可能会加剧，导致无害而又合理的策略不准确地应用于底层传输安全性。
 
 While such privilege separation in [remains week between ROS 2 and DDS](https://github.com/ros2/design/pull/203), perhaps it is wise to discourage the use of expression matching for general use in permissions.
 

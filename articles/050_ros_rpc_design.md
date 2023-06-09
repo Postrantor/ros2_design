@@ -20,7 +20,6 @@ Authors: {{ page.author }}
 Date Written: {{ page.date_written }}
 Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
 ---
-
 In ROS there are two types of Remote Procedure Call (RPC) primitives. ROS Services are basic request-response style RPCs, while ROS Actions additionally are preemptible and offer feedback while requests are being processed.
 
 > 在 ROS 中有两种远程过程调用(RPC)原语。ROS 服务是基本的请求-响应式 RPC，而 ROS 动作另外可以被抢占，并在处理请求时提供反馈。
@@ -65,7 +64,7 @@ It is important that the system cannot get into an undetermined state if there i
 
 When logging a ROS 1 system (e.g., using `rosbag`), recording data transmitted on topics is insufficient to capture any information about service calls. Because service calls are conceptually point to point, rather than broadcast, logging them is difficult. Still, it should be possible to efficiently record some level of detail regarding RPC interactions, such that they could be later played back in some manner (though it is not clear exactly how playback would work).
 
-> 当记录一个 ROS 1 系统（例如，使用`rosbag`）时，仅记录发布在主题上的数据是不足以捕获有关服务调用的任何信息的。由于服务调用在概念上是点对点而不是广播，因此记录它们是困难的。尽管如此，应该有可能有效地记录有关 RPC 交互的一些细节，以便它们可以以某种方式回放（尽管尚不清楚回放究竟如何工作）。
+> 当记录一个 ROS 1 系统（例如，使用 `rosbag`）时，仅记录发布在主题上的数据是不足以捕获有关服务调用的任何信息的。由于服务调用在概念上是点对点而不是广播，因此记录它们是困难的。尽管如此，应该有可能有效地记录有关 RPC 交互的一些细节，以便它们可以以某种方式回放（尽管尚不清楚回放究竟如何工作）。
 
 ## Proposed Approach
 
@@ -133,7 +132,7 @@ This also introduces issues when trying to record and potentially play back Serv
 
 Should there be a separate `.action` file type? Or should it be more like a `.srv` + `.msg` pair? This is highly influenced by the way UIDs are handled.
 
-> 应该有一个单独的`.action`文件类型吗？还是应该像`.srv` + `.msg`配对一样？这取决于 UIDs 的处理方式。
+> 应该有一个单独的 `.action` 文件类型吗？还是应该像 `.srv` + `.msg` 配对一样？这取决于 UIDs 的处理方式。
 
 ### Logging
 

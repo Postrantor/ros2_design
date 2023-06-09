@@ -14,7 +14,6 @@ Authors: {{ page.author }}
 Date Written: {{ page.date_written }}
 Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
 ---
-
 ## Background
 
 ### Node
@@ -32,10 +31,9 @@ A Participant is a type of DDS entity. Participant also group other entities, li
 - Each Participant participates in discovery. Creating more than one Participant usually increases CPU usage and network IO load.
 - Each Participant keeps track of other DDS entities. Using more than one within a single process may result in data duplication.
 - Each Participant may create multiple threads for event handling, discovery, etc. The number of threads created per Participant depends on the DDS vendor (e.g.: [RTI Connext](https://community.rti.com/best-practices/create-few-domainParticipants-possible)).
-
 - 每个参与者都参与发现。创建多个参与者通常会增加 CPU 使用率和网络 IO 负载。
 - 每个参与者都跟踪其他 DDS 实体。在一个过程中使用多个过程可能会导致数据重复。
-- 每个参与者**可能会创建多个线程用于事件处理，发现等。每个参与者创建的线程数取决于 DDS 供应商**(例如：[rti connext](https：//community.rti.rti.com/best-practices/create-Few-domainpartipant-Prables))。
+- 每个参与者**可能会创建多个线程用于事件处理，发现等。每个参与者创建的线程数取决于 DDS 供应商**(例如：[rti connext](https%EF%BC%9A//community.rti.rti.com/best-practices/create-Few-domainpartipant-Prables))。
 
 For those reasons, a Participant is a heavyweight entity.
 
@@ -51,7 +49,7 @@ In ROS, a Context is the non-global state of an init-shutdown cycle. It also enc
 
 There is a one-to-one mapping between Nodes and DDS Participants. This simplified the original implementation, as DDS Participants provide many features equivalent to the ones of ROS Nodes. The drawback of this approach is the overhead that comes with creating many Participants. Furthermore, the maximum number of Domain Participants is rather small. For example, in [RTI Connext](https://community.rti.com/kb/what-maximum-number-Participants-domain) it is limited to 120 Participants per Domain.
 
-> **节点和 DDS 参与者之间存在一对一映射**。这简化了最初的实现，因为 DDS 参与者提供了许多与 ROS 节点等效的功能。这种方法的**缺点是创建许多参与者所带来的开销**。此外，领域参与者的最大数量相当少。例如，在[RTI 连接文本]中(https://community.rti.com/kb/what-maximum-number-Participants-domain)每个域限制为120个参与者。
+> **节点和 DDS 参与者之间存在一对一映射**。这简化了最初的实现，因为 DDS 参与者提供了许多与 ROS 节点等效的功能。这种方法的**缺点是创建许多参与者所带来的开销**。此外，领域参与者的最大数量相当少。例如，在[RTI 连接文本]中([https://community.rti.com/kb/what-maximum-number-Participants-domain](https://community.rti.com/kb/what-maximum-number-Participants-domain))每个域限制为 120 个参与者。
 
 ## Proposed approach
 
@@ -96,7 +94,7 @@ When one entity is updated (e.g.: a Publisher is created or destroyed), a new me
 
 Identification of Clients and Servers happens according to the ROS conventions for their topic names (see [ Topic and Service name mapping to DDS](140_topic_and_service_name_mapping.md)).
 
-> 客户端和服务器的标识是根据其主题名称的 ROS 约定进行的(请参见[topic and Service name mapping to DDS](140_topic_and_Service_name_mapping.md))。
+> 客户端和服务器的标识是根据其主题名称的 ROS 约定进行的(请参见 [topic and Service name mapping to DDS](140_topic_and_Service_name_mapping.md))。
 
 This topic is considered an implementation detail, and not all `rmw` implementations have to use it. Thus, all the necessary logic has to be in the rmw implementation itself or in an upstream package. Implementing this logic in `rcl` would make it part of the API, and not an implementation detail.
 
@@ -104,7 +102,7 @@ This topic is considered an implementation detail, and not all `rmw` implementat
 
 To avoid code repetition, a common implementation of this logic is provided by the [rmw_dds_common](https://github.com/ros2/rmw_dds_common/) package.
 
-> 为了避免代码重复，该逻辑的通用实现由[rmw_dds_common]提供(https://github.com/ros2/rmw_dds_common/)包装。
+> 为了避免代码重复，该逻辑的通用实现由[rmw_dds_common]提供([https://github.com/ros2/rmw_dds_common/](https://github.com/ros2/rmw_dds_common/))包装。
 
 #### Details of the ROS discovery topic
 
@@ -126,13 +124,13 @@ To avoid code repetition, a common implementation of this logic is provided by t
 
 Previously, each Node could have different security artifacts. That was possible because each Node was mapped to one Participant. The new approach allows to specify different security artifacts for each process. For more details, see [ROS 2 Security Enclaves](182_ros2_security_enclaves.md).
 
-> 以前，每个节点可能有不同的安全工件。这是可能的，因为每个节点都映射到一个参与者。**新方法允许为每个进程指定不同的安全工件**。有关更多详细信息，请参阅[ROS 2 Security Enclaves](182_ros2_Security_enviders.md)。
+> 以前，每个节点可能有不同的安全工件。这是可能的，因为每个节点都映射到一个参与者。**新方法允许为每个进程指定不同的安全工件**。有关更多详细信息，请参阅 [ROS 2 Security Enclaves](182_ros2_Security_enviders.md)。
 
 #### Ignore local publications option
 
 There is an `ignore_local_publications` option that can be set when [creating a Subscription](https://github.com/ros2/rmw/blob/2250b3eee645d90f9e9d6c96d71ce3aada9944f3/rmw/include/rmw/rmw.h#L517). That option avoids receiving messages from Publishers within the same Node. This wasn't implemented in all the rmw implementations (e.g.: [FastRTPS](https://github.com/ros2/rmw_fastrtps/blob/099f9eed9a0f581447405fbd877c6d3b15f1f26e/rmw_fastrtps_cpp/src/rmw_Subscription.cpp#L118)).
 
-> 在[创建订阅]时可以设置“ignore_local_publications”选项。该选项可避免从同一节点内的发布服务器接收消息。这并没有在所有的rmw实现中实现(例如：[FastRTPS])。
+> 在[创建订阅]时可以设置“ignore_local_publications”选项。该选项可避免从同一节点内的发布服务器接收消息。这并没有在所有的 rmw 实现中实现(例如：[FastRTPS])。
 
 After this change, implementing this feature will be less direct. Some extra logic needs to be added in order to identify from which Node a Publisher was created.
 
@@ -150,7 +148,7 @@ Keyed topics could be used, with the Participant gid as the key. That would allo
 
 Instead of using a custom topic to share the extra ROS specific discovery information, a combination of Participant/Reader/Writer `userData` could be used:
 
-> 可以使用参与者/读者/作者`userData`的组合，而不是使用自定义主题来共享额外的 ROS 特定发现信息：
+> 可以使用参与者/读者/作者 `userData` 的组合，而不是使用自定义主题来共享额外的 ROS 特定发现信息：
 
 - Participant `userData`: list of Nodes created by the Participant (updated when Node created destroyed).
 - Reader user `userData`: Node name/namespace.

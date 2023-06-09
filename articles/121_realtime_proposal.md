@@ -12,7 +12,6 @@ Authors: {{ page.author }}
 Date Written: {{ page.date_written }}
 Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
 ---
-
 ## Requirements and Implementation of Real-Time Systems
 
 ### System requirements
@@ -29,7 +28,6 @@ At its core, the real-time requirement of a system has two components:
 
   - Update period (also known as deadline)
   - Predictability
-
 - Failure mode
 
   - How to react to a missed deadline
@@ -60,16 +58,13 @@ Another major consideration when designing a real-time system is the choice of o
 
   - Expose thread priority and deterministic schedulers that incorporate priority
   - Allow full thread preemption
-
 - Concurrency and synchronization primitives
 
   - Floored semaphores (allow a higher priority thread to take control of locked semaphore)
-
 - Interrupt handling
 
   - Disable interrupts
   - Mask interrupts (temporarily suspend interrupts in a critical section)
-
 - Memory allocation
 
   - Avoid pagefaults
@@ -85,7 +80,7 @@ Scheduling non-real-time threads alongside real-time threads on the same core ca
 
 Real-time operating systems have a variety of methods for enforcing these constraints. For example, a Linux RT_PREEMPT system could use the [SCHED_IDLE](http://man7.org/linux/man-pages/man2/sched_setscheduler.2.html) scheduling policy for non-real-time threads. Systems like QNX and Xenomai give the option to partition real-time and non-real-time components onto different cores, or even different kernels. Partitioning is the safest approach to real-time and non-real-time intercommunication because it minimizes the change of interference from non-real-time threads, with the added cost of latency due to coordinating data between the partitions.
 
-> 实时操作系统有多种方法来执行这些约束。例如，Linux RT_PREEMPT 系统可以使用[SCHED_IDLE](http://man7.org/linux/man-pages/man2/sched_setscheduler.2.html)调度策略来处理非实时线程。像 QNX 和 Xenomai 这样的系统提供了将实时和非实时组件分区到不同的内核或不同的内核上的选项。**分区是实时和非实时交互的最安全的方法，因为它可以最大程度地减少非实时线程的干扰，同时增加由于在分区之间协调数据而导致的延迟成本**。
+> 实时操作系统有多种方法来执行这些约束。例如，Linux RT_PREEMPT 系统可以使用 [SCHED_IDLE](http://man7.org/linux/man-pages/man2/sched_setscheduler.2.html) 调度策略来处理非实时线程。像 QNX 和 Xenomai 这样的系统提供了将实时和非实时组件分区到不同的内核或不同的内核上的选项。**分区是实时和非实时交互的最安全的方法，因为它可以最大程度地减少非实时线程的干扰，同时增加由于在分区之间协调数据而导致的延迟成本**。
 
 Another important constraint is which processor architectures are supported by which operating systems, and which RTOS is an appropriate choice due to performance constraints of the architecture. For example, an architecture that doesn't support SIMD instructions cannot take full advantage of parallelism, but if the system doesn't run an OS that supports threading, or doesn't have multiple cores, this constraint doesn't matter.
 
@@ -129,11 +124,11 @@ Wherever ROS 2 libraries expose sources of nondeterminism, there should be a pat
 
 Poor memory management can create performance issues due to page faults and nondeterministic algorithms for dynamically allocating memory. Although C++ has an advantage over many programming languages because memory management is exposed, the default memory allocator for operator `new` and dynamically sized data structures is not well-suited to real-time applications (see [Composing High-Performance Memory Allocators](https://people.cs.umass.edu/~emery/pubs/berger-pldi2001.pdf)). Dynamically-sized data structures in the C++ standard library offer an allocator interface, such as `std::vector` (see [cppreference.com](http://en.cppreference.com/w/cpp/concept/Allocator)). C++11 greatly improved this interface by introducing [`std::allocator_traits`](http://en.cppreference.com/w/cpp/memory/allocator_traits), which constructs an allocator compatible with the standard allocator interface from a minimal set of requirements To allow for optimal performance in `rclcpp`, the client library should expose custom allocators for publishers, subscribers, etc. that are propagated to standard library structures used by these entities.
 
-> 糟糕的内存管理会由于页面故障和非确定性算法动态分配内存而导致性能问题。尽管 C++比许多编程语言更有优势，因为它暴露了内存管理，但是操作符`new`和动态调整大小的数据结构的默认内存分配器不适合实时应用程序(参见[组成高性能内存分配器](https://people.cs.umass.edu/~emery/pubs/berger-pldi2001.pdf))。C++标准库中的动态大小数据结构提供了一个分配器接口，比如`std::vector`(参见[cppreference.com](http://en.cppreference.com/w/cpp/concept/Allocator))。C++11 通过引入[`std::allocator_traits`](http://en.cppreference.com/w/cpp/memory/allocator_traits)大大改善了这个接口，它从最小的要求中构造一个与标准分配器接口兼容的分配器，以便在`rclcpp`中获得最佳性能，客户端库应为发布者、订阅者等暴露自定义分配器，这些分配器会传播到这些实体使用的标准库结构中。
+> 糟糕的内存管理会由于页面故障和非确定性算法动态分配内存而导致性能问题。尽管 C++ 比许多编程语言更有优势，因为它暴露了内存管理，但是操作符 `new` 和动态调整大小的数据结构的默认内存分配器不适合实时应用程序(参见[组成高性能内存分配器](https://people.cs.umass.edu/~emery/pubs/berger-pldi2001.pdf))。C++ 标准库中的动态大小数据结构提供了一个分配器接口，比如 `std::vector`(参见 [cppreference.com](http://en.cppreference.com/w/cpp/concept/Allocator))。C++11 通过引入[`std::allocator_traits`](http://en.cppreference.com/w/cpp/memory/allocator_traits)大大改善了这个接口，它从最小的要求中构造一个与标准分配器接口兼容的分配器，以便在 `rclcpp` 中获得最佳性能，客户端库应为发布者、订阅者等暴露自定义分配器，这些分配器会传播到这些实体使用的标准库结构中。
 
 As of the writing of this document (January 2016), selecting custom allocators in `rclcpp` is almost fully implemented. The [`realtime_support`](https://github.com/ros2/realtime_support) package will offer real-time memory allocators and example code for real-time ROS 2. An example of the ROS 2 allocator API using the Two Level Segregate Fit allocator is currently available [in realtime_support](https://github.com/ros2/realtime_support/blob/master/tlsf_cpp/example/allocator_example.cpp).
 
-> 截至本文档(2016 年 1 月)的撰写，在`rclcpp`中选择自定义分配器几乎已经完全实现。[`realtime_support`](https://github.com/ros2/realtime_support) 包将提供实时内存分配器和实时 ROS 2 的示例代码。使用 Two Level Segregate Fit 分配器的 ROS 2 分配器 API 示例目前可以在[realtime_support](https://github.com/ros2/realtime_support/blob/master/tlsf_cpp/example/allocator_example.cpp)中找到。
+> 截至本文档(2016 年 1 月)的撰写，在 `rclcpp` 中选择自定义分配器几乎已经完全实现。[`realtime_support`](https://github.com/ros2/realtime_support) 包将提供实时内存分配器和实时 ROS 2 的示例代码。使用 Two Level Segregate Fit 分配器的 ROS 2 分配器 API 示例目前可以在 [realtime_support](https://github.com/ros2/realtime_support/blob/master/tlsf_cpp/example/allocator_example.cpp) 中找到。
 
 The following work remains to be done:
 
@@ -162,11 +157,9 @@ Guidelines for synchronization in ROS 2:
 - Prefer atomics to mutexes when possible.
 
   - Many atomic types are not implemented as lock-free due to architectural limitations, can check in C++ with [`std::atomic_is_lock_free`](http://en.cppreference.com/w/cpp/atomic/atomic_is_lock_free)
-
 - Thoroughly test multithreaded code for deadlock and livelock at the earliest opportunity.
 
   - Consider compiling multithreaded regression tests with the [Clang ThreadSanitizer](http://clang.llvm.org/docs/ThreadSanitizer.html).
-
 - Hide synchronization primitives behind a layer of abstraction that wraps standard library classes such as `std::mutex` and `std::condition_variable` as the default behavior.
 
   - Inject alternative synchronization primitives from RTOS-specific APIs where applicable.
@@ -183,7 +176,7 @@ If the underlying middleware used in ROS 2 is not suitable for real-time perform
 
 The embedded component of the system proposed will likely use `freertps` as the underlying middleware. The "desktop" system can be matrix-tested using the various DDS implementations supported by ROS 2. This allows us to compare the real-time performance of the different DDS implementations.
 
-> 系统提议的嵌入式组件可能会使用`freertps`作为底层中间件。可以使用 ROS 2 支持的各种 DDS 实现对“桌面”系统进行矩阵测试。这样可以比较不同 DDS 实现的实时性能。
+> 系统提议的嵌入式组件可能会使用 `freertps` 作为底层中间件。可以使用 ROS 2 支持的各种 DDS 实现对“桌面”系统进行矩阵测试。这样可以比较不同 DDS 实现的实时性能。
 
 Quality of service is always an important consideration with DDS. Some DDS QoS options were designed with real-time performance in mind, such as the DEADLINE policy (see opendds.org, [QoS Policy Usages](http://www.opendds.org/qosusages.html)). It may be convenient to expose these policies and provide a "real-time" QoS profile in rmw as a suggestion to ROS 2 users. Benchmarking and profiling may provide data to support the introduction of more QoS options into the rmw API.
 
@@ -219,14 +212,13 @@ Possible performance metrics include:
 
   - Latency of the update loop
   - Message round trip time over the middleware
-
 - Standard deviation of latency
 - Number of missed deadlines/overruns
 - Number of messages received vs. number of messages published
 
 `rttest` is an existing library developed to instrument the update loop of a real-time process and report on various metrics described here. However, it contains code specific to Linux pthreads in its current state. If it is to be used in this work, the library needs to be generalized to support other operating systems.
 
-> `rttest`是一个现有的库开发的，用于启动实时过程的更新循环，并报告此处描述的各种指标。但是，它包含特定于 Linux Pthreads 的代码。如果要在这项工作中使用，则需要将图书馆概括以支持其他操作系统。
+> `rttest` 是一个现有的库开发的，用于启动实时过程的更新循环，并报告此处描述的各种指标。但是，它包含特定于 Linux Pthreads 的代码。如果要在这项工作中使用，则需要将图书馆概括以支持其他操作系统。
 
 ### Profiling Tools
 
@@ -241,20 +233,19 @@ Two well-established open source command line profiling tools with orthogonal me
 - `perf`: counts system-wide hardware events, e.g. instructions executed, cache misses, etc. (see [perf wiki](https://perf.wiki.kernel.org/index.php/Main_Page))
 
   - Linux only.
-
 - `gprof`: recompiles source code with instrumentation to count time spent in each function for a particular program, with option to format output in a call graph (see [GNU gprof documentation](https://sourceware.org/binutils/docs/gprof/)).
 
   - GNU and C/C++ only.
 
 However, these particular tools may not be well suited to an RTOS or a bare metal embedded system: `perf` is specialized for the Linux kernel and `gprof` requires code to be compiled and linked with `gcc`. These tools could be used to profile ROS 2 code on a patched Linux kernel like RT_PREEMPT, but there may be performance quirks in another RTOS that are not captured on Linux. When this proposal is implemented, if changes are made to improve performance is made based on profiling data from Linux but no overall improvement is seen in the embedded system, then an alternative approach to profiling should be investigated. For example, the [RTEMS](https://devel.rtems.org/wiki/Developer/Tracing) real-time operating system offers a tracing tool that could be used for profiling (8).
 
-> 然而，这些特定的工具可能不适合实时操作系统或裸机嵌入式系统：`perf`专为 Linux 内核而设计，而`gprof`则需要使用`gcc`编译和链接代码。这些工具可以用来对 RT_PREEMPT 等补丁 Linux 内核上的 ROS 2 代码进行分析，但可能无法捕捉另一种 RTOS 中的性能特性。如果在实施此建议后，根据 Linux 上的分析数据进行改进，但在嵌入式系统中没有看到整体性能的改善，则应该探索另一种分析方法。例如，[RTEMS](https://devel.rtems.org/wiki/Developer/Tracing)实时操作系统提供了一种可用于分析的跟踪工具(8)。
+> 然而，这些特定的工具可能不适合实时操作系统或裸机嵌入式系统：`perf` 专为 Linux 内核而设计，而 `gprof` 则需要使用 `gcc` 编译和链接代码。这些工具可以用来对 RT_PREEMPT 等补丁 Linux 内核上的 ROS 2 代码进行分析，但可能无法捕捉另一种 RTOS 中的性能特性。如果在实施此建议后，根据 Linux 上的分析数据进行改进，但在嵌入式系统中没有看到整体性能的改善，则应该探索另一种分析方法。例如，[RTEMS](https://devel.rtems.org/wiki/Developer/Tracing) 实时操作系统提供了一种可用于分析的跟踪工具(8)。
 
 ### Verification
 
 In addition to performance testing, which can be thought of as a kind of regression testing, any change made to ROS 2 with the intent to improve performance in the real-time test system should be verified with an automated test. For example, the allocator pipeline has a test case for publishers/subscribers with custom allocators that fails if calls are made to the default system allocator during the real-time execution phase. A similar test could be written for the proposed goal of abstracting synchronization primitives, though the implementation may be more challenging since the allocator pipeline was helped by the ability to override global new in C++.
 
-> 除了性能测试，可以被认为是一种回归测试，任何为改善 ROS 2 在实时测试系统中的性能而做出的更改都应该用自动化测试来验证。例如，分配器管线有一个用于带有自定义分配器的发布者/订阅者的测试用例，如果在实时执行阶段调用默认系统分配器，则会失败。可以编写类似的测试用例来实现抽象同步原语的提出目标，但实现可能更具挑战性，因为分配器管线受益于 C++中可以覆盖全局新的能力。
+> 除了性能测试，可以被认为是一种回归测试，任何为改善 ROS 2 在实时测试系统中的性能而做出的更改都应该用自动化测试来验证。例如，分配器管线有一个用于带有自定义分配器的发布者/订阅者的测试用例，如果在实时执行阶段调用默认系统分配器，则会失败。可以编写类似的测试用例来实现抽象同步原语的提出目标，但实现可能更具挑战性，因为分配器管线受益于 C++ 中可以覆盖全局新的能力。
 
 The expected response of a hard or firm real-time system to missed deadlines should also be thoroughly tested.
 
@@ -268,7 +259,7 @@ This proposal represents a short burst of work to develop the initial test syste
 
 Since a key part of this proposal is the development of a hard real-time embedded system, this work depends on the development of `freertps` and `rmw_freertps` and the porting of `rclc` to STM32 or another microcontroller type.
 
-> 由于本提案的一个关键部分是开发一个实时嵌入式系统，因此这项工作依赖于`freertps`和`rmw_freertps`的开发以及将`rclc`移植到 STM32 或其他微控制器类型。
+> 由于本提案的一个关键部分是开发一个实时嵌入式系统，因此这项工作依赖于 `freertps` 和 `rmw_freertps` 的开发以及将 `rclc` 移植到 STM32 或其他微控制器类型。
 
 - Alpha 4 (2/12/15): Create initial system and test suite (2-3 weeks).
 - Every release thereafter: Iterate on the API, refactor and expand test suite as new features are added to core ROS 2 libraries (1-2 weeks each release cycle).

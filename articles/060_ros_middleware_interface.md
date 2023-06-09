@@ -17,7 +17,6 @@ Authors: {{ page.author }}
 Date Written: {{ page.date_written }}
 Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
 ---
-
 ## The _middleware interface_
 
 ### Why does ROS 2 have a _middleware interface_
@@ -28,11 +27,11 @@ The ROS client library defines an API which exposes communication concepts like 
 
 In ROS 1 the implementation of these communication concepts was built on custom protocols (e.g., [TCPROS](http://wiki.ros.org/ROS/TCPROS)).
 
-> 在 ROS 1 中，这些通信概念的实现是基于自定义协议(例如[TCPROS](http://wiki.ros.org/ROS/TCPROS))构建的。
+> 在 ROS 1 中，这些通信概念的实现是基于自定义协议(例如 [TCPROS](http://wiki.ros.org/ROS/TCPROS))构建的。
 
 For ROS 2 the decision has been made to build it on top of an existing middleware solution (namely [DDS](http://en.wikipedia.org/wiki/Data_Distribution_Service)). The major advantage of this approach is that ROS 2 can leverage an existing and well developed implementation of that standard.
 
-> 对于 ROS 2，我们已经决定在现有的中间件解决方案(即[DDS](http://en.wikipedia.org/wiki/Data_Distribution_Service))之上构建它。这种方法的主要优点是 ROS 2 可以利用现有和完善的标准实现。
+> 对于 ROS 2，我们已经决定在现有的中间件解决方案(即 [DDS](http://en.wikipedia.org/wiki/Data_Distribution_Service))之上构建它。这种方法的主要优点是 ROS 2 可以利用现有和完善的标准实现。
 
 ROS could build on top of one specific implementation of DDS. But there are numerous different implementations available and each has its own pros and cons in terms of supported platforms, programming languages, performance characteristics, memory footprint, dependencies and licensing.
 
@@ -46,17 +45,19 @@ Each implementation of the interface will usually be a thin adapter which maps t
 
 > 每个接口的实现通常都是一个薄适配器，将通用的中间件接口映射到中间件实现的特定 API。在接下来的内容中，将省略适配器和实际中间件实现的常见分离。
 
-    +-----------------------------------------------+
-    |                   user land                   |
-    +-----------------------------------------------+
-    |              ROS client library               |
-    +-----------------------------------------------+
-    |             middleware interface              |
-    +-----------------------------------------------+
-    | DDS adapter 1 | DDS adapter 2 | DDS adapter 3 |
-    +---------------+---------------+---------------+
-    |    DDS impl 1 |    DDS impl 2 |    DDS impl 3 |
-    +---------------+---------------+---------------+
+```
++-----------------------------------------------+
+|                   user land                   |
++-----------------------------------------------+
+|              ROS client library               |
++-----------------------------------------------+
+|             middleware interface              |
++-----------------------------------------------+
+| DDS adapter 1 | DDS adapter 2 | DDS adapter 3 |
++---------------+---------------+---------------+
+|    DDS impl 1 |    DDS impl 2 |    DDS impl 3 |
++---------------+---------------+---------------+
+```
 
 ## Why should the _middleware interface_ be agnostic to DDS
 
@@ -68,15 +69,17 @@ While ROS 2 only aims to support DDS based middleware implementations it can str
 
 > 虽然 ROS 2 只旨在支持基于 DDS 的中间件实现，但它可以努力让中间件接口中不包含 DDS 特定的概念，以便使用不同的中间件实现该接口。也可以通过将提供发现、序列化和发布/订阅所必需功能的几个不相关的库结合起来来实现该接口。
 
-    +-----------------------------------+
-    |             user land             |   no middleware implementation specific code
-    +-----------------------------------+
-    |        ROS client library         |   above the interface
-    +-----------------------------------+
-    |       middleware interface        |   ---
-    +-----------------------------------+
-    | mw impl 1 | mw impl 2 | mw impl 3 |
-    +-----------+-----------+-----------+
+```
++-----------------------------------+
+|             user land             |   no middleware implementation specific code
++-----------------------------------+
+|        ROS client library         |   above the interface
++-----------------------------------+
+|       middleware interface        |   ---
++-----------------------------------+
+| mw impl 1 | mw impl 2 | mw impl 3 |
++-----------+-----------+-----------+
+```
 
 ## How does the information flow through the _middleware interface_
 
@@ -90,29 +93,33 @@ The middleware implementation "below" the _middleware interface_ must convert th
 
 The definition for the middleware specific data types can be derived from the information specified in the ROS message files. A defined mapping between the primitive data types of ROS message and middleware specific data types ensures that a bidirectional conversion is possible. The functionality to convert between ROS types and the implementation specific types or API is encapsulated in the `type support` (see below for different kind of type supports).
 
-> 定义中间件特定数据类型可以从 ROS 消息文件中指定的信息中推导出来。定义 ROS 消息的原始数据类型和中间件特定数据类型之间的映射，确保可以实现双向转换。将 ROS 类型和实现特定类型或 API 之间进行转换的功能封装在`type support`中(见下文关于不同类型支持)。
+> 定义中间件特定数据类型可以从 ROS 消息文件中指定的信息中推导出来。定义 ROS 消息的原始数据类型和中间件特定数据类型之间的映射，确保可以实现双向转换。将 ROS 类型和实现特定类型或 API 之间进行转换的功能封装在 `type support` 中(见下文关于不同类型支持)。
 
-    +----------------------+
-    |      user land       |   1) create a ROS message
-    +----------------------+      v
-    |  ROS client library  |   2) publish the ROS message
-    +----------------------+      v
-    | middleware interface |      v
-    +----------------------+      v
-    |      mw impl N       |   3) convert the ROS message into a DDS sample and publish the DDS sample
-    +----------------------+
+```
++----------------------+
+|      user land       |   1) create a ROS message
++----------------------+      v
+|  ROS client library  |   2) publish the ROS message
++----------------------+      v
+| middleware interface |      v
++----------------------+      v
+|      mw impl N       |   3) convert the ROS message into a DDS sample and publish the DDS sample
++----------------------+
+```
 
 <!--- separate code blocks -->
 
-    +----------------------+
-    |      user land       |   3) use the ROS message
-    +----------------------+      ^
-    |  ROS client library  |   2) callback passing a ROS message
-    +----------------------+      ^
-    | middleware interface |      ^
-    +----------------------+      ^
-    |      mw impl N       |   1) convert the DDS sample into a ROS message and invoke subscriber callback
-    +----------------------+
+```
++----------------------+
+|      user land       |   3) use the ROS message
++----------------------+      ^
+|  ROS client library  |   2) callback passing a ROS message
++----------------------+      ^
+| middleware interface |      ^
++----------------------+      ^
+|      mw impl N       |   1) convert the DDS sample into a ROS message and invoke subscriber callback
++----------------------+
+```
 
 Depending on the middleware implementation the extra conversion can be avoided by implementing serialization functions directly from ROS messages as well as deserialization functions into ROS messages.
 
@@ -138,16 +145,18 @@ In the context of providing binary packages of ROS (e.g., Debian packages) this 
 
 > 在提供 ROS 二进制包(例如 Debian 包)的背景下，这意味着其中的大部分(至少所有包含消息定义的包)将特定于所选中间件实现。
 
-                    +-----------+
-                    | user land |
-                    +-----------+
-                         |||
-          +--------------+|+-----------------+
-          |               |                  |
-          v               v                  v
-    +-----------+   +-----------+   +-----------------+   All three packages
-    | msg pkg 1 |   | msg pkg 2 |   | middleware impl |   on this level contain
-    +-----------+   +-----------+   +-----------------+   middleware implementation specific code
+```
+                +-----------+
+                | user land |
+                +-----------+
+                     |||
+      +--------------+|+-----------------+
+      |               |                  |
+      v               v                  v
++-----------+   +-----------+   +-----------------+   All three packages
+| msg pkg 1 |   | msg pkg 2 |   | middleware impl |   on this level contain
++-----------+   +-----------+   +-----------------+   middleware implementation specific code
+```
 
 ### Static vs. dynamic message types with DDS
 
@@ -157,33 +166,35 @@ DDS has two different ways to use and interact with messages.
 
 On the one hand the message can be specified in an IDL file from which usually a DDS implementation specific program will generate source code. The generated code for C++, e.g., contains types specifically generated for the message.
 
-> 一方面，消息可以在 IDL 文件中指定，通常 DDS 实现的特定程序将生成源代码。 例如，为 C ++生成的代码包含专门为消息生成的类型。
+> 一方面，消息可以在 IDL 文件中指定，通常 DDS 实现的特定程序将生成源代码。 例如，为 C ++ 生成的代码包含专门为消息生成的类型。
 
 On the other hand the message can be specified programmatically using the DynamicData API of the [XTypes](http://www.omg.org/spec/DDS-XTypes/) specification. Neither an IDL file nor a code generation step is necessary for this case.
 
-> 在另一方面，可以使用[XTypes](http://www.omg.org/spec/DDS-XTypes/)规范的 DynamicData API 编程指定消息。在这种情况下，不需要 IDL 文件或代码生成步骤。
+> 在另一方面，可以使用 [XTypes](http://www.omg.org/spec/DDS-XTypes/) 规范的 DynamicData API 编程指定消息。在这种情况下，不需要 IDL 文件或代码生成步骤。
 
 Some custom code must still map the message definition available in the ROS .msg files to invocations of the DynamicData API. But it is possible to write generic code which performs the task for any ROS .msg specification passed in.
 
 > 一些自定义代码仍然需要将 ROS .msg 文件中可用的消息定义映射到 DynamicData API 的调用。但是可以编写通用代码来执行传入的任何 ROS .msg 规范的任务。
 
-                    +-----------+
-                    | user land |
-                    +-----------+
-                         |||
-          +--------------+|+----------------+
-          |               |                 |
-          v               v                 |
-    +-----------+   +-----------+           |            Each message provides its specification
-    | msg pkg 1 |   | msg pkg 2 |           |            in a way which allows a generic mapping
-    +-----------+   +-----------+           |            to the DynamicData API
-          |               |                 |
-          +-------+-------+                 |
-                  |                         |
-                  v                         v
-     +-------------------------+   +-----------------+   Only the packages
-     | msg spec to DynamicData |   | middleware impl |   on this level contain
-     +-------------------------+   +-----------------+   middleware implementation specific code
+```
+                +-----------+
+                | user land |
+                +-----------+
+                     |||
+      +--------------+|+----------------+
+      |               |                 |
+      v               v                 |
++-----------+   +-----------+           |            Each message provides its specification
+| msg pkg 1 |   | msg pkg 2 |           |            in a way which allows a generic mapping
++-----------+   +-----------+           |            to the DynamicData API
+      |               |                 |
+      +-------+-------+                 |
+              |                         |
+              v                         v
+ +-------------------------+   +-----------------+   Only the packages
+ | msg spec to DynamicData |   | middleware impl |   on this level contain
+ +-------------------------+   +-----------------+   middleware implementation specific code
+```
 
 However the performance using the DynamicData API will likely always be lower compared to the statically generated code.
 
@@ -241,21 +252,25 @@ Based on the general structure of ROS nodes, publishers and messages for the cas
 
 Subsequent invocations of `create_publisher` need to refer to the specific node they should be created in. Therefore the `create_node` function needs to return a _node handle_ which can be used to identify the node.
 
-> 后续调用`create_publisher`需要指向它们应该被创建的特定节点。因此，`create_node`函数需要返回一个*节点句柄*，用于标识节点。
+> 后续调用 `create_publisher` 需要指向它们应该被创建的特定节点。因此，`create_node` 函数需要返回一个*节点句柄*，用于标识节点。
 
-    NodeHandle create_node();
+```
+NodeHandle create_node();
+```
 
 #### Essential signature of `create_publisher`
 
 Besides the _node handle_ the `create_publisher` function needs to know the _topic name_ as well as the _topic type_. The type of the _topic type_ argument is left unspecified for now.
 
-> 除了*节点句柄*外，`create_publisher`函数还需要知道*主题名称*以及*主题类型*。目前尚未指定*主题类型*参数的类型。
+> 除了*节点句柄*外，`create_publisher` 函数还需要知道*主题名称*以及*主题类型*。目前尚未指定*主题类型*参数的类型。
 
 Subsequent invocations of `publish` need to refer to the specific publisher they should send messages on. Therefore the `create_publisher` function needs to return a _publisher handle_ which can be used to identify the publisher.
 
-> 后续调用`publish`需要指向特定的发布者，以发送消息。因此，`create_publisher`函数需要返回一个*发布者句柄*，用于标识发布者。
+> 后续调用 `publish` 需要指向特定的发布者，以发送消息。因此，`create_publisher` 函数需要返回一个*发布者句柄*，用于标识发布者。
 
-    PublisherHandle create_publisher(NodeHandle node_handle, String topic_name, .. topic_type);
+```
+PublisherHandle create_publisher(NodeHandle node_handle, String topic_name, .. topic_type);
+```
 
 The information encapsulated by the _topic type_ argument is highly dependent on the middleware implementation.
 
@@ -265,7 +280,7 @@ The information encapsulated by the _topic type_ argument is highly dependent on
 
 In the case of using the DynamicData API in the implementation there is no C / C++ type which could represent the type information. Instead the _topic type_ must contain all information needed to describe the format of the message. This information includes:
 
-> 在实现中使用 DynamicData API 时，没有 C/C++类型可以表示类型信息。取而代之的是，*主题类型*必须包含描述消息格式所需的所有信息，包括：
+> 在实现中使用 DynamicData API 时，没有 C/C++ 类型可以表示类型信息。取而代之的是，*主题类型*必须包含描述消息格式所需的所有信息，包括：
 
 - the name of the package in which the message is defined
 - the name of the message
@@ -274,7 +289,6 @@ In the case of using the DynamicData API in the implementation there is no C / C
   - the name for the message field
   - the type of the message field (which can be either a built-in type or another message type), optionally the type might be an unbounded, bounded or fixed size array
   - the default value
-
 - the list of constants defined in the message (again consisting of name, type and value)
 
 In the case of using DDS this information enables one to:
@@ -291,7 +305,7 @@ In the case of using DDS this information enables one to:
 
 In the case of using statically generated code derived from an IDL there is are C / C++ types which represent the type information. The generated code contains functions to:
 
-> 在使用从 IDL 生成的静态代码的情况下，存在 C/C++类型来表示类型信息。生成的代码包含以下功能：
+> 在使用从 IDL 生成的静态代码的情况下，存在 C/C++ 类型来表示类型信息。生成的代码包含以下功能：
 
 - create a _DDS TypeCode_ which represents the message structure
 
@@ -314,7 +328,9 @@ Since the information encapsulated by the _topic type_ argument is so fundamenta
 
 > 由于*主题类型*参数封装的信息对于每个中间件实现来说是如此根本性的不同，因此实际上需要通过中间件接口的额外功能来获取它。
 
-    MessageTypeSupportHandle get_type_support_handle();
+```
+MessageTypeSupportHandle get_type_support_handle();
+```
 
 Currently this function is a template function specialized on the specific ROS message type. For C compatibility an approach using a macro will be used instead which mangles the type name into the function name.
 
@@ -324,9 +340,11 @@ Currently this function is a template function specialized on the specific ROS m
 
 Beside the _publisher handle_ the `publish` function needs to know the _ROS message_ to send.
 
-> 除了出版者句柄，`publish`函数还需要知道要发送的 ROS 消息。
+> 除了出版者句柄，`publish` 函数还需要知道要发送的 ROS 消息。
 
-    publish(PublisherHandle publisher_handle, .. ros_message);
+```
+publish(PublisherHandle publisher_handle, .. ros_message);
+```
 
 Since ROS messages do not have a common base class the signature of the function can not use a known type for the passed ROS message. Instead it is passed as a void pointer and the actual implementation reinterprets it according to the previously registered type.
 
@@ -368,29 +386,22 @@ The described concept has been implemented in the following packages:
 
   - The functions are declared in [rms/rmw.h](https://github.com/ros2/rmw/blob/master/rmw/include/rmw/rmw.h).
   - The handles are defined in [rmw/types.h](https://github.com/ros2/rmw/blob/master/rmw/include/rmw/types.h).
-
 - The package [rosidl_typesupport_introspection_cpp](https://github.com/ros2/rosidl/tree/master/rosidl_typesupport_introspection_cpp) generates code which encapsulated the information from each ROS msg file in a way which makes the data structures introspectable from C++ code.
-
 - The package [rmw_fastrtps_cpp](https://github.com/ros2/rmw_fastrtps/tree/master/rmw_fastrtps_cpp) implements the middleware interface using [eProsima Fast-RTPS](http://www.eprosima.com/index.php/products-all/eprosima-fast-rtps) based on the introspection type support.
-
 - The package [rosidl_generator_dds_idl](https://github.com/ros2/rosidl_dds/tree/master/rosidl_generator_dds_idl) generates DDS IDL files based on ROS msg files which are being used by all DDS-based RMW implementations which use static / compile type message types.
-
 - The package [rmw_connext_cpp](https://github.com/ros2/rmw_connext/tree/master/rmw_connext_cpp) implements the middleware interface using [RTI Connext DDS](http://www.rti.com/products/dds/index.html) based on statically generated code.
 
   - The package [rosidl_typesupport_connext_cpp](https://github.com/ros2/rmw_connext/tree/master/rosidl_typesupport_connext_cpp) generates:
 
     - the DDS specific code based on IDL files for each message
     - additional code to enable invoking the register/create/convert/write functions for each message type
-
 - The package [rmw_connext_dynamic_cpp](https://github.com/ros2/rmw_connext/tree/master/rmw_connext_dynamic_cpp) implements the middleware interface using _RTI Connext DDS_ based on the `DynamicData` API of Connext and the introspection type support.
-
 - The package [rmw_opensplice_cpp](https://github.com/ros2/rmw_opensplice/tree/master/rmw_opensplice_cpp) implements the middleware interface using [PrismTech OpenSplice DDS](http://www.prismtech.com/opensplice) based on statically generated code.
 
   - The package [rosidl_typesupport_opensplice_cpp](https://github.com/ros2/rmw_opensplice/tree/master/rosidl_typesupport_opensplice_cpp) generates:
 
     - the DDS specific code based on IDL files for each message
     - additional code to enable invoking the register/create/convert/write functions for each message type
-
 - The package [rmw_implementation](https://github.com/ros2/rmw_implementation/tree/master/rmw_implementation) provides the mechanism to switch between compile time and runtime selection of the middleware implementation.
 
   - If only one implementation is available at compile time it links directly against it.
@@ -400,7 +411,7 @@ The described concept has been implemented in the following packages:
 
 The packages contributing to the message generation process of each message are called _type support generators_. Their package name starts with the prefix `rosidl_typesupport_`.
 
-> 每条消息的消息生成过程中贡献的包称为*类型支持生成器*。它们的包名以`rosidl_typesupport_`为前缀。
+> 每条消息的消息生成过程中贡献的包称为*类型支持生成器*。它们的包名以 `rosidl_typesupport_` 为前缀。
 
 Each message package will contain the generated code from all type support generators which are available when the package is configured. This can be only one (when building against a single middleware implementation) or multiple type support generators.
 

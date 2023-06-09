@@ -19,7 +19,6 @@ Authors: {{ page.author }}
 Date Written: {{ page.date_written }}
 Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
 ---
-
 ## Scope
 
 This article specifies the file format describing the data structures which are being used to exchange information between components. The data structures are defined in a programming language agnostic way. Please see other articles for the mappings to programming language specific types and API.
@@ -118,7 +117,7 @@ A field can optionally specify a default value. If no default value is specified
 
 A field of type `array` can optionally specify a default value.
 
-> 一个类型为`数组`的字段可以选择性地指定默认值。
+> 一个类型为 `数组` 的字段可以选择性地指定默认值。
 
 - default values for an array must start with an opening square bracket (`[`) and end with a closing square bracket (`]`)
 - each value within the array must be separated with a comma (`,`)
@@ -130,7 +129,7 @@ Additional rule for `string` arrays:
 
 > 针对字符串数组的额外规则：
 
-- string arrays must contain only `string`s respecting the following rules:
+- string arrays must contain only `string` s respecting the following rules:
   - a string value which can optionally be quoted with either single quotes (`'`) or double quotes (`"`)
   - a double-quoted (`"`) string (respectively single-quoted (`'`)) should have any inner double quotes (respectively single quotes) escaped
 
@@ -150,7 +149,7 @@ Constants are defined by a _primitive type_, a _name_ as well as a _fixed value_
 
 Each file contains a single message or service. Message files use the extension `.msg`, service files use the extension `.srv`.
 
-> 每个文件包含一条消息或服务。消息文件使用`.msg`扩展名，服务文件使用`.srv`扩展名。
+> 每个文件包含一条消息或服务。消息文件使用 `.msg` 扩展名，服务文件使用 `.srv` 扩展名。
 
 Both file names must use an upper camel case name and only consist of alphanumeric characters.
 
@@ -178,7 +177,7 @@ The message and service definitions are text files.
 
 The character `#` starts a comment, which terminates at the end of the line on which it occurs.
 
-> 字符`#`开始一个注释，它在出现的行结束时终止。
+> 字符 `#` 开始一个注释，它在出现的行结束时终止。
 
 ### Message file format
 
@@ -192,7 +191,9 @@ A field definition has the following structure:
 
 > 一个字段定义具有以下结构：
 
-    <type> <name> <optional_default_value>
+```
+<type> <name> <optional_default_value>
+```
 
 #### Constant definition
 
@@ -200,13 +201,15 @@ A constant definition has the following structure:
 
 > 一个常量定义的结构如下：
 
-    <type> <name>=<value>
+```
+<type> <name>=<value>
+```
 
 #### Types
 
 A `<type>` is defined by its _base type_ and optional _array specifier_.
 
-> 一个<类型>由它的基本类型和可选的数组规范定义。
+> 一个 < 类型 > 由它的基本类型和可选的数组规范定义。
 
 The _base type_ can be one of the following:
 
@@ -237,31 +240,24 @@ Depending on the type the following values are valid:
 
   - `true`, `1`
   - `false`, `0`
-
 - `byte`:
 
   - an unsigned integer value in the following interval `[0, 255]`
-
 - `char`:
 
   - an integer value in the following interval `[-128, 127]`
-
 - `float32` and `float64`:
 
   - a decimal number using a dot (`.`) as the separator between the integer-part and fractional-part.
-
 - `int8`, `int16`, `int32` and `int64`:
 
   - an integer value in the following interval `[- 2 ^ (N - 1), 2 ^ (N - 1) - 1]` where `N` is the number of bits behind `int`
-
 - `uint8`, `uint16`, `uint32` and `uint64`:
 
   - an unsigned integer value in the following interval `[0, 2 ^ N - 1]` where `N` is the number of bits behind `uint`
-
 - `string`:
 
   - a string value which can optionally be quoted with either single quotes (`'`) or double quotes (`"`)
-
   - a double-quoted (`"`) string (respectively single-quoted (`'`)) should have any inner double quotes (respectively single quotes) escaped:
 
     - `string my_string "I heard \"Hello\""` is valid
