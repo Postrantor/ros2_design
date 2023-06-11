@@ -13,6 +13,7 @@ Authors: {{ page.author }}
 Date Written: {{ page.date_written }}
 Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
 ---
+
 > [!NOTE]
 > 在 action 中也有提到这类 `Introspection tools`，考虑也实现一套，还是 ros2 中已经具备？
 > 用于对 error 状态的节点进行检查，可以用于调试，而不是直接销毁。
