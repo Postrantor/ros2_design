@@ -10,9 +10,9 @@ author: '[Dirk Thomas](https://github.com/dirk-thomas)'
 date_written: 2017-03
 last_modified: 2021-01
 categories: Overview
-Authors: {{ page.author }}
-Date Written: {{ page.date_written }}
-Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
+Authors: 
+Date Written: 
+Last Modified:
 ---
 ## Preface
 
@@ -36,11 +36,11 @@ This article describes the steps to unify these build tools as well as extend th
 
 The goal of a unified build tool is to build a set of packages with a single invocation. It should work with ROS 1 packages as well as ROS 2 packages which provide the necessary information in their manifest files. It should also work with packages that do not provide manifest files themselves, given that the necessary meta information can be inferred and/or is provided externally. This will allow the build tool to be utilized for non-ROS packages (e.g. Gazebo including its ignition dependencies, sdformat, etc.).
 
-> 目标是使用单一的调用来构建一组软件包。它应该能够与 ROS 1 软件包以及提供必要信息的 ROS 2 软件包一起工作。它也应该能够与本身不提供清单文件的软件包一起工作，只要能够推断出必要的元信息并/或从外部提供即可。这将允许构建工具用于非 ROS 软件包（例如 Gazebo 及其 Ignition 依赖项、sdformat 等）。
+> 目标是使用单一的调用来构建一组软件包。它应该能够与 ROS 1 软件包以及提供必要信息的 ROS 2 软件包一起工作。它也应该能够与本身不提供清单文件的软件包一起工作，只要能够推断出必要的元信息并/或从外部提供即可。这将允许构建工具用于非 ROS 软件包(例如 Gazebo 及其 Ignition 依赖项、sdformat 等)。
 
 In the ROS ecosystems several tools already exist which support this use case (see below). Each of the existing tools performs similar tasks and duplicates a significant amount of the logic. As a consequence of being developed separately certain features are only available in some of the tools while other tools lack those.
 
-> 在 ROS 生态系统中，已经存在几种工具，可以支持这种用例（见下文）。现有的每个工具都执行类似的任务，并重复了大量的逻辑。由于被单独开发，某些功能只在某些工具中可用，而其他工具则缺少这些功能。
+> 在 ROS 生态系统中，已经存在几种工具，可以支持这种用例(见下文)。现有的每个工具都执行类似的任务，并重复了大量的逻辑。由于被单独开发，某些功能只在某些工具中可用，而其他工具则缺少这些功能。
 
 The reason to use a single universal build tool comes down to reducing the effort necessary for development and maintenance. Additionally this makes newly developed features available for all the use cases.
 
@@ -58,17 +58,17 @@ A build tool operates on a set of packages. It determines the dependency graph a
 
 The build system on the other hand operates on a single package. Examples are `Make`, `CMake`, `Python setuptools`, or `Autotools` (which isn't used in ROS atm). A CMake package is e.g. build by invoking these steps: `cmake`, `make`, `make install`. `catkin` as well as `ament_cmake` are based on CMake and offer some convenience functions described below.
 
-> 系统构建另一方面操作单个包。例如 `Make`、`CMake`、`Python setuptools` 或 `Autotools`（ROS 目前不使用）。例如，CMake 包可以通过调用以下步骤来构建：`cmake`、`make`、`make install`。`catkin` 和 `ament_cmake` 均基于 CMake，并提供一些方便的功能，如下所述。
+> 系统构建另一方面操作单个包。例如 `Make`、`CMake`、`Python setuptools` 或 `Autotools`(ROS 目前不使用)。例如，CMake 包可以通过调用以下步骤来构建：`cmake`、`make`、`make install`。`catkin` 和 `ament_cmake` 均基于 CMake，并提供一些方便的功能，如下所述。
 
 ### Environment Setup
 
 A very important part beside the actual build of a package is the environment setup. For example, in order for a CMake project to discover a dependency using the CMake function `find_package`, the CMake module (e.g. `FindFoo.cmake`) or the CMake config file (e.g. `FooConfig.cmake`) for that dependency must either be in a prefix that CMake searches implicitly (e.g. `/usr`) or the location must be provided through the environment variable `CMAKE_PREFIX_PATH` / `CMAKE_MODULE_PATH`.
 
-> 一个软件包的实际构建之外，环境设置是一个非常重要的部分。例如，为了使 CMake 项目使用 CMake 函数 `find_package` 发现一个依赖项，该依赖项的 CMake 模块（例如 `FindFoo.cmake`）或 CMake 配置文件（例如 `FooConfig.cmake`）必须位于 CMake 隐式搜索的前缀（例如 `/usr`）中，或者必须通过环境变量 `CMAKE_PREFIX_PATH`/`CMAKE_MODULE_PATH` 提供位置。
+> 一个软件包的实际构建之外，环境设置是一个非常重要的部分。例如，为了使 CMake 项目使用 CMake 函数 `find_package` 发现一个依赖项，该依赖项的 CMake 模块(例如 `FindFoo.cmake`)或 CMake 配置文件(例如 `FooConfig.cmake`)必须位于 CMake 隐式搜索的前缀(例如 `/usr`)中，或者必须通过环境变量 `CMAKE_PREFIX_PATH`/`CMAKE_MODULE_PATH` 提供位置。
 
 In addition to building a package on top of another package (using `find_package` in the case of CMake), you may need to adjust the environment in order to run an executable from a package. For example, when a package installs a shared library in a non-default location then the environment variable `LD_LIBRARY_PATH` (or `PATH` on Windows) needs to be extended to include the containing folder before trying to run executables that load that library at runtime.
 
-> 除了在另一个包的顶部构建一个包（在 CMake 的情况下使用 `find_package`）之外，您还可能需要调整环境以运行来自包的可执行文件。例如，当一个包在非默认位置安装共享库时，环境变量 `LD_LIBRARY_PATH`（或 Windows 上的 `PATH`）需要扩展到包含文件夹，然后再尝试运行加载该库的可执行文件。
+> 除了在另一个包的顶部构建一个包(在 CMake 的情况下使用 `find_package`)之外，您还可能需要调整环境以运行来自包的可执行文件。例如，当一个包在非默认位置安装共享库时，环境变量 `LD_LIBRARY_PATH`(或 Windows 上的 `PATH`)需要扩展到包含文件夹，然后再尝试运行加载该库的可执行文件。
 
 The functionality to setup these environment variables can be provided by either the build tool or the build system. In the latter case the build tool only needs to know how the build system exposes the environment setup in order to reuse it.
 
@@ -88,13 +88,13 @@ To clarify the scope of this article a few related topics are explicitly enumera
 
 Any build system related functionality (which is not directly relevant for the build tool) is not considered in this article.
 
-> 本文不考虑任何与构建系统相关的功能（与构建工具没有直接关联）。
+> 本文不考虑任何与构建系统相关的功能(与构建工具没有直接关联)。
 
 ##### Mixing Different Build Systems
 
 The unified build tool will support different build systems in order to satisfy the described goals. If packages using different build system inter-operate with each other correctly depends also to a large degree on the build system. While the build tool should ensure that it doesn't prevent that use case this article will not cover the use case of mixing multiple build systems in a single workspace (e.g. ROS 1 packages using `catkin` with ROS 2 packages using `ament_cmake`).
 
-> 统一的构建工具将支持不同的构建系统，以满足所描述的目标。如果使用不同构建系统的软件包之间能够正确互操作，也在很大程度上取决于构建系统。虽然构建工具应该确保它不会阻止该用例，但本文不涵盖在单个工作区中混合多个构建系统（例如，使用 `catkin` 的 ROS 1 软件包与使用 `ament_cmake` 的 ROS 2 软件包）的用例。
+> 统一的构建工具将支持不同的构建系统，以满足所描述的目标。如果使用不同构建系统的软件包之间能够正确互操作，也在很大程度上取决于构建系统。虽然构建工具应该确保它不会阻止该用例，但本文不涵盖在单个工作区中混合多个构建系统(例如，使用 `catkin` 的 ROS 1 软件包与使用 `ament_cmake` 的 ROS 2 软件包)的用例。
 
 #### Fetch Source Code
 
@@ -112,7 +112,7 @@ The build tool also does not provide a mechanism to install any dependencies req
 
 The build tool also does not create binary packages (e.g. a Debian package). In the ROS ecosystem [bloom](http://wiki.ros.org/bloom) is used to generate the required metadata and then platform dependent tools like `dpkg-buildpackage` build binary packages.
 
-> 构建工具也不会创建二进制包（例如 Debian 包）。在 ROS 生态系统中，使用 [bloom](http://wiki.ros.org/bloom) 生成所需的元数据，然后使用像 `dpkg-buildpackage` 这样的平台相关工具构建二进制包。
+> 构建工具也不会创建二进制包(例如 Debian 包)。在 ROS 生态系统中，使用 [bloom](http://wiki.ros.org/bloom) 生成所需的元数据，然后使用像 `dpkg-buildpackage` 这样的平台相关工具构建二进制包。
 
 ## Existing Build Systems
 
@@ -124,7 +124,7 @@ In the following the build systems being used in the ROS ecosystem are briefly d
 
 [CMake](https://cmake.org/) is a cross-platform build system generator. Projects specify their build process with platform-independent `CMakeLists.txt` files. Users build a project by using CMake to generate a build system for a native tool on their platform, e.g. `Makefiles` or `Visual Studio projects`.
 
-> CMake 是一个跨平台构建系统生成器。项目使用平台无关的 CMakeLists.txt 文件指定其构建过程。用户通过使用 CMake 为其平台上的本地工具（如 Makefiles 或 Visual Studio 项目）生成构建系统来构建项目。
+> CMake 是一个跨平台构建系统生成器。项目使用平台无关的 CMakeLists.txt 文件指定其构建过程。用户通过使用 CMake 为其平台上的本地工具(如 Makefiles 或 Visual Studio 项目)生成构建系统来构建项目。
 
 ### catkin
 
@@ -144,7 +144,7 @@ A package using `catkin` specifies its meta data in a manifest file named `packa
 
 A package using `ament_cmake` uses the same manifest file as `catkin` (except that it requires format version 2 or higher).
 
-> 使用 `ament_cmake` 的一个包使用与 `catkin` 相同的清单文件（除了它需要格式版本 2 或更高版本）。
+> 使用 `ament_cmake` 的一个包使用与 `catkin` 相同的清单文件(除了它需要格式版本 2 或更高版本)。
 
 ### Python setuptools
 
@@ -174,7 +174,7 @@ The tool invokes CMake only a single time and uses CMake's `add_subdirectory` fu
 
 The tool only supports CMake-based packages and builds each package in topological order using the command sequence common for CMake packages: `cmake`, `make`, `make install`. While each package can parallelize the build of its targets the packages are processed sequentially even if they are not (recursive) dependencies of each other.
 
-> 这个工具只支持基于 CMake 的软件包，并使用常见于 CMake 软件包的命令序列（`cmake`、`make`、`make install`）按拓扑顺序构建每个软件包。虽然每个软件包可以并行构建它的目标，但即使它们不是（递归）依赖关系，也会按顺序处理软件包。
+> 这个工具只支持基于 CMake 的软件包，并使用常见于 CMake 软件包的命令序列(`cmake`、`make`、`make install`)按拓扑顺序构建每个软件包。虽然每个软件包可以并行构建它的目标，但即使它们不是(递归)依赖关系，也会按顺序处理软件包。
 
 `catkin_make_isolated` supports building the following packages:
 
@@ -196,7 +196,7 @@ The tool only supports CMake-based packages and builds each package in topologic
 
 `ament_tools` is provided by a standalone Python 3 package used to build ROS 2 packages. It was developed to bootstrap the ROS 2 project, is therefore only targeting Python 3, and works on Linux, MacOS and Windows. In addition to CMake packages it also supports building Python packages and can infer meta information without requiring an explicit package manifest (which is e.g. used for the FastRTPS package). The tool performs an "isolated" build like `catkin_make_isolated` and `catkin_tools` (one CMake invocation per package) and also parallelizes the build of packages which have no (recursive) dependencies on each other (like `catkin_tools`). While it covers more build systems and platforms than `catkin_tools` it doesn't have any of `catkin_tools` s usability features like profiles, output handling, etc.
 
-> “ament_tools” 由用于构建 ROS 2 软件包的独立 Python 3 软件包提供。它的开发是为了引导 ROS 2 项目，因此仅针对 Python 3，并且可以在 Linux，MacOS 和 Windows 上使用。除了 CMAKE 软件包外，它还支持构建 Python 软件包，并可以推断元信息，而无需明确的软件包清单（例如用于 Fastrtps 软件包）。该工具执行一个“隔离”构建，例如 `catkin_make_isolated` 和 `catkin_tools'（每个软件包的一个` cmake invocation `，并且还同时使没有（递归）相互依赖的软件包的构建（例如` catkin_tools`）。虽然它涵盖了比“ catkin_tools”更多的构建系统和平台，但它没有任何 catkin_tools 的可用性功能，例如配置文件，输出处理等。
+> “ament_tools” 由用于构建 ROS 2 软件包的独立 Python 3 软件包提供。它的开发是为了引导 ROS 2 项目，因此仅针对 Python 3，并且可以在 Linux，MacOS 和 Windows 上使用。除了 CMAKE 软件包外，它还支持构建 Python 软件包，并可以推断元信息，而无需明确的软件包清单(例如用于 Fastrtps 软件包)。该工具执行一个“隔离”构建，例如 `catkin_make_isolated` 和 `catkin_tools'(每个软件包的一个` cmake invocation `，并且还同时使没有(递归)相互依赖的软件包的构建(例如` catkin_tools`)。虽然它涵盖了比“ catkin_tools”更多的构建系统和平台，但它没有任何 catkin_tools 的可用性功能，例如配置文件，输出处理等。
 
 `ament_tools` supports building the following packages:
 
@@ -226,7 +226,7 @@ The unified build tool should provide a superset of the functionality provided b
 
 Other use cases which are not explicitly covered but are already supported by the existing tools (e.g. cross-compilation, `DESTDIR` support, building CMake packages without a manifest) should continue to work with the unified build tool.
 
-> 其他尚未明确涵盖的用例，但已经由现有工具支持（例如交叉编译、`DESTDIR` 支持、不使用清单构建 CMake 包），应该继续使用统一的构建工具。
+> 其他尚未明确涵盖的用例，但已经由现有工具支持(例如交叉编译、`DESTDIR` 支持、不使用清单构建 CMake 包)，应该继续使用统一的构建工具。
 
 ### Use Cases
 
@@ -254,7 +254,7 @@ The tool needs to be able to build ROS 2 workspaces which can already be built u
 
 After cloning the repositories containing Gazebo and all its dependencies (excluding system packages) the tool needs to be able to build the set of packages. Meta information not inferable from the sources can be provided externally without adding or modifying any files in the workspace. After the build a single file can be sourced / invoked to setup the environment to use Gazebo (e.g. `GAZEBO_MODEL_PATH`).
 
-> 在克隆包含 Gazebo 及其所有依赖项（不包括系统包）的存储库后，该工具需要能够构建一组软件包。无法从源代码推断的元数据可以在不在工作区中添加或修改任何文件的情况下从外部提供。构建完成后，可以源/调用单个文件来设置使用 Gazebo 的环境（例如 `GAZEBO_MODEL_PATH`）。
+> 在克隆包含 Gazebo 及其所有依赖项(不包括系统包)的存储库后，该工具需要能够构建一组软件包。无法从源代码推断的元数据可以在不在工作区中添加或修改任何文件的情况下从外部提供。构建完成后，可以源/调用单个文件来设置使用 Gazebo 的环境(例如 `GAZEBO_MODEL_PATH`)。
 
 ### Development Environment Setup
 
@@ -272,11 +272,11 @@ Building packages is only one task the build tool can perform on a set of packag
 
 The tool aims to support a variety of build systems, use cases, and platforms. The above mentioned ones are mainly driven by the needs in the ROS ecosystem but the tool should also be usable outside the ROS ecosystem (e.g. for Gazebo). Therefore it should be designed in a way which enables extending its functionality.
 
-> 这个工具旨在支持各种构建系统、用例和平台。上述这些主要是受 ROS 生态系统的需求驱动，但该工具也应该可以在 ROS 生态系统之外使用（例如用于 Gazebo）。因此，它应该以一种可以扩展其功能的方式设计。
+> 这个工具旨在支持各种构建系统、用例和平台。上述这些主要是受 ROS 生态系统的需求驱动，但该工具也应该可以在 ROS 生态系统之外使用(例如用于 Gazebo)。因此，它应该以一种可以扩展其功能的方式设计。
 
 Assuming that the tool will be implemented in Python (since that is the case for all existing ROS build tools) the entry point mechanism provides a convenient way to make the software extensible. Extensions don't even have to be integrated into the Python package containing the core logic of the build tool but can easily be provided by additional Python packages. This approach will not only foster a modular design and promote clear interfaces but enable external contributions without requiring them to be integrated in a single monolithic package.
 
-> 假设工具将使用 Python 实现（因为所有现有的 ROS 构建工具都是如此），入口点机制提供了一种方便的方式来使软件可扩展。扩展甚至不必集成到包含构建工具核心逻辑的 Python 包中，而可以通过额外的 Python 包轻松提供。这种方法不仅可以促进模块化设计并促进清晰的接口，而且可以在不需要将其集成到单个巨型包中的情况下实现外部贡献。
+> 假设工具将使用 Python 实现(因为所有现有的 ROS 构建工具都是如此)，入口点机制提供了一种方便的方式来使软件可扩展。扩展甚至不必集成到包含构建工具核心逻辑的 Python 包中，而可以通过额外的 Python 包轻松提供。这种方法不仅可以促进模块化设计并促进清晰的接口，而且可以在不需要将其集成到单个巨型包中的情况下实现外部贡献。
 
 Several well known software principles apply:
 
@@ -328,17 +328,17 @@ Since neither of these three build tools has the feature richness of `catkin_too
 
 Since `catkin_tools` is in many aspects the most complete ROS build tool it should be the one being evolved. While `ament_tools` has a few features `catkin_tools` currently lacks (e.g. plain CMake support without a manifest, Windows support) the feature richness of `catkin_tools` makes it a better starting point.
 
-> 由于 `catkin_tools` 在许多方面是最完整的 ROS 构建工具，因此它应该是被演化的工具。虽然 `ament_tools` 有一些 `catkin_tools` 目前缺少的特性（例如，无需清单的纯 CMake 支持，Windows 支持），但 `catkin_tools` 的功能丰富使其成为更好的起点。
+> 由于 `catkin_tools` 在许多方面是最完整的 ROS 构建工具，因此它应该是被演化的工具。虽然 `ament_tools` 有一些 `catkin_tools` 目前缺少的特性(例如，无需清单的纯 CMake 支持，Windows 支持)，但 `catkin_tools` 的功能丰富使其成为更好的起点。
 
 ### Start "from scratch" / colcon
 
 Since the first draft of this article the `colcon` project has been developed with the goals and requirements of a universal build tool in mind. In its current form it is already able to build ROS 1 workspaces, ROS 2 workspaces, as well as Gazebo including its ignition dependencies. It uses Python 3.5+ and targets all platforms supported by ROS: Linux, macOS, and Windows.
 
-> 自从这篇文章的第一稿发布以来，`colcon` 项目一直在以实现通用构建工具的目标和要求为出发点进行开发。目前，它已经能够构建 ROS 1 工作区、ROS 2 工作区以及 Gazebo（包括其 Ignition 依赖项）。它使用 Python 3.5+，并针对 ROS 支持的所有平台：Linux、macOS 和 Windows。
+> 自从这篇文章的第一稿发布以来，`colcon` 项目一直在以实现通用构建工具的目标和要求为出发点进行开发。目前，它已经能够构建 ROS 1 工作区、ROS 2 工作区以及 Gazebo(包括其 Ignition 依赖项)。它使用 Python 3.5+，并针对 ROS 支持的所有平台：Linux、macOS 和 Windows。
 
 Since it hasn't been used by many people yet more advanced features like cross compilation, `DESTDIR`, etc. hasn't been tested (and will therefore likely not work yet).
 
-> 由于尚未有多少人使用，因此更高级的功能，如交叉编译，`DESTDIR` 等尚未经过测试（因此可能尚未正常工作）。
+> 由于尚未有多少人使用，因此更高级的功能，如交叉编译，`DESTDIR` 等尚未经过测试(因此可能尚未正常工作)。
 
 ## Decision process
 
@@ -364,7 +364,7 @@ Both of the considered options have unique and valuable features and there are g
 
 A ROS 2 developer currently builds a steadily growing workspace with ROS 2 packages. The same is happening in the monolithic Jenkins jobs on [ci.ros2.org](https://ci.ros2.org) (with the advantage to test changes across repositories easily). Therefore features to easily filter the packages which need to be build are eagerly awaited to improve the development process.
 
-> 一位 ROS 2 开发者目前正在构建一个不断增长的 ROS 2 软件包工作区。在 [ci.ros2.org](https://ci.ros2.org) 上的单体式 Jenkins 作业也是如此（具有跨存储库轻松测试更改的优势）。因此，期望有一些功能来轻松过滤需要构建的软件包，以改善开发过程。
+> 一位 ROS 2 开发者目前正在构建一个不断增长的 ROS 2 软件包工作区。在 [ci.ros2.org](https://ci.ros2.org) 上的单体式 Jenkins 作业也是如此(具有跨存储库轻松测试更改的优势)。因此，期望有一些功能来轻松过滤需要构建的软件包，以改善开发过程。
 
 For the last ROS 2 release _Ardent_ the buildfarm [build.ros.org](http://build.ros2.org) only provides jobs to generate Debian packages. Neither _devel_ jobs or _pull request_ jobs are available nor is it supported to build a local _prerelease_. For the coming ROS 2 release _Bouncy_ these job types should be available to support maintainers.
 
@@ -396,7 +396,7 @@ For option **A)** the follow items would need to be addressed:
 
 For option **B)** the follow items would need to be addressed:
 
-> 对于选项 **B）**，需要解决以下问题：
+> 对于选项 **B)**，需要解决以下问题：
 
 - Address user feedback when the tool is being used by a broader audience.
 
@@ -412,7 +412,7 @@ Beside that for both options there is follow up work beyond the immediate goals.
 
 For option **A)** the follow items should be considered:
 
-> 对于选项 **A）**，应考虑以下项目：
+> 对于选项 **A)**，应考虑以下项目：
 
 - Support for Python packages using a `setup.cfg` file.
 - Support for `PowerShell` to work around length limitations for environment variable on Windows.
@@ -425,7 +425,7 @@ For option **A)** the follow items should be considered:
 
 For option **B)** the follow items should be considered:
 
-> 对于选项 **B）**，应考虑以下内容：
+> 对于选项 **B)**，应考虑以下内容：
 
 - Support `DESTDIR`.
 - Support a feature similar to the `profile` verb of `catkin_tools`.

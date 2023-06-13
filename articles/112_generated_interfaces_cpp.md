@@ -14,9 +14,9 @@ categories: Interfaces
 <div class="alert alert-warning" markdown="1">
 With the transition to use ``IDL`` for specifying interfaces in ROS 2 Dashing this article has been superseded by the [Interface Definition and Language Mapping](idl_interface_definition.html) article.
 </div>
-Authors: {{ page.author }}
-Date Written: {{ page.date_written }}
-Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
+Authors: 
+Date Written: 
+Last Modified:
 ---
 ## Scope
 
@@ -51,7 +51,7 @@ For a message a templated `struct` with the same name followed by an underscore 
 
 For ease of use there is a `typedef` with the same name as the message which uses a default allocator (e.g. `std::allocator`).
 
-> 为了方便使用，有一个与消息同名的 `typedef`，它使用默认分配器（例如 `std::allocator`）。
+> 为了方便使用，有一个与消息同名的 `typedef`，它使用默认分配器(例如 `std::allocator`)。
 
 For each message two files are being generated:
 
@@ -62,7 +62,7 @@ For each message two files are being generated:
 
 This allows to add additional files besides the one with the suffix `__struct` to provide additional functionality. For each additional functionality it can be decided to include it from the first header file.
 
-> 这允许添加除具有后缀“\_\_struct”的文件之外的其他文件，以提供额外的功能。 对于每个额外的功能，可以从第一个标头文件中进行选择性包含。
+> 这允许添加除具有后缀“__struct”的文件之外的其他文件，以提供额外的功能。对于每个额外的功能，可以从第一个标头文件中进行选择性包含。
 
 <div class="alert alert-warning" markdown="1">
   <b>TODO:</b> specify content of <code>&lt;my_message_name&gt;__traits.hpp</code> file
@@ -122,7 +122,7 @@ In the following discussion, "member" refers to the class member in the C++ clas
 
 The _default constructor_ initializes all members with the default value specified in the IDL file, or otherwise with the common default for the field type [as defined in this article](http://design.ros2.org/articles/interface_definition.html#default-values) (note: `char` fields are considered numeric for C++). In some cases this may not be desirable, since these fields will often be immediately overwritten with user-provided values. Therefore, the constructor takes an optional directive of type `rosidl_generator_cpp::MessageInitialization` to control how initialization is done:
 
-> 默认构造函数会使用 IDL 文件中指定的默认值，或者使用字段类型的常见默认值（参见本文[[http://design.ros2.org/articles/interface_definition.html#default-values](http://design.ros2.org/articles/interface_definition.html#default-values)]，注意：C++ 中的 char 字段被视为数值）来初始化所有成员。在某些情况下，这可能不是理想的，因为这些字段往往会被用户提供的值立即覆盖。因此，构造函数接受一个 `rosidl_generator_cpp::MessageInitialization` 类型的可选指令，以控制初始化的方式：
+> 默认构造函数会使用 IDL 文件中指定的默认值，或者使用字段类型的常见默认值(参见本文[[http://design.ros2.org/articles/interface_definition.html#default-values](http://design.ros2.org/articles/interface_definition.html#default-values)]，注意：C++ 中的 char 字段被视为数值)来初始化所有成员。在某些情况下，这可能不是理想的，因为这些字段往往会被用户提供的值立即覆盖。因此，构造函数接受一个 `rosidl_generator_cpp::MessageInitialization` 类型的可选指令，以控制初始化的方式：
 
 - `MessageInitialization::ALL` - Initialize each member with the field's default value specified in the IDL file, or otherwise with the common default for the field type [as defined in this article](http://design.ros2.org/articles/interface_definition.html#default-values) (note: `char` fields are considered numeric for C++).
   - The safest option, and also the default (used if not passing any argument to the constructor).

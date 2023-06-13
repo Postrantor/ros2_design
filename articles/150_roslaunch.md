@@ -9,9 +9,9 @@ author: '[William Woodall](https://github.com/wjwwood)'
 date_written: 2019-09
 last_modified: 2019-09
 published: true
-Authors: {{ page.author }}
-Date Written: {{ page.date_written }}
-Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
+Authors: 
+Date Written: 
+Last Modified:
 ---
 ## Context
 
@@ -153,11 +153,11 @@ roslaunch 不能保证节点启动的任何特定顺序——尽管这是一个�
 
 Hopefully this is another case on which the launch system for ROS 2 can improve, at least for nodes with a lifecycle, a.k.a. Managed Nodes[^lifecycle]. For Managed Nodes, it would not be possible to apply constraints on when something is launched, rather than how it is in `roslaunch` from ROS 1, where things are run in a non-deterministic order.
 
-> 希望这是另一个可以改进 ROS 2 启动系统的案例，至少对于具有生命周期的节点，即托管节点[^lifecycle]。 对于托管节点，不可能应用约束来确定何时启动某些内容，而不是 ROS 1 中的 `roslaunch`，其中内容以非确定性顺序运行。
+> 希望这是另一个可以改进 ROS 2 启动系统的案例，至少对于具有生命周期的节点，即托管节点[^lifecycle]。对于托管节点，不可能应用约束来确定何时启动某些内容，而不是 ROS 1 中的 `roslaunch`，其中内容以非确定性顺序运行。
 
 In order to do this, the launch system in ROS 2 will need to model the dependencies between processes and/or nodes where they exist, and the constraints on those dependencies. For example, a user might express that an image processing node has a dependency on a camera driver node with the constraint that it should not be launched (what ever the action to do that might be, e.g. run a process or something else) until the camera driver node reaches the "Active" state. These constraints can be arbitrarily defined by the user or common constraints could be modeled directly by the launch system.
 
-> 为了做到这一点，ROS 2 中的启动系统需要模拟进程和/或节点之间的依赖关系，以及这些依赖关系的约束。例如，用户可以表达出图像处理节点与相机驱动节点之间存在依赖关系，并且该依赖关系的约束是在相机驱动节点达到“Active”状态之前不应启动(无论采取什么行动，例如运行一个进程或其他东西)。这些约束可以由用户任意定义，或者可以由启动系统直接建模常见的约束。
+> 为了做到这一点，ROS 2 中的启动系统需要模拟进程和/或节点之间的依赖关系，以及这些依赖关系的约束。例如，用户可以表达出镜像处理节点与相机驱动节点之间存在依赖关系，并且该依赖关系的约束是在相机驱动节点达到“Active”状态之前不应启动(无论采取什么行动，例如运行一个进程或其他东西)。这些约束可以由用户任意定义，或者可以由启动系统直接建模常见的约束。
 
 Also, these constraints don't have to be related to ROS specific events like lifecycle state changes. For example, a user might express that a plain process should be launched (in this case executed as a subprocess) after another process has been running for ten seconds. The launch system in ROS 2, could either choose to let the user define a predicate which satisfied that constraint, or it could provide a generic constraint like: "launch N seconds after another process".
 
@@ -432,7 +432,7 @@ In the future this might change, so reference the design doc[^lifecycle] or futu
 
 During runtime, a Managed ROS node emits events anytime the state of the node changes. This is at least emitted on a topic, but could also be captured, aggregated, and/or communicated in other ways too. These state changes could be consumed by either the launch system itself or by the user, either of which could react to these changes.
 
-> 在运行期间，管理的 ROS 节点会在节点状态改变时发出事件。 这至少会在主题上发出，但也可以捕获，聚合和/或以其他方式传输。 这些状态更改可以由启动系统本身或用户消费，其中任何一方都可以对这些更改做出反应。
+> 在运行期间，管理的 ROS 节点会在节点状态改变时发出事件。这至少会在主题上发出，但也可以捕获，聚合和/或以其他方式传输。这些状态更改可以由启动系统本身或用户消费，其中任何一方都可以对这些更改做出反应。
 
 For example, the user could express something like "when node 'A' enters the `Active` state, launch nodes 'B' and 'C'" or "if node 'A' exits with a return code or enters the `Finalized` state, shutdown everything".
 
@@ -976,7 +976,7 @@ The lowest level of event handlers is the function which takes an event and retu
     # ...
 
     def my_process_exit_logger_callback(event: ProcessExitedEvent) -> LaunchDescription:
-        print(f"process with pid '{event.pid}' exited with return code '{event.return_code}'")
+        print(f"process with pid ''")
 
     launch_description.register_event_handler(
         ProcessExitedEvent, my_process_exit_logger_callback, name='my_process_exit_logger')
@@ -1170,7 +1170,7 @@ TODO: Anything we choose not to support in the requirements vs. the "separation 
 > [^qt_event_filters]: [https://doc.qt.io/archives/qt-4.8/eventsandfilters.html#event-filters](https://doc.qt.io/archives/qt-4.8/eventsandfilters.html#event-filters)
 >
 
-_event_filters[^qt_event_filters]：[https://doc.qt.io/archives/qt-4.8/eventsandfilters.html#event-filters](https://doc.qt.io/archives/qt-4.8/eventsandfilters.html#event-filters)
+_event_filters_event_filters[event_filtersters]：[https://doc.qt.io/archives/qt-4.8/eventsandfilters.html#event-filters](https://doc.qt.io/archives/qt-4.8/eventsandfilters.html#event-filters)
 
 [^subprocess_run]: [https://docs.python.org/3.6/library/subprocess.html#subprocess.run](https://docs.python.org/3.6/library/subprocess.html#subprocess.run)
 

@@ -9,9 +9,9 @@ tip: translate by openai@2023-05-28 10:46:40
     last_modified: 2020-04
     published: true
     
-    Authors: {{ page.author }}
-    Date Written: {{ page.date_written }}
-    Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
+    Authors: 
+    Date Written: 
+    Last Modified:
 ---
 ## Overview
 
@@ -89,7 +89,7 @@ However, if the middleware does not have special memory handling or pre-allocati
 
 This allows the user to have control over the allocation of the message when the middleware might otherwise use the standard allocator (new/malloc).
 
-> 这允许用户在中间件可能使用标准分配器（new/malloc）时对消息的分配进行控制。
+> 这允许用户在中间件可能使用标准分配器(new/malloc)时对消息的分配进行控制。
 
 #### Additional Publisher Use Case
 
@@ -211,7 +211,7 @@ These requirements are driven by idiosyncrasies of various middleware implementa
 
 - The Connext API (more generally the DDS API) requires that the user to use a sequence of messages when taking or reading.
 
-> 使用 Connext API（更一般地说是 DDS API）时，用户需要使用一系列的消息来进行发送或读取。
+> 使用 Connext API(更一般地说是 DDS API)时，用户需要使用一系列的消息来进行发送或读取。
 
 - This means the ROS API needs to do the same, otherwise the middleware would be giving a "loan" to a message in a sequence, but it would also need to keep the sequence immutable.
 
@@ -223,7 +223,7 @@ These requirements are driven by idiosyncrasies of various middleware implementa
 
 Connext Micro Specific (ZeroCopy):
 
-> Connext Micro 特定（零拷贝）：
+> Connext Micro 特定(零拷贝)：
 
 - The user needs to be able to check if data has been invalidated after reading it.
 

@@ -15,9 +15,9 @@ categories: Interfaces
 With the transition to use ``IDL`` for specifying interfaces in ROS 2 Dashing this article has been superseded by the [Interface Definition and Language Mapping](idl_interface_definition.html) article.
 </div>
 
-Authors: {{ page.author }}
-Date Written: {{ page.date_written }}
-Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
+Authors: 
+Date Written: 
+Last Modified:
 ---
 ## Scope
 
@@ -49,7 +49,7 @@ All code of a ROS package should be defined in a Python package with the same na
 
 Following the Python conventions the namespace hierarchy is mapped to a folder structure. The package and module names and therefore the folder and file names use lowercase alphanumeric characters with underscores for separating words (following PEP 8). Python files end with `.py`.
 
-> 遵循 Python 约定，命名空间层次结构映射到文件夹结构。包和模块的名称以及文件夹和文件的名称使用小写字母数字字符，用下划线分隔单词（遵循 PEP 8）。
+> 遵循 Python 约定，命名空间层次结构映射到文件夹结构。包和模块的名称以及文件夹和文件的名称使用小写字母数字字符，用下划线分隔单词(遵循 PEP 8)。
 
 ## Messages
 
@@ -144,4 +144,4 @@ The generated code is split across multiple files the same way as message are.
 
 For the request and response parts of a service separate messages are being generated. These messages are named after the service and have either a `_Request` or `_Response` suffix. They are are still defined in the `srv` sub namespace.
 
-> 对于服务的请求和响应部分，会生成单独的消息。 这些消息以服务命名，并以“\_Request”或“\_Response”为后缀。 他们仍然定义在 `srv` 子命名空间中。
+> 对于服务的请求和响应部分，会生成单独的消息。这些消息以服务命名，并以“_Request”或“_Response”为后缀。他们仍然定义在 `srv` 子命名空间中。

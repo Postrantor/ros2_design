@@ -12,9 +12,9 @@ date_written: 2020-05
 last_modified: 2020-07
 published: true
 categories: Security
-Authors: {{ page.author }}
-Date Written: {{ page.date_written }}
-Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
+Authors: 
+Date Written: 
+Last Modified:
 ---
 This design document formalizes the integration of ROS 2 with security enclaves. In summary, all secure processes must use an enclave that contains the runtime security artifacts unique to that enclave, yet each process may not necessarily have a unique enclave. Multiple enclaves can be encapsulated in a single security policy to accurately model the information flow control. Users can tune the fidelity of such models by controlling at what scope enclaves are applied at deployment. E.g. one unique enclave per OS process, or per OS user, or per device/robot, or per swarm, etc. The rest of this document details how enclaves can be organized and used by convention.
 
@@ -40,7 +40,7 @@ Namespaces are a fundamental design pattern in ROS and are widely used to organi
 
 Previously, the Fully Qualified Name (FQN) of a node was used directly by a selected security directory lookup strategy to load the necessary key material. However, now that Participants map to contexts and not nodes, such a direct mapping of node FQN to security artifacts is no longer appropriate.
 
-> 以前，完全限定名（FQN）的节点被选定的安全目录查找策略直接使用，以加载必要的密钥材料。但是，现在参与者映射到上下文而不是节点，这种节点 FQN 到安全工件的直接映射不再适用。
+> 以前，完全限定名(FQN)的节点被选定的安全目录查找策略直接使用，以加载必要的密钥材料。但是，现在参与者映射到上下文而不是节点，这种节点 FQN 到安全工件的直接映射不再适用。
 
 ### Contexts
 
@@ -89,7 +89,7 @@ The `private` directory contains anything permissable as private, such as privat
 
 The `enclaves` directory contains the security artifacts associated with individual enclaves, and thus node directories are no longer relevant. Similar to node directories however, the `enclaves` folder may still recursively nest sub-paths for organizing separate enclaves. The `ROS_SECURITY_KEYSTORE` environment variable should by convention point to this directory.
 
-> `enclaves` 目录包含与单个飞地相关的安全项，因此节点目录不再可用。 与节点目录类似，`enclaves` 文件夹仍可以递归嵌套子路径以组织不同的飞地。 `ROS_SECURITY_KEYSTORE` 环境变量应该按照惯例指向此目录。
+> `enclaves` 目录包含与单个飞地相关的安全项，因此节点目录不再可用。与节点目录类似，`enclaves` 文件夹仍可以递归嵌套子路径以组织不同的飞地。`ROS_SECURITY_KEYSTORE` 环境变量应该按照惯例指向此目录。
 
 ## Integration
 
@@ -310,13 +310,13 @@ As it may take time before all RMW implementations implement the new system of c
 
 ```bibtex
 @inproceedings{White2018,
-  title     = {Procedurally Provisioned Access Control for Robotic Systems},
-  author    = {White, Ruffin and Caiazza, Gianluca and Christensen, Henrik and Cortesi, Agostino},
+  title     = ,
+  author    = ,
   year      = 2018,
-  booktitle = {2018 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)},
-  doi       = {10.1109/IROS.2018.8594462},
-  issn      = {2153-0866},
-  url       = {https://arxiv.org/pdf/1810.08125.pdf}}
+  booktitle = ,
+  doi       = ,
+  issn      = ,
+  url       = 
 ```
 
 2. [Network Reconnaissance and Vulnerability Excavation of Secure DDS Systems](https://doi.org/10.1109/EuroSPW.2019.00013)
@@ -325,11 +325,11 @@ As it may take time before all RMW implementations implement the new system of c
 
 ```bibtex
 @inproceedings{White2019,
-  title     = {Network Reconnaissance and Vulnerability Excavation of Secure DDS Systems},
-  author    = {White, Ruffin and Caiazza, Gianluca and Jiang, Chenxu and Ou, Xinyue and Yang, Zhiyue and Cortesi, Agostino and Christensen, Henrik},
+  title     = ,
+  author    = ,
   year      = 2019,
-  booktitle = {2019 IEEE European Symposium on Security and Privacy Workshops (EuroS PW)},
-  doi       = {10.1109/EuroSPW.2019.00013},
-  pages     = {57-66},
-  url       = {https://arxiv.org/abs/1908.05310.pdf}}
+  booktitle = ,
+  doi       = ,
+  pages     = ,
+  url       = 
 ```

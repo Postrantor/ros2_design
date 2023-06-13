@@ -16,9 +16,9 @@ published: true
   This article is out-of-date. It was written at a time before decisions were made to use DDS and RTPS as the underlying communication standards for ROS 2. It represents an idealistic understanding of what RPC and "actions" should be like in ROS. It can be considered memoranda and not necessarily the intention of how to develop the system.
 </div>
 
-Authors: {{ page.author }}
-Date Written: {{ page.date_written }}
-Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
+Authors: 
+Date Written: 
+Last Modified:
 ---
 In ROS there are two types of Remote Procedure Call (RPC) primitives. ROS Services are basic request-response style RPCs, while ROS Actions additionally are preemptible and offer feedback while requests are being processed.
 
@@ -34,7 +34,7 @@ It is useful to consider the ideal system to understand how it relates to the cu
 
 An asynchronous API allows alternative threading models and is in general more flexible than a synchronous API, which can always be implemented on top of asynchronous API. Doing the reverse (building an asynchronous API on top of a synchronous API) is harder and likely less efficient.
 
-> 异步 API 允许使用替代的线程模型，并且比同步 API 更加灵活。同步 API 可以在异步 API 之上实现，但是相反的（在同步 API 之上构建异步 API）则更困难，也可能效率更低。
+> 异步 API 允许使用替代的线程模型，并且比同步 API 更加灵活。同步 API 可以在异步 API 之上实现，但是相反的(在同步 API 之上构建异步 API)则更困难，也可能效率更低。
 
 ### Timeouts
 
@@ -46,7 +46,7 @@ If a service provider hangs or otherwise does not return correctly, then a calli
 
 Preemption is a desirable feature whenever there may be long-running or non-deterministically running remote procedures. Specifically, we want the ability to preempt a long-running procedure with either a timeout on synchronous requests or an explicit call to cancel on asynchronous requests. Preemptibility is a required feature for the concept of Actions to be implemented (which is one reason that Actions are built on asynchronous ROS Messages instead of synchronous ROS Services).
 
-> 预占用是一种可取的特性，可用于长时间运行或非确定性运行的远程过程。具体而言，我们希望能够使用超时或显式取消调用来预占用长时间运行的过程。预占用是实现操作的必需特性（这也是操作基于异步 ROS 消息而不是同步 ROS 服务的一个原因）。
+> 预占用是一种可取的特性，可用于长时间运行或非确定性运行的远程过程。具体而言，我们希望能够使用超时或显式取消调用来预占用长时间运行的过程。预占用是实现操作的必需特性(这也是操作基于异步 ROS 消息而不是同步 ROS 服务的一个原因)。
 
 ### Feedback
 
@@ -64,7 +64,7 @@ It is important that the system cannot get into an undetermined state if there i
 
 When logging a ROS 1 system (e.g., using `rosbag`), recording data transmitted on topics is insufficient to capture any information about service calls. Because service calls are conceptually point to point, rather than broadcast, logging them is difficult. Still, it should be possible to efficiently record some level of detail regarding RPC interactions, such that they could be later played back in some manner (though it is not clear exactly how playback would work).
 
-> 当记录一个 ROS 1 系统（例如，使用 `rosbag`）时，仅记录发布在主题上的数据是不足以捕获有关服务调用的任何信息的。由于服务调用在概念上是点对点而不是广播，因此记录它们是困难的。尽管如此，应该有可能有效地记录有关 RPC 交互的一些细节，以便它们可以以某种方式回放（尽管尚不清楚回放究竟如何工作）。
+> 当记录一个 ROS 1 系统(例如，使用 `rosbag`)时，仅记录发布在主题上的数据是不足以捕获有关服务调用的任何信息的。由于服务调用在概念上是点对点而不是广播，因此记录它们是困难的。尽管如此，应该有可能有效地记录有关 RPC 交互的一些细节，以便它们可以以某种方式回放(尽管尚不清楚回放究竟如何工作)。
 
 ## Proposed Approach
 
@@ -94,7 +94,7 @@ For logging/introspection purposes the RPC Server instance might publish all inc
 
 The ROS preemptible RPC API will extend the Asynchronous API to enable preemption of an RPC in progress using a unique identifier (UID). This UID will be provided by the initial request method.
 
-> ROS 可抢占 RPC API 将扩展异步 API，以使用唯一标识符（UID）抢占正在进行的 RPC。此 UID 将由初始请求方法提供。
+> ROS 可抢占 RPC API 将扩展异步 API，以使用唯一标识符(UID)抢占正在进行的 RPC。此 UID 将由初始请求方法提供。
 
 ### ROS Action RPC API (Not Affecting RPC Protocol)
 
@@ -122,7 +122,7 @@ UIDs are generally necessary for asynchronous communications to pair the request
 
 There are two options: (i) require the user to embed the UID into the message, or (ii) add those fields automatically at message-generation time. It is unclear how this choice affects the user's ability to introspect the messages.
 
-> 有两个选项：（i）要求用户将 UID 嵌入消息，或（ii）在消息生成时自动添加这些字段。目前尚不清楚这种选择如何影响用户对消息的内省能力。
+> 有两个选项：(i)要求用户将 UID 嵌入消息，或(ii)在消息生成时自动添加这些字段。目前尚不清楚这种选择如何影响用户对消息的内省能力。
 
 This also introduces issues when trying to record and potentially play back Service or Actions.
 
@@ -150,7 +150,7 @@ This is a generic issue with logging and affects potentially all logging and sho
 
 The above UIDs may be only locally unique (client-specific for instance). For logging, UIDs need to be unique within the entire ROS instance to support debugging.
 
-> 以上 UID 可能只是局部唯一的（例如特定于客户端）。为了记录，UID 需要在整个 ROS 实例中是唯一的，以支持调试。
+> 以上 UID 可能只是局部唯一的(例如特定于客户端)。为了记录，UID 需要在整个 ROS 实例中是唯一的，以支持调试。
 
 ### Collapse Preemptible and Asynchronous
 

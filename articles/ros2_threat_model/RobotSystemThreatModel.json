@@ -58,7 +58,7 @@
               ],
               "id": "b1caf346-c125-43e8-a2fd-c12b9b56a9f3",
               "z": 2,
-              "attrs": {}
+              "attrs": 
             },
             {
               "type": "tm.Process",
@@ -132,7 +132,7 @@
               ],
               "id": "7fc8d9b2-dcc0-46c7-95a7-a1f249350374",
               "z": 5,
-              "attrs": {}
+              "attrs": 
             },
             {
               "type": "tm.Process",
@@ -252,7 +252,7 @@
               "vertices": [],
               "id": "aa6055f2-455a-444b-8ae9-e6cc4bd6b32e",
               "z": 10,
-              "attrs": {}
+              "attrs": 
             },
             {
               "type": "tm.Flow",
@@ -545,7 +545,7 @@
               "vertices": [],
               "id": "38a78813-de11-48d8-b9fb-516fa7db43cb",
               "z": 20,
-              "attrs": {}
+              "attrs": 
             },
             {
               "type": "tm.Store",
@@ -679,7 +679,7 @@
               "vertices": [],
               "id": "08f37b51-763f-4e8a-96c5-0e823478df31",
               "z": 26,
-              "attrs": {}
+              "attrs": 
             },
             {
               "type": "tm.Boundary",
@@ -695,7 +695,7 @@
               "vertices": [],
               "id": "5718edb1-3d36-4b42-998e-41a37c061bc4",
               "z": 28,
-              "attrs": {}
+              "attrs": 
             },
             {
               "type": "tm.Flow",

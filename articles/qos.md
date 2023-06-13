@@ -9,9 +9,9 @@ published: true
 author: '[Esteve Fernandez](https://github.com/esteve)'
 date_written: 2015-10
 last_modified: 2019-05
-Authors: {{ page.author }}
-Date Written: {{ page.date_written }}
-Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
+Authors: 
+Date Written: 
+Last Modified:
 ---
 With the advent of inexpensive robots using unreliable wireless networks, developers and users need mechanisms to control how traffic is prioritized across network links.
 
@@ -39,7 +39,7 @@ QoS is enforced based on a Request vs Offerer Model, however Publications and Su
 
 Given the complexity of choosing the correct QoS settings for a given scenario, it may make sense for ROS 2 to provide a set of predefined QoS profiles for common usecases (e.g. sensor data, real time, etc.), while at the same time give the flexibility to control specific features of the QoS policies for the most common entities.
 
-> 鉴于选择适当的 QoS 设置以满足特定场景的复杂性，ROS 2 可能有必要为常见用例（例如传感器数据、实时性等）提供一组预定义的 QoS 配置，同时为最常见的实体提供控制特定 QoS 策略特征的灵活性。
+> 鉴于选择适当的 QoS 设置以满足特定场景的复杂性，ROS 2 可能有必要为常见用例(例如传感器数据、实时性等)提供一组预定义的 QoS 配置，同时为最常见的实体提供控制特定 QoS 策略特征的灵活性。
 
 ## QoS profiles
 
@@ -137,7 +137,7 @@ In environments where DDS is already deployed and also to enable more extensibil
 
 However, this mechanism will not be added into the common ROS 2 API so as to keep the `rmw` layer transport agnostic and let future developers implement it for other transports (e.g. ZeroMQ, TCPROS, etc.)
 
-> 然而，为了保持 `rmw` 层传输与特定实现无关，这种机制不会被添加到常见的 ROS 2 API 中，以便让未来的开发人员为其他传输（例如 ZeroMQ、TCPROS 等）实现它。
+> 然而，为了保持 `rmw` 层传输与特定实现无关，这种机制不会被添加到常见的 ROS 2 API 中，以便让未来的开发人员为其他传输(例如 ZeroMQ、TCPROS 等)实现它。
 
 To honor the QoS settings of the system, developers can use the `rmw_qos_profile_system_default` QoS profile which delegates the responsibility of the QoS machinery to the underlying DDS vendor.
 
@@ -183,11 +183,11 @@ How should the integration of the QoS machinery with intraprocess communication 
 - [OpenDDS - QoS Policy Compliance](http://www.opendds.org/qospolicies.html)
 - Angelo Corsaro, [DDS QoS Unleashed](http://www.slideshare.net/Angelo.Corsaro/dds-qos-unleashed)
 
-> -安杰洛·科萨罗（Angelo Corsaro），《DDS QoS 解放》（[DDS QoS Unleashed](http://www.slideshare.net/Angelo.Corsaro/dds-qos-unleashed)）
+> -安杰洛·科萨罗(Angelo Corsaro)，《DDS QoS 解放》([DDS QoS Unleashed](http://www.slideshare.net/Angelo.Corsaro/dds-qos-unleashed))
 
 - Angelo Corsaro, [The DDS Tutorial Part II](http://www.slideshare.net/Angelo.Corsaro/the-dds-tutorial-part-ii)
 
-> - 亚洛·科萨罗（Angelo Corsaro）的《DDS 教程第二部分》（The DDS Tutorial Part II）：[http://www.slideshare.net/Angelo.Corsaro/the-dds-tutorial-part-ii](http://www.slideshare.net/Angelo.Corsaro/the-dds-tutorial-part-ii)
+> - 亚洛·科萨罗(Angelo Corsaro)的《DDS 教程第二部分》(The DDS Tutorial Part II)：[http://www.slideshare.net/Angelo.Corsaro/the-dds-tutorial-part-ii](http://www.slideshare.net/Angelo.Corsaro/the-dds-tutorial-part-ii)
 
 - [DDS Spec, section 2.2.3](http://www.omg.org/spec/DDS/1.4/PDF/)
 - Heidi Schubert, [QoS policies for configuring reliability](https://community.rti.com/content/forum-topic/qos-policies-configuring-reliability)

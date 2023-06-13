@@ -9,9 +9,9 @@ published: true
 author: '[Tully Foote](https://github.com/tfoote)'
 date_written: 2018-07
 last_modified: 2015-12
-Authors: {{ page.author }}
-Date Written: {{ page.date_written }}
-Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
+Authors: 
+Date Written: 
+Last Modified:
 ---
 ## Background
 
@@ -65,7 +65,7 @@ The ability to support pausing time requires that we not assume that the time va
 
 When communicating the changes in time propagation, the latencies in the communication network becomes a challenge. Any change in the time abstraction must be communicated to the other nodes in the graph, but will be subject to normal network communication latency. This inaccuracy is proportional to the latency of communications and also proportional to the increase in the rate at which simulated time advances compared to real time (the "real time factor"). If very accurate timestamping is required when using the time abstraction, it can be achieved by slowing down the real time factor such that the communication latency is comparatively small.
 
-> 当传达时间传播的变化时，通信网络中的延迟成为一个挑战。任何时间抽象的变化都必须传达给图中的其他节点，但会受到正常的网络通信延迟的影响。这种不准确性与通信延迟成正比，并且与模拟时间与实际时间（“实时因子”）的增加速率成正比。如果在使用时间抽象时需要非常准确的时间戳，可以通过减慢实时因子来实现，以使通信延迟相对较小。
+> 当传达时间传播的变化时，通信网络中的延迟成为一个挑战。任何时间抽象的变化都必须传达给图中的其他节点，但会受到正常的网络通信延迟的影响。这种不准确性与通信延迟成正比，并且与模拟时间与实际时间(“实时因子”)的增加速率成正比。如果在使用时间抽象时需要非常准确的时间戳，可以通过减慢实时因子来实现，以使通信延迟相对较小。
 
 The final challenge is that the time abstraction must be able to jump backwards in time, a feature that is useful for log file playback. This behavior is similar to a system clock after a negative date change, and requires developers using the time abstraction to make sure their algorithm can deal with the discontinuity. Appropriate APIs must be provided for to the developer API to enable notifications of jumps in time, both forward and backwards.
 
@@ -129,11 +129,11 @@ There are more advanced techniques which could be included to attempt to estimat
 
 It is possible that the user may have access to an out of band time source which can provide better performance than the default source the `/clock` topic. It might be possible that for their use case a more advanced algorithm would be needed to propagate the simulated time with adequate precision or latency with restricted bandwidth or connectivity. The user will be able to switch out the time source for the instance of their Time object as well as have the ability to override the default for the process.
 
-> 可能用户可以访问一个超出常规时间源，它可以提供比默认源（/clock 主题）更好的性能。对于他们的用例，可能需要一个更先进的算法来传播模拟时间，以达到足够的精度或延迟，并在受限的带宽或连接性能下。用户将能够为 Time 对象的实例切换时间源，以及有能力覆盖进程的默认值。
+> 可能用户可以访问一个超出常规时间源，它可以提供比默认源(/clock 主题)更好的性能。对于他们的用例，可能需要一个更先进的算法来传播模拟时间，以达到足够的精度或延迟，并在受限的带宽或连接性能下。用户将能够为 Time 对象的实例切换时间源，以及有能力覆盖进程的默认值。
 
 It is possible to use an external time source such as GPS as a ROSTime source, but it is recommended to integrate a time source like that using standard NTP integrations with the system clock since that is already an established mechanism and will not need to deal with more complicated changes such as time jumps.
 
-> 可以使用外部时间源（如 GPS）作为 ROSTime 源，但建议使用标准 NTP 集成与系统时钟来集成这样的时间源，因为这已经是一种成熟的机制，不需要处理更复杂的变化，如时间跳跃。
+> 可以使用外部时间源(如 GPS)作为 ROSTime 源，但建议使用标准 NTP 集成与系统时钟来集成这样的时间源，因为这已经是一种成熟的机制，不需要处理更复杂的变化，如时间跳跃。
 
 For the current implementation a `TimeSource` API will be defined such that it can be overridden in code. If in the future a common implementation is found that would be generally useful it could be extended to optionally dynamically select the alternative TimeSource via a parameter similar to enabling the simulated time.
 

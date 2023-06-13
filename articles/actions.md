@@ -10,9 +10,9 @@ author: '[Geoffrey Biggs](https://github.com/gbiggs) [Jacob Perron](https://gith
 date_written: 2019-03
 last_modified: 2020-05
 published: true
-Authors: {{ page.author }}
-Date Written: {{ page.date_written }}
-Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
+Authors: 
+Date Written: 
+Last Modified:
 ---
 ## Background
 
@@ -253,7 +253,7 @@ State transitions triggered by the action client:
 - **send_goal** - A goal is sent to the action server. The state machine is only started if the action server _accepts_ the goal.
 - **cancel_goal** - Request that the action server stop processing the goal. A transition only occurs if the action server _accepts_ the request to cancel the goal.
 
-> - **发送目标** - 向动作服务器发送一个目标。 只有在动作服务器*接受*目标时，状态机才会启动。
+> - **发送目标** - 向动作服务器发送一个目标。只有在动作服务器*接受*目标时，状态机才会启动。
 > - **取消目标** - 请求行动服务器停止处理目标。只有当行动服务器*接受*取消目标的请求时，才会发生转换。
 
 ## API
@@ -559,16 +559,16 @@ Actions are one of the most important parts of ROS1 but they always felt a bit l
 
 As one of the original developers of actionlib, I can most definitely tell you that actionlib was an afterthought. Actionlib came much later (6-12 months-ish) than the development of topics & services. Eitan Marder-Eppstein and I weren’t sure whether actionlib would be useful beyond just move_base & the pr2_calibration stack, and there was a broader design decision to not force a complex, seemingly extraneous feature like actions to be part of the core ROS APIs, thus increasing the complexity of porting ROS to a new language. In hindsight, actions turned out to be pretty important to the ROS ecosystem :slightly_smiling_face:
 
-> 作为 actionlib 的原始开发商之一，我绝对可以告诉您 actionlib 是事后的想法。actionlib 比主题和服务的开发要晚了（6-12 个月）。eitan marder-eppstein 和我不确定 actionlib 是否仅仅是 move_base 和 pr2_calibration 堆栈除外是否有用，并且有更广泛的设计决定不强迫复杂的，看似无关紧要的功能，例如像 core ros apis 的一部分一样，因此，将 ros 移植到新语言的复杂性。在事后看来，动作对 ros 生态系统非常重要：lyly_smiling_face：
+> 作为 actionlib 的原始开发商之一，我绝对可以告诉您 actionlib 是事后的想法。actionlib 比主题和服务的开发要晚了(6-12 个月)。eitan marder-eppstein 和我不确定 actionlib 是否仅仅是 move_base 和 pr2_calibration 堆栈除外是否有用，并且有更广泛的设计决定不强迫复杂的，看似无关紧要的功能，例如像 core ros apis 的一部分一样，因此，将 ros 移植到新语言的复杂性。在事后看来，动作对 ros 生态系统非常重要：lyly_smiling_face：
 
 Design Feedback
 
 I totally understand the benefits of keeping much of the internals of actionlib the same between ROS1 & ROS2 (ease of portability, easy of interoperability, etc). However, if you are considering making more drastic changes (which may be necessary given some of the additional features in the design doc), I’d seriously consider redefining the client state machine. As stands, implementing a SimpleActionClient is unnecessarily complex, since the SimpleActionClient states are not a straight reduction of the ActionClient states. This means that the simple action client needs to know about both the current action client state and the previous action client state in order to compute the current simple action client state (see diagram on the wiki [http://wiki.ros.org/actionlib/DetailedDescription#Simple_Action_Client](http://wiki.ros.org/actionlib/DetailedDescription#Simple_Action_Client) 48).
 
-> 我完全理解将 Actionlib 内部数量保持相同的好处（ROS1 和 ROS2（易移动性，易于互操作性等））。但是，如果您正在考虑做出更大的更改（鉴于设计文档中的某些其他功能，这是必要的），我会认真考虑重新定义客户端状态计算机。如上所示，实现 SimpleActionClient 是不必要的复杂的，因为 SimpleActionClient 状态并不是动作量状态的直接降低。这意味着简单的操作客户端需要了解当前的操作客户端状态和先前的操作客户端状态，以计算当前的简单操作客户端状态（请参阅 Wiki 上的图 [http://wiki.ros.org/actionlib/](http://wiki.ros.org/actionlib/)详细信息＃simple_action_client 48）。
+> 我完全理解将 Actionlib 内部数量保持相同的好处(ROS1 和 ROS2(易移动性，易于互操作性等))。但是，如果您正在考虑做出更大的更改(鉴于设计文档中的某些其他功能，这是必要的)，我会认真考虑重新定义客户端状态计算机。如上所示，实现 SimpleActionClient 是不必要的复杂的，因为 SimpleActionClient 状态并不是动作量状态的直接降低。这意味着简单的操作客户端需要了解当前的操作客户端状态和先前的操作客户端状态，以计算当前的简单操作客户端状态(请参阅 Wiki 上的图 [http://wiki.ros.org/actionlib/](http://wiki.ros.org/actionlib/)详细信息＃simple_action_client 48)。
 
 Contributing
 
 The Virtana team ([www.virtanatech.com](http://www.virtanatech.com) 19) has several early career roboticists who’d love to get more open source contributions under their belts. Once the ROS2 actionlib team gets more of the implementation & design firmed up, we’d love to pitch-in in places that might fit the “good first issue” label.
 
-> Virtana 团队（[www.virtanatech.com](http://www.virtanatech.com) 19）有几位早期的职业机器人主义者，他们希望获得更多的开源贡献。一旦 ROS2 ActionLib 团队获得了更加坚定的实施和设计，我们就可以在可能符合“良好第一期”标签的地方进行投入。
+> Virtana 团队([www.virtanatech.com](http://www.virtanatech.com) 19)有几位早期的职业机器人主义者，他们希望获得更多的开源贡献。一旦 ROS2 ActionLib 团队获得了更加坚定的实施和设计，我们就可以在可能符合“良好第一期”标签的地方进行投入。

@@ -9,9 +9,9 @@ author: '[Ivan Santiago Paunovic](https://github.com/ivanpauno)'
 date_written: 2020-11
 last_modified: 2020-11
 published: true
-Authors: {{ page.author }}
-Date Written: {{ page.date_written }}
-Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
+Authors: 
+Date Written: 
+Last Modified:
 ---
 ## Summary
 
@@ -47,7 +47,7 @@ Here are some examples applying these mechanisms:
 - Gazebo ROS packages allows configuring QoS profiles of the plugins in the SDF file ([issue](https://github.com/ros-simulation/gazebo_ros_pkgs/issues/1079)).
 
 > - rosbag2 有一种临时机制可以在录制或播放时覆盖 QoS 配置文件([文档](https://index.ros.org/doc/ros2/Tutorials/Ros2bag/Overriding-QoS-Policies-For-Recording-And-Playback/))。
-> - 图像管道节点使用一些参数来允许更改一些策略([PR](https://github.com/ros-perception/image_pipeline/pull/521))。
+> - 镜像管道节点使用一些参数来允许更改一些策略([PR](https://github.com/ros-perception/image_pipeline/pull/521))。
 > - Ouster 驱动程序也使用一些参数来允许更改一些策略([PR](https://github.com/ros-drivers/ros2_ouster_drivers/pull/26))。
 > - Gazebo ROS 包允许在 SDF 文件中配置插件的 QoS 配置文件([问题](https://github.com/ros-simulation/gazebo_ros_pkgs/issues/1079))。
 
@@ -132,7 +132,7 @@ Based on that feedback, this PR will explore a design based on parameters.
 > 基于反馈，本次提交将探索基于参数的设计。
 
 > [!NOTE]
-> 综上所述，即添加 `QosOverridingOptions{true}` 的标志允许通过其他方式对 OoS 策略进行覆盖。
+> 综上所述，即添加 `QosOverridingOptions` 的标志允许通过其他方式对 OoS 策略进行覆盖。
 > 或者是指定一个 `callback()` 函数。
 
 ## Introduction
@@ -144,7 +144,7 @@ Current code will not allow QoS reconfigurability if not changed:
 ```cpp
     node->create_publisher(
       "chatter",
-      KeepLast{10});
+      KeepLast);
 ```
 
 To make reconfigurability easy, only a flag is needed to automatically create the parameters:
@@ -154,8 +154,8 @@ To make reconfigurability easy, only a flag is needed to automatically create th
 ```cpp
     node->create_publisher(
       "chatter",
-      KeepLast{10},
-      QosOverridingOptions{true});  // allow_reconfigurable all qos
+      KeepLast,
+      QosOverridingOptions);  // allow_reconfigurable all qos
 ```
 
 That will automatically declare the parameters for reconfiguring the QoS policies that can be overridden in the following way:
@@ -235,7 +235,7 @@ We could completely ignore parameters [on set callbacks](https://github.com/ros2
 > 我们可以完全忽略参数[在设置回调](https://github.com/ros2/rclcpp/blob/3defa8fc9d7410bd833ecd95b305ac94bb9b627a/rclcpp/include/rclcpp/node_interfaces/node_parameters_interface.hpp#L180-L192)，发布者创建代码可能会像这样：
 
 ```cpp
-    rcl_interfaces::msg::ParameterDescription policy_x_description{};
+    rcl_interfaces::msg::ParameterDescription policy_x_description;
     policy_x_description.read_only = true;
     policy_x_description.description = "<string with a description of the policy, including node and topic name>";
     auto policy_x_value = node->declare_parameter(
@@ -348,12 +348,12 @@ That could be solved by adding an optional extra identifier:
       ros__parameters:
         qos_overrides:
           'my/fully/qualified/topic/name/here':
-            publisher_id1:  # {entity_type}_{id}
+            publisher_id1:  # 
               reliability: reliable
               history_depth: 100
               history: keep_last
           'my/fully/qualified/topic/name/here':
-            publisher_id2:  # {entity_type}_{id}
+            publisher_id2:  # 
               reliability: best_effort
               history_depth: 100
               history: keep_last
@@ -420,7 +420,7 @@ template<
 create_publisher(
   const std::string & topic_name,
   const rclcpp::QoS & qos,
-  const rclcpp::QosOverridingOptions & qos_options = QosOverridingOptions{false},
+  const rclcpp::QosOverridingOptions & qos_options = QosOverridingOptions,
   const PublisherOptionsWithAllocator<AllocatorT> & options = PublisherOptionsWithAllocator<AllocatorT>()
 );
 ```
@@ -431,7 +431,7 @@ node->create_publisher(
     "my_topic",
     user_qos_provided_in_code_1,
     {  // implicit, to lower verbosity
-        {QosPolicyKind::Reliability, QosPolicyKind::History, QosPolicyKind::HistoryDepth}, // only declare parameters for history depth, history kind, reliability
+        , // only declare parameters for history depth, history kind, reliability
         [](const QoSProfile qos) -> bool {
             return qos.is_keep_all() || qos.history_depth() > 10u;  // constrains involving more than one QoS in callbacks
         },
@@ -447,13 +447,13 @@ node->create_publisher(
 node->create_publisher(
     "other_topic",
     user_qos_provided_in_code_3,
-    QosOverridingOptions{QosPolicyKind::Durability});
+    QosOverridingOptions);
 
 // "default" policies are reconfigurable
 node->create_publisher(
     "another_topic",
     user_qos_provided_in_code_4,
-    QosOverridingOptions{true});
+    QosOverridingOptions);
 ```
 
 The intent of being able to opt-in a set of "default" policies is to make the API easier to use and less verbose.

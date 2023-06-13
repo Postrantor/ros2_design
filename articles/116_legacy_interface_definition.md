@@ -10,9 +10,9 @@ author: '[Dirk Thomas](https://github.com/dirk-thomas)'
 date_written: 2019-03
 last_modified: 2021-02
 categories: Interfaces
-Authors: {{ page.author }}
-Date Written: {{ page.date_written }}
-Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
+Authors: 
+Date Written: 
+Last Modified:
 ---
 ## Scope
 
@@ -316,7 +316,7 @@ Code is generated for defined interfaces to be usable by different client librar
 
 A structure defined in the above format can be empty / contain no members. In that case the generated `.idl` structure will have a dummy member (`uint8 structure_needs_at_least_one_member`) to satisfy the requirement from IDL of not being empty.
 
-> 结构可以按照上述格式定义，也可以为空/不包含任何成员。在这种情况下，生成的 `.idl` 结构将有一个哑成员（`uint8 structure_needs_at_least_one_member`）来满足 IDL 的要求，不能为空。
+> 结构可以按照上述格式定义，也可以为空/不包含任何成员。在这种情况下，生成的 `.idl` 结构将有一个哑成员(`uint8 structure_needs_at_least_one_member`)来满足 IDL 的要求，不能为空。
 
 </div>
 
@@ -345,7 +345,7 @@ A structure defined in the above format can be empty / contain no members. In th
 
 The mapping of <code>byte</code> uses a different type than in ROS 1 while still remaining an opaque 8-bit quantity. [Definition in ROS 1](http://wiki.ros.org/msg#Field_Types): deprecated alias for <code>int8</code>. Definition in IDL (7.4.1.4.4.2.6): an opaque 8-bit quantity.
 
-> 在 ROS 1 中，<code>byte</code> 的映射使用的类型与 ROS 1 中的不同，但仍然是一个不透明的 8 位数量。[ROS 1 中的定义](http://wiki.ros.org/msg#Field_Types)：已弃用的<code>int8</code>的别名。IDL（7.4.1.4.4.2.6）中的定义：一个不透明的 8 位数量。
+> 在 ROS 1 中，<code>byte</code> 的映射使用的类型与 ROS 1 中的不同，但仍然是一个不透明的 8 位数量。[ROS 1 中的定义](http://wiki.ros.org/msg#Field_Types)：已弃用的<code>int8</code>的别名。IDL(7.4.1.4.4.2.6)中的定义：一个不透明的 8 位数量。
 
 </div>
 

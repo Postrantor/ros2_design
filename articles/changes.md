@@ -10,19 +10,17 @@ date_written: 2015-09
 last_modified: 2017-06
 categories: Overview
 ---
-{:toc}
-
-#  {{ page.title }}
+# 
 
 <div class="abstract" markdown="1">
-{{ page.abstract }}
+
 </div>
 
-Authors: {{ page.author }}
+Authors:
 
-Date Written: {{ page.date_written }}
+Date Written:
 
-Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
+Last Modified:
 
 ## Preface
 

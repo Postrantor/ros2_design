@@ -10,9 +10,9 @@ author: '[Tully Foote](https://github.com/tfoote)'
 date_written: 2015-09
 last_modified: 2019-05
 published: true
-Authors: {{ page.author }}
-Date Written: {{ page.date_written }}
-Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
+Authors: 
+Date Written: 
+Last Modified:
 ---
 ## Background
 
@@ -68,7 +68,7 @@ It is useful to consider an ideal system to understand how it would work and how
 
 This implies that some entity has the authority to reject or accept a change based on arbitrary criteria. This would also include the ability to convey at least part of the criteria for the acceptance of a change to external actors. For example, communicating the range for an integer or a few choices for a string. This type of information would be used to generate generic user interfaces, but might not capture all criteria. Since the validation criteria can be arbitrary complex and can potentially not be communicated to a client the parameter server could offer to validate an atomic set of parameters and respond with a boolean flag if the values would be accepted (based on the current criteria). Obviously the result might be different when the values are set shortly after but it would allow to implement validators in e.g. a GUI generically.
 
-> 这意味着某个实体有权根据任意标准拒绝或接受更改。这也包括向外部演员传达接受更改的至少部分标准的能力。例如，传达整数的范围或字符串的几个选择。这种信息将用于生成通用用户界面，但可能无法捕获所有标准。由于验证标准可能是任意复杂的，并且可能无法传达给客户端，因此参数服务器可以提供验证原子参数集并返回布尔值标志，如果根据当前标准接受值（基于当前标准）。显然，当设置值稍后会有所不同，但它可以允许在例如 GUI 中实现验证器。
+> 这意味着某个实体有权根据任意标准拒绝或接受更改。这也包括向外部演员传达接受更改的至少部分标准的能力。例如，传达整数的范围或字符串的几个选择。这种信息将用于生成通用用户界面，但可能无法捕获所有标准。由于验证标准可能是任意复杂的，并且可能无法传达给客户端，因此参数服务器可以提供验证原子参数集并返回布尔值标志，如果根据当前标准接受值(基于当前标准)。显然，当设置值稍后会有所不同，但它可以允许在例如 GUI 中实现验证器。
 
 - Provide visibility into what parameters are expected to pass validation vs be rejected
 

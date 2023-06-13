@@ -12,9 +12,9 @@ date_written: 2019-08
 last_modified: 2021-06
 published: true
 categories: Security
-Authors: {{ page.author }}
-Date Written: {{ page.date_written }}
-Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
+Authors: 
+Date Written: 
+Last Modified:
 ---
 [SROS 2](/articles/ros2_dds_security.html) introduces several security properties, including encryption, authentication, and authorization.
 
@@ -30,7 +30,7 @@ Such models are often referred to as access control policies.
 
 A policy serves as a high-level abstraction of privileges associated with attributes that may then be transpiled into low-level permissions for individual identities, such as specific ROS nodes within a secure DDS network.
 
-> 一项政策作为特定属性相关的高级抽象权限，可以转化为安全 DDS 网络中个人身份（如特定 ROS 节点）的低级权限。
+> 一项政策作为特定属性相关的高级抽象权限，可以转化为安全 DDS 网络中个人身份(如特定 ROS 节点)的低级权限。
 
 ## Concepts
 
@@ -40,17 +40,17 @@ Before detailing the SROS 2 policy design of the [access control](https://en.wik
 
 In this setting, a subject may be thought of as a participant on a distributed data-bus (e.g. a ROS node in the computation graph), whereas an object may be an instance of a particular subsystem (e.g. a ROS topic), and access is defined as the capability to act upon that object (e.g. publish or subscribe).
 
-> 在这种环境下，主体可以被认为是分布式数据总线（例如计算图中的 ROS 节点）上的参与者，而对象可以是特定子系统（例如 ROS 主题）的实例，而访问权限是指可以对该对象（例如发布或订阅）进行操作的能力。
+> 在这种环境下，主体可以被认为是分布式数据总线(例如计算图中的 ROS 节点)上的参与者，而对象可以是特定子系统(例如 ROS 主题)的实例，而访问权限是指可以对该对象(例如发布或订阅)进行操作的能力。
 
 ### Mandatory Access Control
 
 [Mandatory Access Control](https://en.wikipedia.org/wiki/Mandatory_access_control) (MAC) refers to allowing access to an object if and only if rules exist that allow a given subject to access the resource; the term mandatory denotes this requirement that a subject’s access to an object must always be explicitly provisioned.
 
-> 强制访问控制（Mandatory Access Control，MAC）是指只有当存在允许给定主体访问资源的规则时，才允许访问对象；强制这个术语表明主体对对象的访问必须始终明确授权。
+> 强制访问控制(Mandatory Access Control，MAC)是指只有当存在允许给定主体访问资源的规则时，才允许访问对象；强制这个术语表明主体对对象的访问必须始终明确授权。
 
 Most importantly, contrary to discretionary access control (DAC), such policies are enforced by a set of authorization rules that cannot be overridden or modified by the subject either accidentally or intentionally.
 
-> 最重要的是，与自主访问控制（DAC）相反，这些策略由一组无法被主体意外或故意覆盖或修改的授权规则强制执行。
+> 最重要的是，与自主访问控制(DAC)相反，这些策略由一组无法被主体意外或故意覆盖或修改的授权规则强制执行。
 
 This could also be referred to as “deny by default”.
 
@@ -60,7 +60,7 @@ This could also be referred to as “deny by default”.
 
 [Principle of Least Privilege](https://en.wikipedia.org/wiki/Principle_of_least_privilege) (PoLP) requires that in a particular abstraction layer, every subject must be able to access only the resources necessary for its legitimate purpose.
 
-> 原则上最低特权（PoLP）要求，在特定的抽象层中，每个主体只能访问其合法目的所必需的资源。
+> 原则上最低特权(PoLP)要求，在特定的抽象层中，每个主体只能访问其合法目的所必需的资源。
 
 This is also known as the principle of minimal privilege or the principle of least authority.
 
@@ -88,7 +88,7 @@ Systems unable to comply with this requirement may consequently fail to satisfy 
 
 [Separation of Concerns](https://en.wikipedia.org/wiki/Separation_of_concerns) (SoC) is a design principle for separating a system into distinct sections, so that each section addresses a separate concern.
 
-> 分离关注点（SoC）是一种将系统分解为不同部分的设计原则，以便每个部分都能够处理不同的关注点。
+> 分离关注点(SoC)是一种将系统分解为不同部分的设计原则，以便每个部分都能够处理不同的关注点。
 
 Separate concerns in this case may be how encryption is governed in a system versus how authorization is given to subjects.
 
@@ -104,7 +104,7 @@ Design criteria for SROS 2 policies and for selecting the [Extensible Markup Lan
 
 Prior to interpreting any user configuration input, such as an access control policy, [data validation](https://en.wikipedia.org/wiki/Data_validation) should be applied to ensure inputs are compliant and correctly formatted.
 
-> 在解释任何用户配置输入（如访问控制策略）之前，应该应用[数据验证](https://en.wikipedia.org/wiki/Data_validation)来确保输入符合要求并格式正确。
+> 在解释任何用户配置输入(如访问控制策略)之前，应该应用[数据验证](https://en.wikipedia.org/wiki/Data_validation)来确保输入符合要求并格式正确。
 
 Incorrect inputs can affect the soundness of most programs or tools, yet guarding against general malformations may itself require meticulous validation logic.
 
@@ -144,11 +144,11 @@ When formulating an access control policy, many subjects may share fundamental p
 
 To avoid unnecessary repetition that could exacerbate human errors or other discrepancies, policies should possess sufficient [expressive power](https://en.wikipedia.org/wiki/Expressive_power_(computer_science)) to remain [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself).
 
-> 为了避免不必要的重复，可能会加剧人为错误或其他差异，政策应具有足够的表达能力，以保持 DRY（不重复自己）。
+> 为了避免不必要的重复，可能会加剧人为错误或其他差异，政策应具有足够的表达能力，以保持 DRY(不重复自己)。
 
 In XML, this is achieved using [XInclude](https://en.wikipedia.org/wiki/XInclude); allowing the policy markup to easily include or substitute external reference to particular profiles and permissions that repeat across separate policies or profiles.
 
-> 在 XML 中，可以使用[XInclude]（[https://en.wikipedia.org/wiki/XInclude](https://en.wikipedia.org/wiki/XInclude)）来实现；允许策略标记轻松地包含或替换跨越不同策略或配置文件的特定档案和权限的外部参考。
+> 在 XML 中，可以使用 [XInclude](%5Bhttps://en.wikipedia.org/wiki/XInclude%5D(https://en.wikipedia.org/wiki/XInclude)) 来实现；允许策略标记轻松地包含或替换跨越不同策略或配置文件的特定档案和权限的外部参考。
 
 ## Schema
 
@@ -161,7 +161,7 @@ The elements and attributes that make up a policy are described below.
 > 以下描述了构成政策的元素和属性。
 
 ```xml
-{% include_relative ros2_access_control_policies/policy.xsd %}
+
 ```
 
 ### `<policy>` Tag
@@ -281,7 +281,7 @@ Additionally, as with many other MAC languages, while composed privileges may ov
 
 That is to say the priority of denied privileges conservatively supersedes allowed privileges, avoiding potential lapses in PoLP.
 
-> 那就是说，拒绝权限的优先级保守地超越了允许的权限，避免了可能出现的操作管理策略（PoLP）失误。
+> 那就是说，拒绝权限的优先级保守地超越了允许的权限，避免了可能出现的操作管理策略(PoLP)失误。
 
 This method of flatting privileges enables users to provision general access to a larger set of objects, while simultaneously revoking access to a smaller subset of sensitive objects.
 
@@ -554,7 +554,7 @@ This section lists concerns about the proposed design and alternatives that were
 
 [YAML](https://en.wikipedia.org/wiki/YAML), a recursive acronym for “YAML Ain't Markup Language”, was originally adopted for specifying access control policies in the first version of SROS [1].
 
-> YAML（递归缩写“YAML Ain't Markup Language”）最初被采用用于指定 SROS 第一个版本中的访问控制策略[1]。
+> YAML(递归缩写“YAML Ain't Markup Language”)最初被采用用于指定 SROS 第一个版本中的访问控制策略[1]。
 
 Although the policy model used in [SROS 1](http://wiki.ros.org/SROS/Concepts/PolicyDissemination) was semantically equivalent, the YAML format lent it being quite verbose due to repetition of permissions per namespaced resource given the lack of clear element attributes.
 
@@ -670,7 +670,7 @@ As an example, if granting access to all topics and services starting with `/foo
 
 Such can be exacerbated when using globbing expressions that include matching patterns, such as with `fnmatch`, leading to innocuous and sound policies being inaccurately applied to the underlying transport security.
 
-> 当使用包含匹配模式的通配符表达式（如 `fnmatch`）时，这种情况可能会加剧，导致无害而又合理的策略不准确地应用于底层传输安全性。
+> 当使用包含匹配模式的通配符表达式(如 `fnmatch`)时，这种情况可能会加剧，导致无害而又合理的策略不准确地应用于底层传输安全性。
 
 While such privilege separation in [remains week between ROS 2 and DDS](https://github.com/ros2/design/pull/203), perhaps it is wise to discourage the use of expression matching for general use in permissions.
 
@@ -692,7 +692,7 @@ Still, among the objective for ROS 2 includes remaining as agnostic of transport
 
 Although the SROS 2 policy format was intentionally structured to mimic that of Secure DDS’s permission.xml format, care should be taken when adding extensions to surface non-functional security properties tangential to ROS 2 data flow, such as governance on encryption or discovery.
 
-> 虽然 SROS 2 策略格式有意结构化为模仿 Secure DDS 的 permission.xml 格式，但在为 ROS 2 数据流表面添加非功能性安全属性（如加密或发现的治理）时应当小心。
+> 虽然 SROS 2 策略格式有意结构化为模仿 Secure DDS 的 permission.xml 格式，但在为 ROS 2 数据流表面添加非功能性安全属性(如加密或发现的治理)时应当小心。
 
 Yet, if the intended purpose of SROS 2 policy becomes that of an intermediate representation across transports, and is subsequently auto generated from higher level tooling/representations, or composability is adequate preserved, then perhaps this concern is of lesser priority.
 
@@ -728,13 +728,13 @@ Thus, it stands to reason nodes could instead provide a manifest or IDL defining
 
 ```bibtex
 @inbook{White2019,
-  title     = {SROS1: Using and Developing Secure ROS1 Systems},
-  author    = {White, Ruffin and Caiazza, Gianluca and Christensen, Henrik and Cortesi, Agostino},
+  title     = ,
+  author    = ,
   year      = 2019,
-  booktitle = {Robot Operating System (ROS): The Complete Reference (Volume 3)},
-  doi       = {10.1007/978-3-319-91590-6_11},
-  isbn      = {978-3-319-91590-6},
-  url       = {https://doi.org/10.1007/978-3-319-91590-6_11}}
+  booktitle = ,
+  doi       = ,
+  isbn      = ,
+  url       = 
 ```
 
 2. [Procedurally Provisioned Access Control for Robotic Systems](https://doi.org/10.1109/IROS.2018.8594462)
@@ -743,11 +743,11 @@ Thus, it stands to reason nodes could instead provide a manifest or IDL defining
 
 ```bibtex
 @inproceedings{White2018,
-  title     = {Procedurally Provisioned Access Control for Robotic Systems},
-  author    = {White, Ruffin and Caiazza, Gianluca and Christensen, Henrik and Cortesi, Agostino},
+  title     = ,
+  author    = ,
   year      = 2018,
-  booktitle = {2018 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)},
-  doi       = {10.1109/IROS.2018.8594462},
-  issn      = {2153-0866},
-  url       = {https://doi.org/10.1109/IROS.2018.8594462}}
+  booktitle = ,
+  doi       = ,
+  issn      = ,
+  url       = 
 ```

@@ -23,9 +23,9 @@ date_written: 2019-03
 last_modified: 2021-01
 published: true
 categories: Security
-Authors: {{ page.author }}
-Date Written: {{ page.date_written }}
-Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
+Authors: 
+Date Written: 
+Last Modified: 
 ---
 
 This is a **DRAFT DOCUMENT**.
@@ -141,17 +141,17 @@ This section defines actors, assets, and entry points for this threat model.
 
 **Assets** represent any user, resource (e.g. disk space), or property (e.g. physical safety of users) of the system that should be defended against attackers. Properties of assets can be related to achieving the business goals of the robot. For example, sensor data is a resource/asset of the system and the privacy of that data is a system property and a business goal.
 
-> **资产**代表系统中应该防御攻击者的任何用户、资源（例如磁碟空间）或财产（例如用户的实体安全）。资产的属性可以与机器人的业务目标有关。例如，感测器数据是系统的资源/资产，而该数据的隐私是系统属性和业务目标。
+> **资产**代表系统中应该防御攻击者的任何用户、资源(例如磁碟空间)或财产(例如用户的实体安全)。资产的属性可以与机器人的业务目标有关。例如，感测器数据是系统的资源/资产，而该数据的隐私是系统属性和业务目标。
 
 **Entry points** represent how the system is interacting with the world (communication channels, API, sensors, etc.).
 
-> **入口点**代表系统如何与世界进行交互（通信渠道、API、传感器等）。
+> **入口点**代表系统如何与世界进行交互(通信渠道、API、传感器等)。
 
 #### Robot Application Actors
 
 Actors are divided into multiple categories based on whether or not they are physically present next to the robot (could the robot harm them?), are they human or not and are they a "power user" or not. A power user is defined as someone who is knowledgeable and executes tasks which are normally not done by end-users (build and debug new software, deploy code, etc.).
 
-> 演员可以根据是否身体在机器人旁边（机器人是否可能伤害他们？），是否是人类或非人类，以及是否是“高级用户”而分为多个类别。高级用户被定义为知识渊博的人，能够执行通常不由最终用户完成的任务（构建和调试新软件，部署代码等）。
+> 演员可以根据是否身体在机器人旁边(机器人是否可能伤害他们？)，是否是人类或非人类，以及是否是“高级用户”而分为多个类别。高级用户被定义为知识渊博的人，能够执行通常不由最终用户完成的任务(构建和调试新软件，部署代码等)。
 
 <div class="table">
 <table class="table">
@@ -215,7 +215,7 @@ Actors are divided into multiple categories based on whether or not they are phy
 
 Assets are categorized in privacy (robot private data should not be accessible by attackers), integrity (robot behavior should not be modified by attacks) and availability (robot should continue to operate even under attack).
 
-> 资产分为隐私（机器人的私人数据不应该被攻击者访问）、完整性（机器人的行为不应该被攻击改变）和可用性（即使受到攻击，机器人也应该继续运行）。
+> 资产分为隐私(机器人的私人数据不应该被攻击者访问)、完整性(机器人的行为不应该被攻击改变)和可用性(即使受到攻击，机器人也应该继续运行)。
 
 <div class="table">
 <table class="table">
@@ -281,7 +281,7 @@ Assets are categorized in privacy (robot private data should not be accessible b
 
 Entry points describe the system attack surface area (how do actors interact with the system?).
 
-> 入口点描述了系统攻击面积（演员如何与系统交互？）。
+> 入口点描述了系统攻击面积(演员如何与系统交互？)。
 
 <div class="table">
 <table class="table">
@@ -327,15 +327,15 @@ Entry points describe the system attack surface area (how do actors interact wit
 
 The system is divided into hardware (embedded general-purpose computer, sensors, actuators), multiple components (usually processes) running on multiple computers (trusted or non-trusted components) and data stores (embedded or in the cloud).
 
-> 系统分为硬件（嵌入式通用计算机、传感器、执行器）、多个组件（通常是在多台计算机上运行的进程，可信或不可信）以及数据存储（嵌入式或在云中）。
+> 系统分为硬件(嵌入式通用计算机、传感器、执行器)、多个组件(通常是在多台计算机上运行的进程，可信或不可信)以及数据存储(嵌入式或在云中)。
 
 While the computers may run well-controlled, trusted software (trusted components), other off-the-shelf robotics components (non-trusted) nodes may be included in the application. Third-party components may be malicious (extract private data, install a root-kit, etc.) or their QA validation process may not be as extensive as in-house software. Third-party components releasing process create additional security threats (third-party component may be compromised during their distribution).
 
-> 当计算机运行受控、可信赖的软件（可信组件）时，可能会包含其他现成的机器人组件（非可信）节点。第三方组件可能是恶意的（提取私人数据、安装根驱动程序等），或者它们的质量验证过程可能不如自家软件那么全面。第三方组件发布过程会带来额外的安全 threat（第三方组件在分发过程中可能被攻击）。
+> 当计算机运行受控、可信赖的软件(可信组件)时，可能会包含其他现成的机器人组件(非可信)节点。第三方组件可能是恶意的(提取私人数据、安装根驱动程序等)，或者它们的质量验证过程可能不如自家软件那么全面。第三方组件发布过程会带来额外的安全 threat(第三方组件在分发过程中可能被攻击)。
 
 A trusted robotic component is defined as a node developed, built, tested and deployed by the robotic application owner or vetted partners. As the process is owned end-to-end by a single organization, we can assume that the node will respect its specifications and will not, for instance, try to extract and leak private information. While carefully controlled engineering processes can reduce the risk of malicious behavior (accidentally or voluntarily), it cannot completely eliminate it. Trusted nodes can still leak private data, etc.
 
-> 一个可信的机器人组件是指由机器人应用程序所有者或经过审查的合作伙伴开发、构建、测试和部署的节点。由于整个过程由单一组织拥有，我们可以假定该节点将遵守其规范，而不会尝试提取和泄漏私人信息。虽然精心控制的工程流程可以降低恶意行为的风险（意外或自愿），但无法完全消除它。可信节点仍然可能泄漏私人数据等。
+> 一个可信的机器人组件是指由机器人应用程序所有者或经过审查的合作伙伴开发、构建、测试和部署的节点。由于整个过程由单一组织拥有，我们可以假定该节点将遵守其规范，而不会尝试提取和泄漏私人信息。虽然精心控制的工程流程可以降低恶意行为的风险(意外或自愿)，但无法完全消除它。可信节点仍然可能泄漏私人数据等。
 
 Trusted nodes should not trust non-trusted nodes. It is likely that more than one non-trusted component is embedded in any given robotic application. It is important for non-trusted components to not trust each other as one malicious non-trusted node may try to compromise another non-trusted node.
 
@@ -343,7 +343,7 @@ Trusted nodes should not trust non-trusted nodes. It is likely that more than on
 
 An example of a trusted component could be an in-house (or carefully vetted) IMU driver node. This component may communicate through unsafe channels with other driver nodes to reduce sensor data fusion latency. Trusting components is never ideal but it may be acceptable if the software is well-controlled.
 
-> 一个可信的组件的例子可能是一个内部（或仔细审查）的 IMU 驱动节点。这个组件可以通过不安全的通道与其他驱动节点通信，以减少传感器数据融合的延迟。信任组件永远不是理想的，但如果软件得到良好的控制，可能是可以接受的。
+> 一个可信的组件的例子可能是一个内部(或仔细审查)的 IMU 驱动节点。这个组件可以通过不安全的通道与其他驱动节点通信，以减少传感器数据融合的延迟。信任组件永远不是理想的，但如果软件得到良好的控制，可能是可以接受的。
 
 On the opposite, a non-trusted node can be a third-party object tracker. Deploying this node without adequate sandboxing could impact:
 
@@ -356,8 +356,8 @@ On the opposite, a non-trusted node can be a third-party object tracker. Deployi
 
 - 用户隐私：该节点未经同意即可流返回用户视频
 - 用户安全：机器人遵循跟踪器检测到的对象，其速度与对象距离成正比。恶意跟踪器估计对象位置很远，以诱使机器人突然加速并伤害用户。
-- 系统可用性：节点可以尝试消耗所有可用的计算资源（CPU，内存，磁盘），并防止机器人正确执行。
-- 系统完整性：机器人遵循跟踪器检测到的对象。攻击者可以通过控制轨道对象的估计位置来远程操作机器人（检测左侧的对象以使机器人向左移动等）。
+- 系统可用性：节点可以尝试消耗所有可用的计算资源(CPU，内存，磁盘)，并防止机器人正确执行。
+- 系统完整性：机器人遵循跟踪器检测到的对象。攻击者可以通过控制轨道对象的估计位置来远程操作机器人(检测左侧的对象以使机器人向左移动等)。
 
 Nodes may also communicate with the local filesystem, cloud services or data stores. Those services or data stores can be compromised and should not be automatically trusted. For instance, URDF robot models are usually stored in the robot file system. This model stores robot joint limits. If the robot file system is compromised, those limits could be removed which would enable an attacker to destroy the robot.
 
@@ -365,11 +365,11 @@ Nodes may also communicate with the local filesystem, cloud services or data sto
 
 Finally, users may try to rely on sensors to inject malicious data into the system ([Akhtar, Naveed, and Ajmal Mian. “Threat of Adversarial Attacks on Deep Learning in Computer Vision: A Survey.”][akhtar_threat_2018]).
 
-> 最后，用户可以尝试利用传感器将恶意数据注入系统（[Akhtar，Naveed 和 Ajmal Mian。“计算机视觉中深度学习的对抗攻击 threat：一项调查”][akhtar_threat_2018]）。
+> 最后，用户可以尝试利用传感器将恶意数据注入系统([Akhtar，Naveed 和 Ajmal Mian。“计算机视觉中深度学习的对抗攻击 threat：一项调查”][akhtar_threat_2018])。
 
 The diagram below illustrates an example application with different trust zones (trust boundaries showed with dashed green lines). The number and scope of trust zones is depending on the application.
 
-> 图下面示出了一个用不同信任区域（用虚线绿线表示信任边界）的示例应用。信任区域的数量和范围取决于应用程序。
+> 图下面示出了一个用不同信任区域(用虚线绿线表示信任边界)的示例应用。信任区域的数量和范围取决于应用程序。
 
     ![Robot System Threat Model](ros2_threat_model/RobotSystemThreatModel.png)
     [Diagram Source](ros2_threat_model/RobotSystemThreatModel.json)
@@ -387,15 +387,15 @@ Threat categorization is based on the [STRIDE][wikipedia_stride] (Spoofing / Tam
 
 In the following table, the "Threat Category (STRIDE)" columns indicate the categories to which a threat belongs. If the "Spoofing" column is marked with a check sign (✓), it means that this threat can be used to spoof a component of the system. If it cannot be used to spoof a component, a cross sign will be present instead (✘).
 
-> 以下表格中，“threat 类别（STRIDE）”列指示了 threat 属于哪个类别。如果“伪装”列被标记为勾号（✓），则表示该 threat 可用于伪装系统的组件。如果不能用于伪装组件，则会出现叉号（✘）。
+> 以下表格中，“threat 类别(STRIDE)”列指示了 threat 属于哪个类别。如果“伪装”列被标记为勾号(✓)，则表示该 threat 可用于伪装系统的组件。如果不能用于伪装组件，则会出现叉号(✘)。
 
 The "Threat Risk Assessment (DREAD)" columns contain a score indicating how easy or likely it is for a particular threat to be exploited. The allowed score values are 1 (not at risk), 2 (may be at risk) or 3 (at risk, needs to be mitigated). For instance, in the damage column a 1 would mean "exploitation of the threat would cause minimum damages", 2 "exploitation of the threat would cause significant damages" and 3 "exploitation of the threat would cause massive damages". The "total score" is computed by adding the score of each column. The higher the score, the more critical the threat.
 
-> "threat 风险评估（DREAD）"列包含一个分数，指示特定 threat 被利用的容易程度或可能性。允许的分数值为 1（不受 threat），2（可能受到 threat）或 3（受到 threat，需要进行缓解）。例如，在损害列中，1 表示“threat 的利用会造成最小的损害”，2 表示“threat 的利用会造成重大损害”，3 表示“threat 的利用会造成巨大损害”。“总分”是通过将每列的分数相加得出的。分数越高，threat 越严重。
+> "threat 风险评估(DREAD)"列包含一个分数，指示特定 threat 被利用的容易程度或可能性。允许的分数值为 1(不受 threat)，2(可能受到 threat)或 3(受到 threat，需要进行缓解)。例如，在损害列中，1 表示“threat 的利用会造成最小的损害”，2 表示“threat 的利用会造成重大损害”，3 表示“threat 的利用会造成巨大损害”。“总分”是通过将每列的分数相加得出的。分数越高，threat 越严重。
 
 Impacted assets, entry points and business goals columns indicate whether an asset, entry point or business goal is impacted by a given threat. A check sign (✓) means impacted, a cross sign (✘) means not impacted. A triangle (▲) means "impacted indirectly or under certain conditions". For instance, compromising the robot kernel may not be enough to steal user data but it makes stealing data much easier.
 
-> 资产、入口点和业务目标列可以表明一个资产、入口点或业务目标是否受到给定 threat 的影响。勾号（✓）表示受影响，叉号（✘）表示不受影响。三角形（▲）表示“间接受影响或在某些条件下受影响”。例如，破坏机器人内核可能不足以窃取用户数据，但它可以使窃取数据变得容易得多。
+> 资产、入口点和业务目标列可以表明一个资产、入口点或业务目标是否受到给定 threat 的影响。勾号(✓)表示受影响，叉号(✘)表示不受影响。三角形(▲)表示“间接受影响或在某些条件下受影响”。例如，破坏机器人内核可能不足以窃取用户数据，但它可以使窃取数据变得容易得多。
 
 <div class="table" markdown="1">
   <table class="table">
@@ -675,7 +675,7 @@ Teleoperated Surgical Robots.” ArXiv:1504.04339 [Cs], April 16, 2015.</a>
 
 Communication (e.g. WiFi, Cellular Connection)</th>
 
-> 通信（例如 WiFi，蜂窝连接）
+> 通信(例如 WiFi，蜂窝连接)
 
     </tr>
     <tr>
@@ -727,7 +727,7 @@ Make a Robot Secure: An Experimental Analysis of Cyber Security Threats Against
 
 Teleoperated Surgical Robots.” ArXiv:1504.04339 [Cs], April 16, 2015.</a>
 
-> 机器人远程手术。 ArXiv:1504.04339 [Cs], 2015 年 4 月 16 日。
+> 机器人远程手术。ArXiv:1504.04339 [Cs], 2015 年 4 月 16 日。
 
       </td>
     </tr>
@@ -821,7 +821,7 @@ channels.</td>
 
 when possible (e.g. cellular and WiFi)</li>
 
-> 当可能时（例如蜂窝和 WiFi）
+> 当可能时(例如蜂窝和 WiFi)
 
         </ul>
       </td>
@@ -838,7 +838,7 @@ Make a Robot Secure: An Experimental Analysis of Cyber Security Threats Against
 
 Teleoperated Surgical Robots.” ArXiv:1504.04339 [Cs], April 16, 2015.</a>
 
-> 机器人远程手术。 ArXiv：1504.04339 [Cs]，2015 年 4 月 16 日。
+> 机器人远程手术。ArXiv：1504.04339 [Cs]，2015 年 4 月 16 日。
 
       </td>
     </tr>
@@ -847,7 +847,7 @@ Teleoperated Surgical Robots.” ArXiv:1504.04339 [Cs], April 16, 2015.</a>
 
 Communication (e.g. Bluetooth)</th>
 
-> 通信（例如蓝牙）
+> 通信(例如蓝牙)
 
     </tr>
     <tr>
@@ -883,7 +883,7 @@ Communication (e.g. Bluetooth)</th>
 
 rfkill).</li>
 
-> rfkill）。
+> rfkill)。
 
           <li>Binaries and libraries required to support short-range communications
 
@@ -1079,7 +1079,7 @@ Yves Deswarte, Eric Alata, and Vincent Nicomette. “Potential Attacks on
 
 Onboard Aerospace Systems.” IEEE Security &amp; Privacy 10, no. 4 (July
 
-> 在航天系统上。 IEEE 安全与隐私 10，第 4 号（七月）
+> 在航天系统上。IEEE 安全与隐私 10，第 4 号(七月)
 
 2012): 71–74.</a>
 
@@ -1139,7 +1139,7 @@ Robotics.” In 2017 IEEE Conference on Cognitive and Computational Aspects of
 
 Situation Management (CogSIMA), 1–5. Savannah, GA, USA: IEEE, 2017.</a>
 
-> 管理情况（CogSIMA），1-5。美国佐治亚州萨凡纳：IEEE，2017。
+> 管理情况(CogSIMA)，1-5。美国佐治亚州萨凡纳：IEEE，2017。
 
       </td>
     </tr>
@@ -1200,7 +1200,7 @@ Robotics.” In 2017 IEEE Conference on Cognitive and Computational Aspects of
 
 Situation Management (CogSIMA), 1–5. Savannah, GA, USA: IEEE, 2017.</a>
 
-> 管理情境（CogSIMA），1-5，美国佐治亚州萨凡纳：IEEE，2017。
+> 管理情境(CogSIMA)，1-5，美国佐治亚州萨凡纳：IEEE，2017。
 
       </td>
     </tr>
@@ -1440,7 +1440,7 @@ Yves Deswarte, Eric Alata, and Vincent Nicomette. “Potential Attacks on
 
 Onboard Aerospace Systems.” IEEE Security &amp; Privacy 10, no. 4 (July
 
-> 上船航空航天系统。IEEE 安全与隐私 10，第 4 期（7 月）
+> 上船航空航天系统。IEEE 安全与隐私 10，第 4 期(7 月)
 
 2012): 71–74.</a>
 
@@ -1498,7 +1498,7 @@ AlMajali, Salah Ghalyon, Waleed Dweik, and Bassam Mohd. “Analyzing
 
 Cyber-Physical Threats on Robotic Platforms.” Sensors 18, no. 5 (May 21,
 
-> 网络物理 threat 对机器人平台的影响。传感器 18，第 5 期（5 月 21 日）
+> 网络物理 threat 对机器人平台的影响。传感器 18，第 5 期(5 月 21 日)
 
 2018): 1643.</a></td>
 
@@ -1552,7 +1552,7 @@ AlMajali, Salah Ghalyon, Waleed Dweik, and Bassam Mohd. “Analyzing
 
 Cyber-Physical Threats on Robotic Platforms.” Sensors 18, no. 5 (May 21,
 
-> 网络物理 threat 对机器人平台的影响。传感器 18，第 5 号（5 月 21 日）
+> 网络物理 threat 对机器人平台的影响。传感器 18，第 5 号(5 月 21 日)
 
 2018): 1643.</a>
 
@@ -1605,7 +1605,7 @@ configuration to a safe state if the robot becomes unavailable.</li>
 
 System)</th>
 
-> 系统）
+> 系统)
 
     </tr>
     <tr>
@@ -2031,7 +2031,7 @@ Yves Deswarte, Eric Alata, and Vincent Nicomette. “Potential Attacks on
 
 Onboard Aerospace Systems.” IEEE Security &amp; Privacy 10, no. 4 (July
 
-> 在航天系统上。 IEEE 安全与隐私 10，第 4 号（七月
+> 在航天系统上。IEEE 安全与隐私 10，第 4 号(七月
 
 2012): 71–74.</a></td>
 
@@ -2523,7 +2523,7 @@ We also make the assumption that the robot is running a ROS 2 port of the AWS [C
 
 For the purpose of demonstrating the threats associated with distributing a ROS graph among multiple hosts, an Xbox controller is connected to a secondary computer (“remote host”). The secondary computer runs two additional nodes:
 
-> 为了演示在多台主机之间分发 ROS 图所涉及的 threat，将 Xbox 控制器连接到第二台计算机（“远程主机”）。第二台计算机运行另外两个节点：
+> 为了演示在多台主机之间分发 ROS 图所涉及的 threat，将 Xbox 控制器连接到第二台计算机(“远程主机”)。第二台计算机运行另外两个节点：
 
 - [`joy_node`][joy_node] is forwarding joystick input as ROS 2 messages,
 - [`teleop_twist_joy`][teleop_twist_joy] is converting ROS 2 joystick messages to control commands.
@@ -2538,7 +2538,7 @@ Finally, the robot data is accessed by a test engineer through a “field testin
 
 [Diagram Source (draw.io)](ros2_threat_model/ROS2_Application.xml)
 
-> [图表来源（draw.io）](ros2_threat_model/ROS2_Application.xml)转换为简体中文
+> [图表来源(draw.io)](ros2_threat_model/ROS2_Application.xml)转换为简体中文
 
 #### Assets
 
@@ -2759,7 +2759,7 @@ Each generic threat described in the previous section can be instantiated on the
 
 This table indicates which TurtleBot particular assets and entry points are impacted by each threat. A check sign (✓) means impacted while a cross sign (✘) means not impacted. The "SROS Enabled?" column explicitly states out whether using SROS would mitigate the threat or not. A check sign (✓) means that the threat could be exploited while SROS is enabled while a cross sign (✘) means that the threat requires SROS to be disabled to be applicable.
 
-> 这张表表明哪些 TurtleBot 资产和入口点受到每个 threat 的影响。勾号（✓）表示受影响，叉号（✘）表示不受影响。“SROS Enabled？”列明确表明是否使用 SROS 可以缓解 threat。勾号（✓）表示在启用 SROS 的情况下可以利用 threat，而叉号（✘）表示 threat 需要禁用 SROS 才能应用。
+> 这张表表明哪些 TurtleBot 资产和入口点受到每个 threat 的影响。勾号(✓)表示受影响，叉号(✘)表示不受影响。“SROS Enabled？”列明确表明是否使用 SROS 可以缓解 threat。勾号(✓)表示在启用 SROS 的情况下可以利用 threat，而叉号(✘)表示 threat 需要禁用 SROS 才能应用。
 
 <div class="table" markdown="1">
 <table class="table">
@@ -3746,9 +3746,9 @@ deploys a malicious node on the robot” attack.
 
 [Diagram Source (draw.io)](ros2_threat_model/signing_service_mitigation.xml)
 
-> [图表来源（draw.io）](ros2_threat_model/signing_service_mitigation.xml)：为了缓解签名服务的 threat，应该采取以下措施：1）使用安全的签名服务；2）实施强制认证，以防止未经授权的访问；3）使用多因素身份验证，以防止未经授权的访问；4）实施安全策略，以限制签名服务的访问权限；5）实施安全的网络架构，以防止未经授权的访问；6）实施安全的签名算法，以防止未经授权的访问；7）实施安全的签名算法，以防止未经授权的访问；8）实施安全的签名算法，以防止未经授权的访问；9）实施安全的签名算法，以防止未经授权的访问。
+> [图表来源(draw.io)](ros2_threat_model/signing_service_mitigation.xml)：为了缓解签名服务的 threat，应该采取以下措施：1)使用安全的签名服务；2)实施强制认证，以防止未经授权的访问；3)使用多因素身份验证，以防止未经授权的访问；4)实施安全策略，以限制签名服务的访问权限；5)实施安全的网络架构，以防止未经授权的访问；6)实施安全的签名算法，以防止未经授权的访问；7)实施安全的签名算法，以防止未经授权的访问；8)实施安全的签名算法，以防止未经授权的访问；9)实施安全的签名算法，以防止未经授权的访问。
 
-为了缓解签名服务的 threat，应采取以下措施：1）使用安全的签名服务；2）实施强制认证，以防止未经授权的访问；3）使用多因素身份验证；4）实施安全策略，限制签名服务的访问权限；5）实施安全的网络架构；6）采用安全的签名算法，防止未经授权的访问。
+为了缓解签名服务的 threat，应采取以下措施：1)使用安全的签名服务；2)实施强制认证，以防止未经授权的访问；3)使用多因素身份验证；4)实施安全策略，限制签名服务的访问权限；5)实施安全的网络架构；6)采用安全的签名算法，防止未经授权的访问。
 
 #### Attack Tree
 
@@ -3760,7 +3760,7 @@ Threats can be organized in the following [attack tree][wikipedia_attack_tree].
 
 [Diagram Source (draw.io)](ros2_threat_model/attack_tree.xml)
 
-> [图表来源（draw.io）](ros2_threat_model/attack_tree.xml)
+> [图表来源(draw.io)](ros2_threat_model/attack_tree.xml)
 
 攻击树：
 
@@ -3810,11 +3810,11 @@ Built out of individual modules that natively run on ROS 2, MARA can be physical
 
 The robot considered is a [MARA][mara_datasheet], a 6 Degrees of Freedom (6DoF) modular and collaborative robotic arm with 3 kg of payload and repeatibility below 0.1 mm. The robot can reach angular speeds up to 90º/second and has a reach of 656 mm. The robot contains a variety of sensors on each joint and can be controlled from any industrial controller that supports ROS 2 and uses the [HRIM][hrim] information model. Each of the modules contains the [H-ROS communication bus][hros] for robots enabled by the [H-ROS SoM][hrossom], which delivers real-time, security and safety capabilities for ROS 2 at the module level.
 
-> 这个考虑的机器人是 MARA（参见 MARA 数据表），一种 6 自由度（6DoF）模块化和协作机械臂，有 3 公斤的有效载荷和重复性低于 0.1 毫米。机器人可以达到每秒 90° 的角速度，有 656 毫米的触角。机器人在每个关节上都有各种传感器，可以从支持 ROS 2 的任何工业控制器控制，并使用 HRIM 信息模型。每个模块都包含由 H-ROS SoM 提供的 H-ROS 通信总线，为 ROS 2 在模块级别提供实时、安全和安全功能。
+> 这个考虑的机器人是 MARA(参见 MARA 数据表)，一种 6 自由度(6DoF)模块化和协作机械臂，有 3 公斤的有效载荷和重复性低于 0.1 毫米。机器人可以达到每秒 90° 的角速度，有 656 毫米的触角。机器人在每个关节上都有各种传感器，可以从支持 ROS 2 的任何工业控制器控制，并使用 HRIM 信息模型。每个模块都包含由 H-ROS SoM 提供的 H-ROS 通信总线，为 ROS 2 在模块级别提供实时、安全和安全功能。
 
 No information is provided about how ROS 2 nodes are distributed on each module. Each joint offers the following ROS 2 API capabilities as described in their [documentation (MARA joint)][mara_joint_ros2_api]:
 
-> 没有提供有关如何在每个模块上分布 ROS 2 节点的信息。 每个关节都提供以下 ROS 2 API 功能，如其[文档（MARA 关节）][mara_joint_ros2_api]所述：
+> 没有提供有关如何在每个模块上分布 ROS 2 节点的信息。每个关节都提供以下 ROS 2 API 功能，如其[文档(MARA 关节)][mara_joint_ros2_api]所述：
 
 - **Topics**
 
@@ -3895,7 +3895,7 @@ Such API gets translated into the following abstractions:
 
 The controller used in the application is a ROS 2-enabled industrial PC, specifically, an [ORC][orc]. This PC also features the H-ROS communication bus for robots which commands MARA in a deterministic manner. This controller makes direct use of the aforementioned communication abstractions (topics, services and actions).
 
-> 控制器在应用程序中使用的是 ROS 2 启用的工业 PC，具体来说是[ORC][orc]。这台 PC 还具有用于机器人的 H-ROS 通信总线，以确定性方式指挥 MARA。该控制器直接使用上述通信抽象（主题、服务和操作）。
+> 控制器在应用程序中使用的是 ROS 2 启用的工业 PC，具体来说是[ORC][orc]。这台 PC 还具有用于机器人的 H-ROS 通信总线，以确定性方式指挥 MARA。该控制器直接使用上述通信抽象(主题、服务和操作)。
 
 ### Architecture Dataflow diagram
 
@@ -3905,7 +3905,7 @@ The controller used in the application is a ROS 2-enabled industrial PC, specifi
 
 > .
 
-[图表来源（draw.io）](ros2_threat_model/ROS2_Application.xml)
+[图表来源(draw.io)](ros2_threat_model/ROS2_Application.xml)
 
 ROS2 应用程序 threat 模型图表：
 
@@ -3975,11 +3975,11 @@ This section aims for describing the components and specifications within the MA
 
 1. **Ethernet time sensitive (TSN) internal network**: Interconnection of modular joints in the MARA Robot is performed over a daisy chained Ethernet TSN channel. Each module acts as a switch, forming the internal network of the robot.
 
-> 在 MARA 机器人中，模块间的连接是通过一个串联的以太网时间敏感（TSN）信道完成的。每个模块都充当一个交换机，构成机器人的内部网络。
+> 在 MARA 机器人中，模块间的连接是通过一个串联的以太网时间敏感(TSN)信道完成的。每个模块都充当一个交换机，构成机器人的内部网络。
 
 1. **Manufacturer (Acutronic Robotics) corporate private network**: A secure corporate wide-area network, that spans multiple cities. Only authenticated user with suitable credentials can connect to the network, and good security practices like password rotation are in place. This network is used to develop and deploy updates in the robotic systems. Managed by the original manufacturer.
 
-> 一个安全的跨越多个城市的企业私有网络（Acutronic Robotics 制造商）。只有具有合适凭据的认证用户才能连接到该网络，并且采用密码旋转等安全实践。该网络用于开发和部署机器人系统的更新。由原始制造商管理。
+> 一个安全的跨越多个城市的企业私有网络(Acutronic Robotics 制造商)。只有具有合适凭据的认证用户才能连接到该网络，并且采用密码旋转等安全实践。该网络用于开发和部署机器人系统的更新。由原始制造商管理。
 
 1. **End-user corporate private network**: A secure corporate wide-area network, that spans multiple cities. Only authenticated user with suitable credentials can connect to the network, and good security practices like password rotation are in place.
 
@@ -4172,7 +4172,7 @@ The following content will apply the threat model to an industrial robot on its 
 
 The diagram below illustrates MARA's application with different trust zones (trust boundaries showed with dashed green lines). The number and scope of trust zones is depending on the infrastructure behind.
 
-> 图表下面描绘了 MARA 的应用，用虚线绿线表示了不同的信任区（信任边界）。信任区的数量和范围取决于背后的基础架构。
+> 图表下面描绘了 MARA 的应用，用虚线绿线表示了不同的信任区(信任边界)。信任区的数量和范围取决于背后的基础架构。
 
 ![Robot System Threat Model](ros2_threat_model/threat_model_mara.png) [Diagram Source](ros2_threat_model/threat_model_mara.xml) (edited with [Draw.io](draw_io))
 
@@ -4194,7 +4194,7 @@ Each generic threat described in the main threat table can be instantiated on th
 
 This table indicates which of MARA's particular assets and entry points are impacted by each threat. A check sign (✓) means impacted while a cross sign (✘) means not impacted. The "SROS Enabled?" column explicitly states out whether using SROS would mitigate the threat or not. A check sign (✓) means that the threat could be exploited while SROS is enabled while a cross sign (✘) means that the threat requires SROS to be disabled to be applicable.
 
-> 这张表显示 MARA 的特定资产和入口点受到哪些 threat 的影响。勾号（✓）表示受影响，叉号（✘）表示不受影响。“SROS 启用？”列明确指出使用 SROS 是否可以缓解 threat。勾号（✓）表示即使启用 SROS，threat 仍可能被利用，叉号（✘）表示 threat 需要禁用 SROS 才能生效。
+> 这张表显示 MARA 的特定资产和入口点受到哪些 threat 的影响。勾号(✓)表示受影响，叉号(✘)表示不受影响。“SROS 启用？”列明确指出使用 SROS 是否可以缓解 threat。勾号(✓)表示即使启用 SROS，threat 仍可能被利用，叉号(✘)表示 threat 需要禁用 SROS 才能生效。
 
 <div class="table" markdown="1">
 <table class="table">
@@ -5031,7 +5031,7 @@ The following attack tree describes the possible paths to be followed by an atta
 
 [Diagram Source (draw.io)](ros2_threat_model/attack_tree_physical.xml)
 
-> [图表来源（draw.io）](ros2_threat_model/attack_tree_physical.xml)
+> [图表来源(draw.io)](ros2_threat_model/attack_tree_physical.xml)
 
 物理攻击树：
 
@@ -5061,7 +5061,7 @@ The following attack tree describes the possible paths to be followed by an atta
 
 [Diagram Source (draw.io)](ros2_threat_model/attack_tree_ros2.xml)
 
-> [图表源（draw.io）]（ros2_threat_model/attack_tree_ros2.xml）
+> [图表源(draw.io)](ros2_threat_model/attack_tree_ros2.xml)
 
 将 ROS2 的 threat 模型转换为简体中文：
 
@@ -5093,7 +5093,7 @@ The following attack tree describes the possible paths to be followed by an atta
 
 [Diagram Source (draw.io)](ros2_threat_model/attack_tree_api.xml)
 
-> [图表来源（draw.io）](ros2_threat_model/attack_tree_api.xml)
+> [图表来源(draw.io)](ros2_threat_model/attack_tree_api.xml)
 
 攻击树 API
 
@@ -5121,7 +5121,7 @@ The following attack tree describes the possible paths to be followed by an atta
 
 [Diagram Source (draw.io)](ros2_threat_model/attack_tree_repo.xml)
 
-> [图表来源（draw.io）](ros2_threat_model/attack_tree_repo.xml)转换为简体中文
+> [图表来源(draw.io)](ros2_threat_model/attack_tree_repo.xml)转换为简体中文
 
 The following diagram shows the infrastructure affected on a possible attack against the manufacturer code repository, showing its potential implications and consequences.
 
@@ -5186,11 +5186,11 @@ The vulnerabilities are rated on a severity scale according to the guidelines st
 
 Robot Vulnerability Scoring System ([RVSS][rvss]), resulting in a score between 0 and 10, according to the severity of the vulnerability. The RVSS follows the same principles as the Common Vulnerability Scoring System (CVSS), yet adding aspects related to robotics systems that are required to capture the complexity of robot vulnerabilities. Every evaluated aspect is defined in a vector, having its weight at the final score.
 
-> 罗博特漏洞评分系统（RVSS），根据漏洞的严重程度产生 0 到 10 的分数。RVSS 遵循与通用漏洞评分系统（CVSS）相同的原则，但增加了捕获机器人漏洞复杂性所需的机器人系统方面的内容。每个评估方面都在一个向量中定义，其权重在最终得分中。
+> 罗博特漏洞评分系统(RVSS)，根据漏洞的严重程度产生 0 到 10 的分数。RVSS 遵循与通用漏洞评分系统(CVSS)相同的原则，但增加了捕获机器人漏洞复杂性所需的机器人系统方面的内容。每个评估方面都在一个向量中定义，其权重在最终得分中。
 
 All assessment findings from the MARA are classified by technical severity. The following list explains how Alias Robotics rates vulnerabilities by their severity.
 
-> 所有来自 MARA 的评估发现都按技术严重性进行分类。 以下列表解释了 Alias Robotics 如何根据其严重性对漏洞进行评级。
+> 所有来自 MARA 的评估发现都按技术严重性进行分类。以下列表解释了 Alias Robotics 如何根据其严重性对漏洞进行评级。
 
 - **Critical**: Scores between 9 and 10
 - **High**: Scores between 7 and 8.9
@@ -5202,7 +5202,7 @@ All assessment findings from the MARA are classified by technical severity. The 
 
 In the course of a first funded vulnerability assessment, <a style="color:black;">**2 critical**</a>, <a style="color:red;">**6 high**</a>, <a style="color:orange;">**13 medium**</a> and <a style="color:green;">**6 low**</a> vulnerabilities have been found. The ones fixed by Acutronic Robotics are disclosed below using the following format:
 
-> 在第一次受资助的漏洞评估过程中，发现了<a style="color:black;">**2 个严重**</a>，<a style="color:red;">**6 个高**</a>，<a style="color:orange;">**13 个中等**</a>和<a style="color:green;">**6 个低**</a>漏洞。 Acutronic Robotics 修复的漏洞如下所示，使用以下格式：
+> 在第一次受资助的漏洞评估过程中，发现了<a style="color:black;">**2 个严重**</a>，<a style="color:red;">**6 个高**</a>，<a style="color:orange;">**13 个中等**</a>和<a style="color:green;">**6 个低**</a>漏洞。Acutronic Robotics 修复的漏洞如下所示，使用以下格式：
 
 <div class="table">
 <table class="table">
@@ -5440,7 +5440,7 @@ In the course of a first funded vulnerability assessment, <a style="color:black;
 
 1. Ahmad Yousef, Khalil, Anas AlMajali, Salah Ghalyon, Waleed Dweik, and Bassam Mohd. “Analyzing Cyber-Physical Threats on Robotic Platforms.” Sensors 18, no. 5 (May 21, 2018): 1643. <https://doi.org/10.3390/s18051643>.
 
-> 阿哈姆·尤塞夫、哈利勒、阿纳斯·阿尔马贾里、萨拉·加利翁、瓦利德·德维克和巴萨姆·穆罕默德。《分析机器人平台上的网络物理 threat》。传感器 18，第 5 期（2018 年 5 月 21 日）：1643。<https://doi.org/10.3390/s18051643>。
+> 阿哈姆·尤塞夫、哈利勒、阿纳斯·阿尔马贾里、萨拉·加利翁、瓦利德·德维克和巴萨姆·穆罕默德。《分析机器人平台上的网络物理 threat》。传感器 18，第 5 期(2018 年 5 月 21 日)：1643。<https://doi.org/10.3390/s18051643>。
 
 1. Bonaci, Tamara, Jeffrey Herron, Tariq Yusuf, Junjie Yan, Tadayoshi Kohno, and Howard Jay Chizeck. “To Make a Robot Secure: An Experimental Analysis of Cyber Security Threats Against Teleoperated Surgical Robots.” ArXiv:1504.04339 [Cs], April 16, 2015. <http://arxiv.org/abs/1504.04339>.
 
@@ -5460,15 +5460,15 @@ In the course of a first funded vulnerability assessment, <a style="color:black;
 
 1. Dessiatnikoff, Anthony, Yves Deswarte, Eric Alata, and Vincent Nicomette. “Potential Attacks on Onboard Aerospace Systems.” IEEE Security & Privacy 10, no. 4 (July 2012): 71–74. <https://doi.org/10.1109/MSP.2012.104>.
 
-> 1. Dessiatnikoff, Anthony, Yves Deswarte, Eric Alata 和 Vincent Nicomette。“航空航天系统的潜在攻击”。IEEE 安全与隐私 10，第 4 号（2012 年 7 月）：71-74。<https://doi.org/10.1109/MSP.2012.104>。
+> 1. Dessiatnikoff, Anthony, Yves Deswarte, Eric Alata 和 Vincent Nicomette。“航空航天系统的潜在攻击”。IEEE 安全与隐私 10，第 4 号(2012 年 7 月)：71-74。<https://doi.org/10.1109/MSP.2012.104>。
 
 1. Dzung, D., M. Naedele, T.P. Von Hoff, and M. Crevatin. “Security for Industrial Communication Systems.” Proceedings of the IEEE 93, no. 6 (June 2005): 1152–77. <https://doi.org/10.1109/JPROC.2005.849714>.
 
-> 1. Dzung, D., M. Naedele, T.P. Von Hoff, 和 M. Crevatin. “工业通信系统的安全性”。IEEE 第 93 期第 6 期（2005 年 6 月）：1152-77。<https://doi.org/10.1109/JPROC.2005.849714>。
+> 1. Dzung, D., M. Naedele, T.P. Von Hoff, 和 M. Crevatin. “工业通信系统的安全性”。IEEE 第 93 期第 6 期(2005 年 6 月)：1152-77。<https://doi.org/10.1109/JPROC.2005.849714>。
 
 1. Elmiligi, Haytham, Fayez Gebali, and M. Watheq El-Kharashi. “Multi-Dimensional Analysis of Embedded Systems Security.” Microprocessors and Microsystems 41 (March 2016): 29–36. <https://doi.org/10.1016/j.micpro.2015.12.005>.
 
-> 1.  Elmiligi、Haytham、Fayez Gebali 和 M. Watheq El-Kharashi. “嵌入式系统安全的多维分析”。微处理器与微系统 41（2016 年 3 月）：29-36。<https://doi.org/10.1016/j.micpro.2015.12.005>。
+> 1.  Elmiligi、Haytham、Fayez Gebali 和 M. Watheq El-Kharashi. “嵌入式系统安全的多维分析”。微处理器与微系统 41(2016 年 3 月)：29-36。<https://doi.org/10.1016/j.micpro.2015.12.005>。
 
 1. Groza, Bogdan, and Toma-Leonida Dragomir. “Using a Cryptographic Authentication Protocol for the Secure Control of a Robot over TCP/IP.” In 2008 IEEE International Conference on Automation, Quality and Testing, Robotics, 184–89. Cluj-Napoca, Romania: IEEE, 2008.<https://doi.org/10.1109/AQTR.2008.4588731>.
 
@@ -5476,7 +5476,7 @@ In the course of a first funded vulnerability assessment, <a style="color:black;
 
 1. Javaid, Ahmad Y., Weiqing Sun, Vijay K. Devabhaktuni, and Mansoor Alam. “Cyber Security Threat Analysis and Modeling of an Unmanned Aerial Vehicle System.” In 2012 IEEE Conference on Technologies for Homeland Security (HST), 585–90. Waltham, MA, USA: IEEE, 2012.<https://doi.org/10.1109/THS.2012.6459914>.
 
-> 1. Javaid，Ahmad Y.，Weiqing Sun，Vijay K. Devabhaktuni 和 Mansoor Alam。“无人机系统的网络安全 threat 分析与建模”。2012 年 IEEE 国土安全技术会议（HST），585-90。Waltham，MA，美国：IEEE，2012。<https://doi.org/10.1109/THS.2012.6459914>。
+> 1. Javaid，Ahmad Y.，Weiqing Sun，Vijay K. Devabhaktuni 和 Mansoor Alam。“无人机系统的网络安全 threat 分析与建模”。2012 年 IEEE 国土安全技术会议(HST)，585-90。Waltham，MA，美国：IEEE，2012。<https://doi.org/10.1109/THS.2012.6459914>。
 
 1. Kleidermacher, David, and Mike Kleidermacher. Embedded Systems Security: Practical Methods for Safe and Secure Software and Systems Development. Amsterdam: Elsevier/Newnes, 2012.
 
@@ -5484,11 +5484,11 @@ In the course of a first funded vulnerability assessment, <a style="color:black;
 
 1. Klein, Gerwin, June Andronick, Matthew Fernandez, Ihor Kuz, Toby Murray, and Gernot Heiser. “Formally Verified Software in the Real World.” Communications of the ACM 61, no. 10 (September 26, 2018): 68–77.<https://doi.org/10.1145/3230627>.
 
-> 1. Klein, Gerwin, June Andronick, Matthew Fernandez, Ihor Kuz, Toby Murray 和 Gernot Heiser。“现实世界中的正式验证软件”。ACM 通讯 61，第 10 号（2018 年 9 月 26 日）：68-77。<https://doi.org/10.1145/3230627>
+> 1. Klein, Gerwin, June Andronick, Matthew Fernandez, Ihor Kuz, Toby Murray 和 Gernot Heiser。“现实世界中的正式验证软件”。ACM 通讯 61，第 10 号(2018 年 9 月 26 日)：68-77。<https://doi.org/10.1145/3230627>
 
 1. Lee, Gregory S., and Bhavani Thuraisingham. “Cyberphysical Systems Security Applied to Telesurgical Robotics.” Computer Standards & Interfaces 34, no. 1 (January 2012): 225–29. <https://doi.org/10.1016/j.csi.2011.09.001>.
 
-> 李格雷戈里·S.和巴瓦尼·瑟拉辛格姆。“应用于远程外科机器人的网络物理系统安全”。计算机标准与接口 34 卷 1 期（2012 年 1 月）：225-229。<https://doi.org/10.1016/j.csi.2011.09.001>。
+> 李格雷戈里·S.和巴瓦尼·瑟拉辛格姆。“应用于远程外科机器人的网络物理系统安全”。计算机标准与接口 34 卷 1 期(2012 年 1 月)：225-229。<https://doi.org/10.1016/j.csi.2011.09.001>。
 
 1. Lera, Francisco J. Rodríguez, Camino Fernández Llamas, Ángel Manuel Guerrero, and Vicente Matellán Olivera. “Cybersecurity of Robotics and Autonomous Systems: Privacy and Safety.” In Robotics - Legal, Ethical and Socioeconomic Impacts, edited by George Dekoulis. InTech, 2017.<https://doi.org/10.5772/intechopen.69796>.
 
@@ -5496,11 +5496,11 @@ In the course of a first funded vulnerability assessment, <a style="color:black;
 
 1. McClean, Jarrod, Christopher Stull, Charles Farrar, and David Mascareñas. “A Preliminary Cyber-Physical Security Assessment of the Robot Operating System (ROS).” edited by Robert E. Karlsen, Douglas W. Gage, Charles M. Shoemaker, and Grant R. Gerhart, 874110. Baltimore, Maryland, USA, 2013.<https://doi.org/10.1117/12.2016189>.
 
-> 麦克清，贾罗德，克里斯托弗·斯塔尔，查尔斯·法拉和大卫·马斯卡雷尼亚斯。《机器人操作系统（ROS）的初步网络物理安全评估》，由罗伯特·E·卡尔森，道格拉斯·W·盖奇，查尔斯·M·肖梅尔和格兰特·R·格哈特编辑，874110。美国马里兰州巴尔的摩，2013，<https://doi.org/10.1117/12.2016189>。
+> 麦克清，贾罗德，克里斯托弗·斯塔尔，查尔斯·法拉和大卫·马斯卡雷尼亚斯。《机器人操作系统(ROS)的初步网络物理安全评估》，由罗伯特·E·卡尔森，道格拉斯·W·盖奇，查尔斯·M·肖梅尔和格兰特·R·格哈特编辑，874110。美国马里兰州巴尔的摩，2013，<https://doi.org/10.1117/12.2016189>。
 
 1. Morante, Santiago, Juan G. Victores, and Carlos Balaguer. “Cryptobotics: Why Robots Need Cyber Safety.” Frontiers in Robotics and AI 2 (September 29, 2015). <https://doi.org/10.3389/frobt.2015.00023>.
 
-> 1. Morante、Santiago、Juan G. Victores 和 Carlos Balaguer。“Cryptobotics：为什么机器人需要网络安全”。前沿机器人和人工智能 2（2015 年 9 月 29 日）。<https://doi.org/10.3389/frobt.2015.00023>。
+> 1. Morante、Santiago、Juan G. Victores 和 Carlos Balaguer。“Cryptobotics：为什么机器人需要网络安全”。前沿机器人和人工智能 2(2015 年 9 月 29 日)。<https://doi.org/10.3389/frobt.2015.00023>。
 
 1. Papp, Dorottya, Zhendong Ma, and Levente Buttyan. “Embedded Systems Security: Threats, Vulnerabilities, and Attack Taxonomy.” In 2015 13th Annual Conference on Privacy, Security and Trust (PST), 145–52. Izmir, Turkey: IEEE, 2015. <https://doi.org/10.1109/PST.2015.7232966>.
 
@@ -5512,15 +5512,15 @@ In the course of a first funded vulnerability assessment, <a style="color:black;
 
 1. Ravi, Srivaths, Paul Kocher, Ruby Lee, Gary McGraw, and Anand Raghunathan. “Security as a New Dimension in Embedded System Design.” In Proceedings of the 41st Annual Conference on Design Automation  - DAC ’04, 753. San Diego, CA, USA: ACM Press, 2004. <https://doi.org/10.1145/996566.996771>.
 
-> 1.Ravi、Srivaths、Paul Kocher、Ruby Lee、Gary McGraw 和 Anand Raghunathan。“嵌入式系统设计中的安全新维度”。在第 41 届设计自动化年会（DAC '04）的会议记录中，753 页。加利福尼亚州圣地亚哥：ACM 出版社，2004。<https://doi.org/10.1145/996566.996771>。
+> 1.Ravi、Srivaths、Paul Kocher、Ruby Lee、Gary McGraw 和 Anand Raghunathan。“嵌入式系统设计中的安全新维度”。在第 41 届设计自动化年会(DAC '04)的会议记录中，753 页。加利福尼亚州圣地亚哥：ACM 出版社，2004。<https://doi.org/10.1145/996566.996771>。
 
 1. Serpanos, Dimitrios N., and Artemios G. Voyiatzis. “Security Challenges in Embedded Systems.” ACM Transactions on Embedded Computing Systems 12, no. 1s (March 29, 2013): 1–10. <https://doi.org/10.1145/2435227.2435262>.
 
-> 1. Serpanos, Dimitrios N. 和 Artemios G. Voyiatzis. “嵌入式系统中的安全挑战”。ACM Transactions on Embedded Computing Systems 12, no. 1s（2013 年 3 月 29 日）：1-10。<https://doi.org/10.1145/2435227.2435262>。
+> 1. Serpanos, Dimitrios N. 和 Artemios G. Voyiatzis. “嵌入式系统中的安全挑战”。ACM Transactions on Embedded Computing Systems 12, no. 1s(2013 年 3 月 29 日)：1-10。<https://doi.org/10.1145/2435227.2435262>。
 
 1. Vilches, Víctor Mayoral, Laura Alzola Kirschgens, Asier Bilbao Calvo, Alejandro Hernández Cordero, Rodrigo Izquierdo Pisón, David Mayoral Vilches, Aday Muñiz Rosas, et al. “Introducing the Robot Security Framework (RSF), a Standardized Methodology to Perform Security Assessments in Robotics.” ArXiv:1806.04042 [Cs], June 11, 2018. <http://arxiv.org/abs/1806.04042>.
 
-> 1. Vilches, Víctor Mayoral, Laura Alzola Kirschgens, Asier Bilbao Calvo, Alejandro Hernández Cordero, Rodrigo Izquierdo Pisón, David Mayoral Vilches, Aday Muñiz Rosas 等人。“介绍机器人安全框架（RSF），一种标准化的方法来执行机器人安全评估。”ArXiv：1806.04042 [Cs]，2018 年 6 月 11 日<http://arxiv.org/abs/1806.04042>。
+> 1. Vilches, Víctor Mayoral, Laura Alzola Kirschgens, Asier Bilbao Calvo, Alejandro Hernández Cordero, Rodrigo Izquierdo Pisón, David Mayoral Vilches, Aday Muñiz Rosas 等人。“介绍机器人安全框架(RSF)，一种标准化的方法来执行机器人安全评估。”ArXiv：1806.04042 [Cs]，2018 年 6 月 11 日<http://arxiv.org/abs/1806.04042>。
 
 1. Zubairi, Junaid Ahmed, and Athar Mahboob, eds. Cyber Security Standards, Practices and Industrial Applications: Systems and Methodologies. IGI Global, 2012. <https://doi.org/10.4018/978-1-60960-851-4>.
 
@@ -5532,11 +5532,11 @@ In the course of a first funded vulnerability assessment, <a style="color:black;
 
 1. V. Mayoral Vilches, E. Gil-Uriarte, I. Zamalloa Ugarte, G. Olalde Mendia, R. Izquierdo Pisón, L. Alzola Kirschgens, A. Bilbao Calvo, A. Hernández Cordero, L. Apa, and C. Cerrudo, “Towards an open standard for assessing the severity of robot security vulnerabilities, the Robot Vulnerability Scoring System (RVSS),” ArXiv:807.10357 [Cs], Jul. 2018. <https://arxiv.org/abs/1807.10357>
 
-> V. Mayoral Vilches、E. Gil-Uriarte、I. Zamalloa Ugarte、G. Olalde Mendia、R. Izquierdo Pisón、L. Alzola Kirschgens、A. Bilbao Calvo、A. Hernández Cordero、L. Apa 和 C. Cerrudo，“评估机器人安全漏洞严重程度的开放式标准：机器人漏洞评分系统（RVSS）”，ArXiv:807.10357 [Cs]，2018 年 7 月，<https://arxiv.org/abs/1807.10357>。
+> V. Mayoral Vilches、E. Gil-Uriarte、I. Zamalloa Ugarte、G. Olalde Mendia、R. Izquierdo Pisón、L. Alzola Kirschgens、A. Bilbao Calvo、A. Hernández Cordero、L. Apa 和 C. Cerrudo，“评估机器人安全漏洞严重程度的开放式标准：机器人漏洞评分系统(RVSS)”，ArXiv:807.10357 [Cs]，2018 年 7 月，<https://arxiv.org/abs/1807.10357>。
 
 1. G. Olalde Mendia, L. Usategui San Juan, X. Perez Bascaran, A. Bilbao Calvo, A. Hernández Cordero, I. Zamalloa Ugarte, A. Muñiz Rosas, D. Mayoral Vilches, U. Ayucar Carbajo, L. Alzola Kirschgens, V. Mayoral Vilches, and E. Gil-Uriarte, “Robotics CTF (RCTF), a playground for robot hacking,” ArXiv:810.02690 [Cs], Oct. 2018. <https://arxiv.org/abs/1810.02690>
 
-> G. Olalde Mendia、L. Usategui San Juan、X. Perez Bascaran、A. Bilbao Calvo、A. Hernández Cordero、I. Zamalloa Ugarte、A. Muñiz Rosas、D. Mayoral Vilches、U. Ayucar Carbajo、L. Alzola Kirschgens、V. Mayoral Vilches 和 E. Gil-Uriarte，《机器人 CTF（RCTF）：机器人攻击的游乐场》，ArXiv:810.02690 [Cs]，2018 年 10 月，<https://arxiv.org/abs/1810.02690>。
+> G. Olalde Mendia、L. Usategui San Juan、X. Perez Bascaran、A. Bilbao Calvo、A. Hernández Cordero、I. Zamalloa Ugarte、A. Muñiz Rosas、D. Mayoral Vilches、U. Ayucar Carbajo、L. Alzola Kirschgens、V. Mayoral Vilches 和 E. Gil-Uriarte，《机器人 CTF(RCTF)：机器人攻击的游乐场》，ArXiv:810.02690 [Cs]，2018 年 10 月，<https://arxiv.org/abs/1810.02690>。
 
 1. L. Alzola Kirschgens, I. Zamalloa Ugarte, E. Gil Uriarte, A. Muñiz Rosas, and V. Mayoral Vilches, “Robot hazards: from safety to security,” ArXiv:1806.06681 [Cs], Jun. 2018. <https://arxiv.org/abs/1806.06681>
 
@@ -5697,7 +5697,7 @@ In the course of a first funded vulnerability assessment, <a style="color:black;
 
 > [ros_wiki_tb]: https://wiki.ros.org/Robots/TurtleBot
 
-[ros_wiki_tb]: https://wiki.ros.org/Robots/TurtleBot 编辑：海龟机器人（TurtleBot）
+[ros_wiki_tb]: https://wiki.ros.org/Robots/TurtleBot 编辑：海龟机器人(TurtleBot)
 
 [ros2_launch_design_pr]: https://github.com/ros2/design/pull/163
 
@@ -5709,7 +5709,7 @@ In the course of a first funded vulnerability assessment, <a style="color:black;
 
 > [rsf]: http://arxiv.org/abs/1806.04042
 
-[rsf]: http://arxiv.org/abs/1806.04042（简体中文）
+[rsf]: http://arxiv.org/abs/1806.04042(简体中文)
 [rvss]: https://arxiv.org/abs/1807.10357
 
 > [rvss]: https://arxiv.org/abs/1807.10357
@@ -5762,7 +5762,7 @@ In the course of a first funded vulnerability assessment, <a style="color:black;
 
 [wikipedia_dread]: https://en.wikipedia.org/wiki/DREAD_(risk_assessment_model)
 
-> [Wikipedia_Dread]：https://zh.wikipedia.org/wiki/DREAD（风险评估模型）
+> [Wikipedia_Dread]：https://zh.wikipedia.org/wiki/DREAD(风险评估模型)
 
 [wikipedia_federated_identity]: https://en.wikipedia.org/wiki/Federated_identity
 

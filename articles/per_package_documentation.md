@@ -8,9 +8,9 @@ tip: translate by openai@2023-05-29 08:23:51
   date_written: 2020-10
   last_modified: 2020-10
   published: true
-  Authors: {{ page.author }}
-  Date Written: {{ page.date_written }}
-  Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
+  Authors: 
+  Date Written: 
+  Last Modified:
 ---
 ## Background
 
@@ -20,7 +20,7 @@ ROS 2 is lacking a process for the conglomeration of package documentation.
 
 Discoverability for package documentation (and documentation in general) is one of the most frequent user complaints.
 
-> 发现性对于软件包文档（以及一般文档）是最常见的用户抱怨之一。
+> 发现性对于软件包文档(以及一般文档)是最常见的用户抱怨之一。
 
 The goal of this design is to make ROS 2 documentation as accessible as possible for all ROS users.
 
@@ -44,7 +44,7 @@ In general, the vision for the system is:
 
 - Package documentation (API documentation, other package related content) from the repositories is built on the ROS 2 infrastructure and deployed to the ROS 2 documentation site in an automatic process maintainers can opt in to by adding a `doc` block to the `distribution.yaml`
 
-> 在自动过程中，维护者可以通过在 `distribution.yaml` 中添加 `doc` 块，将存储库中的包文档（API 文档，其他与包相关的内容）构建到 ROS 2 基础架构上，并部署到 ROS 2 文档站点。
+> 在自动过程中，维护者可以通过在 `distribution.yaml` 中添加 `doc` 块，将存储库中的包文档(API 文档，其他与包相关的内容)构建到 ROS 2 基础架构上，并部署到 ROS 2 文档站点。
 
 - See [REP 141](https://www.ros.org/reps/rep-0141.html) for more context.
 
@@ -84,7 +84,7 @@ The per-package documentation plan is an extension of the general ROS 2 document
 
 The [Primary requirements](#1-primary-requirements) are those that must be in place for the system to be functional and achieve its purpose.
 
-> 主要要求（#1-主要要求）是使系统能够正常运行并实现其目的所必须具备的要求。
+> 主要要求(#1-主要要求)是使系统能够正常运行并实现其目的所必须具备的要求。
 
 The [Secondary requirements](#2-secondary-requirements) are also absolute requirements, however they are not necessary to roll out the first stage of implementation.
 
@@ -130,7 +130,7 @@ The details of building and hosting will not be a concern of package maintainers
 
 Despite being hosted alongside the generic documentation, working on a package's documentation will not require any work on the repositories of the generic documentation (currently `ros2/ros2_documentation`) or the site repository (currently `ros-infrastructure/rosindex`).
 
-> 尽管与通用文档一起托管，但在包文档上的工作不需要对通用文档的存储库（目前为 `ros2/ros2_documentation`）或站点存储库（目前为 `ros-infrastructure/rosindex`）进行任何工作。
+> 尽管与通用文档一起托管，但在包文档上的工作不需要对通用文档的存储库(目前为 `ros2/ros2_documentation`)或站点存储库(目前为 `ros-infrastructure/rosindex`)进行任何工作。
 
 **1.4 The system must support C++ and Python API docs generation**
 
@@ -142,7 +142,7 @@ The system will automatically extract API docs for these languages from the sour
 
 **1.5 Package documentation must be written and formatted in rst (reStructuredText)**
 
-> **1.5 包文档必须用 rst（reStructuredText）格式编写和格式化**
+> **1.5 包文档必须用 rst(reStructuredText)格式编写和格式化**
 
 Rst is the file format currently utilized by the ROS 2 documentation.
 
@@ -166,7 +166,7 @@ The package repository can still maintain its own docs for previous versions.
 
 While multiple package versions per distribution will not initially be supported, the URL structure will support the addition of this feature in the future (mentioned under [Secondary requirements](#2-secondary-requirements) below).
 
-> 虽然一开始不支持每个发行版本的多个包版本，但 URL 结构将支持在未来添加此功能（参见下面的[二级要求]（#2-secondary-requirements））。
+> 虽然一开始不支持每个发行版本的多个包版本，但 URL 结构将支持在未来添加此功能(参见下面的[二级要求](#2-secondary-requirements))。
 
 **1.7 The buildfarm must automatically build package documentation**
 
@@ -220,7 +220,7 @@ When writing package documentation, maintainers should not have to concern thems
 
 **2.5 Users should be able to switch between versions (distributions) while viewing a package's documentation**
 
-> 用户应该能够在查看软件包文档时切换版本（发行版）。
+> 用户应该能够在查看软件包文档时切换版本(发行版)。
 
 **2.6 The system should support building documentation for more than one version of a package per ROS 2 distribution**
 
@@ -232,7 +232,7 @@ When writing package documentation, maintainers should not have to concern thems
 
 **2.8 The system should support bi-directional cross-referencing (“backwards” to dependents)**
 
-> 系统应该支持双向交叉引用（“向后”引用依赖项）
+> 系统应该支持双向交叉引用(“向后”引用依赖项)
 
 ## Design
 
@@ -250,19 +250,19 @@ In summary, the design for the system is:
 
 - Utilize [Sphinx][1], [Doxygen][2] and [Breathe][3] tools to satisfy both C++ and Python API documentation (1.4), cross-referencing across packages (1.9) and consistent use of RST (1.5)
 
-> 使用 [Sphinx][1]、[Doxygen][2] 和 [Breathe][3] 工具满足 C++ 和 Python API 文档（1.4），跨包交叉引用（1.9）和 RST 的一致使用（1.5）。
+> 使用 [Sphinx][1]、[Doxygen][2] 和 [Breathe][3] 工具满足 C++ 和 Python API 文档(1.4)，跨包交叉引用(1.9)和 RST 的一致使用(1.5)。
 
 - Develop a new doc tool integrated into the build system (1.7) for maintainers to run on their packages (1.3) that encompasses Sphinx, Doxygen and Breathe, and builds the docs locally (2.3).
 
-> 开发一个新的文档工具，集成到构建系统（1.7）中，用于维护者在他们的包（1.3）上运行，包括 Sphinx，Doxygen 和 Breathe，并在本地构建文档（2.3）。
+> 开发一个新的文档工具，集成到构建系统(1.7)中，用于维护者在他们的包(1.3)上运行，包括 Sphinx，Doxygen 和 Breathe，并在本地构建文档(2.3)。
 
 - The output of the tool is uploaded to docs.ros.org (1.1) by the build farm, to the correct URL address (1.2, 1.10)
 
-> 输出工具上传到 docs.ros.org（1.1），由构建农场上传到正确的 URL 地址（1.2，1.10）。
+> 输出工具上传到 docs.ros.org(1.1)，由构建农场上传到正确的 URL 地址(1.2，1.10)。
 
 - A package’s inclusion in a rosdistro (as per normal release process\*) will version its documentation to that distribution (1.6) and list the package under that distribution’s listing of packages on docs.ros.org (1.8)
 
-> 一个包按照正常的发布流程被包含在 rosdistro 中，将会将其文档版本号设置为该发行版本号（1.6），并将该包列入该发行版的包列表（1.8）中，可以在 docs.ros.org 上查看。
+> 一个包按照正常的发布流程被包含在 rosdistro 中，将会将其文档版本号设置为该发行版本号(1.6)，并将该包列入该发行版的包列表(1.8)中，可以在 docs.ros.org 上查看。
 
 ```
 - Via the inclusion of a doc block in a distribution.yaml in [github.com/ros/rosdistro](https://github.com/ros/rosdistro)
@@ -282,7 +282,7 @@ The design description is laid out in the following subsections:
 
 - The [Considerations](#considerations) section, which addresses some other options that were considered for various aspects of the design, and why they were decided against.
 
-> -考虑（#考虑）部分，涉及设计的各个方面考虑的其他选项，以及为什么最终决定不采用它们。
+> -考虑(#考虑)部分，涉及设计的各个方面考虑的其他选项，以及为什么最终决定不采用它们。
 
 ### Documentation System
 
@@ -342,7 +342,7 @@ It will allow C++ API docs to be built by Sphinx to maintain consistency across 
 
 If there is no Doxygen output (no C++ documentation), Sphinx will run without Breathe.
 
-> 如果没有 Doxygen 输出（没有 C++ 文档），Sphinx 将在没有 Breathe 的情况下运行。
+> 如果没有 Doxygen 输出(没有 C++ 文档)，Sphinx 将在没有 Breathe 的情况下运行。
 
 All packages will need a Sphinx configuration file.
 
@@ -354,7 +354,7 @@ If a package doesn’t have one, the tool can use a default one.
 
 Python packages will need Sphinx directives explicitly integrated into the source code to produce API documentation (standard for Sphinx API documentation).
 
-> Python 包需要将 Sphinx 指令明确集成到源代码中，以生成 API 文档（Sphinx API 文档的标准）。
+> Python 包需要将 Sphinx 指令明确集成到源代码中，以生成 API 文档(Sphinx API 文档的标准)。
 
 Once complete, the tool will output the package documentation build locally.
 
@@ -400,11 +400,11 @@ The landing page will provide access to the other generated documentation.
 
 For packages with documentation for multiple languages, the landing pages will provide access to each generator (e.g. “Click here for Doxygen content, Click here for Javadoc content”).
 
-> 对于提供多种语言文档的软件包，入口页面将提供每个生成器的访问（例如“点击此处访问 Doxygen 内容，点击此处访问 Javadoc 内容”）。
+> 对于提供多种语言文档的软件包，入口页面将提供每个生成器的访问(例如“点击此处访问 Doxygen 内容，点击此处访问 Javadoc 内容”)。
 
 Supporting multiple documentation engines will require that each generator outputs into its own designated directory (see [URL Structure - /generated](#generated)).
 
-> 支持多个文档引擎将需要每个生成器输出到自己指定的目录（参见[URL 结构-/generated]（#generated））。
+> 支持多个文档引擎将需要每个生成器输出到自己指定的目录(参见 [URL 结构-/generated](#generated))。
 
 #### Buildfarm process
 
@@ -426,11 +426,11 @@ It will require some additional settings, for example the URL where content shou
 
 A webhook between GitHub and the buildfarm will indicate when there is a new commit to a repository (for the branches being tracked for documentation) so the documentation can be automatically regenerated and immediately deployed.
 
-> 一个 GitHub 和构建农场之间的 Webhook 将指示出新提交到存储库（对于正在跟踪文档的分支）时，以便可以自动重新生成文档并立即部署。
+> 一个 GitHub 和构建农场之间的 Webhook 将指示出新提交到存储库(对于正在跟踪文档的分支)时，以便可以自动重新生成文档并立即部署。
 
 Some files will be auto-generated during this process (changelogs, tag files, etc.).
 
-> 在这个过程中，会自动生成一些文件（更改日志、标签文件等）。
+> 在这个过程中，会自动生成一些文件(更改日志、标签文件等)。
 
 The auto-generated content won’t be saved to the upstream repositories, but it will be built to `docs.ros.org`.
 
@@ -442,7 +442,7 @@ There is a possibility of collision occurring between maintainer created files a
 
 To prevent this to the best of the system's ability, the system will place auto-generated content in a restricted directory (see [URL Structure - /generated](#generated)).
 
-> 为了尽可能有效地防止这种情况，系统将在受限目录中放置自动生成的内容（参见 [URL 结构 - /generated](#generated)）。
+> 为了尽可能有效地防止这种情况，系统将在受限目录中放置自动生成的内容(参见 [URL 结构 - /generated](#generated))。
 
 ##### Cross-referencing between sibling packages
 
@@ -490,7 +490,7 @@ This will be generated by the tool, but a user-generated index page should also 
 
 To support the goal of being able to support multiple versions of packages documented within the context of one distro (2.6) we plan to reserve URL space and have a plan to migrate forward but not to implement it at first.
 
-> 为了支持在一个发行版（2.6）的上下文中文档化的多个版本的软件包，我们计划保留 URL 空间，并制定迁移计划，但不会马上实施。
+> 为了支持在一个发行版(2.6)的上下文中文档化的多个版本的软件包，我们计划保留 URL 空间，并制定迁移计划，但不会马上实施。
 
 When functionality is added to the documentation system for more than one version of package documentation per rosdistro, those versions will be appended to the package name in the URL.
 
@@ -534,7 +534,7 @@ Within a package’s repo, the tool will generate a `/docs` directory where main
 
 The tool will direct Sphinx to generate the content in the `/docs` directory, which will output to the top level when deployed (sibling to `/generated` and `index3`).
 
-> 这个工具会指导 Sphinx 在 `/docs` 目录下生成内容，部署时会输出到最顶层（与 `/generated` 和 `index3` 同级）。
+> 这个工具会指导 Sphinx 在 `/docs` 目录下生成内容，部署时会输出到最顶层(与 `/generated` 和 `index3` 同级)。
 
 However, it may become evident during development of the system that it is necessary to add an additional subdirectory/subdirectories at this level to contain the manually created content.
 

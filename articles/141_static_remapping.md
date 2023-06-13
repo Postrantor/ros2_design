@@ -10,9 +10,9 @@ date_written: 2017-03
 last_modified: 2020-03
 published: true
 
-Authors: {{ page.author }}
-Date Written: {{ page.date_written }}
-Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
+Authors: 
+Date Written: 
+Last Modified:
 ---
 ## Why remap names
 
@@ -40,14 +40,14 @@ The complete definition of a name is [here](http://design.ros2.org/articles/topi
 
 If a name begins with `/` it is called a **Fully Qualified Name** (FQN) otherwise it is called a **relative name**. The strings between slashes are called **tokens**. Names are conceptually divided into two pieces: **namespace** and **basename**. The basename is the last token in a name. The namespace is everything prior to the basename.
 
-> 如果一个名称以“/”开头，它就被称为**完全限定名称**（FQN），否则就称为**相对名称**。斜杠之间的字符串被称为**令牌**。概念上将名称分为两部分：**命名空间**和**基本名**。基本名是名称中的最后一个令牌。命名空间是基本名之前的所有内容。
+> 如果一个名称以“/”开头，它就被称为**完全限定名称**(FQN)，否则就称为**相对名称**。斜杠之间的字符串被称为**令牌**。概念上将名称分为两部分：**命名空间**和**基本名**。基本名是名称中的最后一个令牌。命名空间是基本名之前的所有内容。
 
 ### Example names
 
 - `/foo`
 - `/foo/bar`
 - `~/foo/bar`
-- `{node}/bar`
+- `/bar`
 - `bar`
 
 ## Structure of a Remapping Rule
@@ -189,7 +189,7 @@ _Example:_
 
 The node name is used in log messages and to create private names. ROS 1 has this feature using the argument `__name`.
 
-> 节点名称用于日志消息和创建私有名称。 ROS 1 具有使用参数 `__name` 的此功能。
+> 节点名称用于日志消息和创建私有名称。ROS 1 具有使用参数 `__name` 的此功能。
 
 _Example:_
 
@@ -217,7 +217,7 @@ Remapping is a feature that also exists in ROS 1. In ROS 1 remapping works by pa
 
 ROS 1 remapping works on **Fully Qualified Names** (FQN). Both sides of a rule are [expanded to FQN](http://docs.ros.org/kinetic/api/roscpp/html/namespaceros_1_1names.html#a377ff8fede7b95398fd5d1c5cd49246b). Before a name is remapped it is also [expanded to FQN](http://docs.ros.org/kinetic/api/roscpp/html/namespaceros_1_1names.html#ab2eebaf734abfbdccb4122f8e24f547f). The name is remapped to the right side only if it exactly matches the left side of a rule.
 
-> ROS 1 的重新映射工作在完全限定名（FQN）上。规则的两边都会被[扩展到 FQN]。在一个名字被重新映射之前，它也会被[扩展到 FQN]。只有当它完全匹配规则左边时，才会将名字重新映射到右边。
+> ROS 1 的重新映射工作在完全限定名(FQN)上。规则的两边都会被[扩展到 FQN]。在一个名字被重新映射之前，它也会被[扩展到 FQN]。只有当它完全匹配规则左边时，才会将名字重新映射到右边。
 
 ## Remapping rule syntax
 
@@ -273,13 +273,13 @@ The operators `*` and `**` are similar to the globbing behavior in bash. `**` be
 
 The URL schemes `rosservice://` and `rostopic://` may only be given to topic or service name rules. They may not be prefixed to a node name or namespace replacement rule (`__name`, `__node`, or `__ns`). If both a node name prefix and URL scheme are given, the node name prefix must come first.
 
-> URL 方案 `rosservice://` 和 `rostopic://` 只能给主题或服务名规则使用，不能加在节点名或命名空间替换规则（`__name`，`__node` 或 `__ns`）之前。如果给出了节点名前缀和 URL 方案，则节点名前缀必须先出现。
+> URL 方案 `rosservice://` 和 `rostopic://` 只能给主题或服务名规则使用，不能加在节点名或命名空间替换规则(`__name`，`__node` 或 `__ns`)之前。如果给出了节点名前缀和 URL 方案，则节点名前缀必须先出现。
 
 `*`, and `**` match whole tokens only. `*bar` looks like it would match `foobar`, but that would mean matching a partial token. To avoid confusion they are required to be separated from tokens, substitutions, and each other by a `/`. For example `*/bar` `**/*` `~/*` are allowed, but `*bar` `***` `~*` are invalid.
 
-Matching works on FQN only. When a name is to be tested the substitution operators (`~` and `{}`) in the name and in the rule are replaced with the content they stand for. Then the name is expanded to a FQN. If the match part of a rule does not begin with `/`, `*`, or `**` it is prefixed with `/namespace/` to make it a FQN. Finally the name is compared against the match part of the rule. If the name matches it is remapped.
+Matching works on FQN only. When a name is to be tested the substitution operators (`~` and ``) in the name and in the rule are replaced with the content they stand for. Then the name is expanded to a FQN. If the match part of a rule does not begin with `/`, `*`, or `**` it is prefixed with `/namespace/` to make it a FQN. Finally the name is compared against the match part of the rule. If the name matches it is remapped.
 
-> 匹配仅适用于 FQN。当要测试名称时，名称和规则中的替换运算符（“~”和“｛｝”）将替换为它们所代表的内容。然后将名称扩展为 FQN。如果规则的匹配部分不是以“/”、“\*”或“\*\*”开头，则会以“/namespace/”为前缀，使其成为 FQN。最后，将名称与规则的匹配部分进行比较。如果名称匹配，则会重新映射。
+> 匹配仅适用于 FQN。当要测试名称时，名称和规则中的替换运算符(“~”和“｛｝”)将替换为它们所代表的内容。然后将名称扩展为 FQN。如果规则的匹配部分不是以“/”、“\*”或“\*\*”开头，则会以“/namespace/”为前缀，使其成为 FQN。最后，将名称与规则的匹配部分进行比较。如果名称匹配，则会重新映射。
 
 #### Replacement Part of a rule
 
@@ -301,9 +301,9 @@ The replacement part of a rule may not have a URL scheme. This is to avoid a mis
 
 > 规则的替换部分可能没有 URL 方案。这是为了避免匹配侧和替换侧的方案类型之间的不匹配。
 
-The substitution operators (`~` and `{}`) are replaced first. Afterwards the reference operators are replaced with the matched content. Then if the replacment name does not begin with `/` it is automatically prefixed with the node's default namespace to make it a FQN. Finally the name is replaced with the replacement. For example, `/bar/*:=\1/bar` matches the name `/bar/foo` use by a node with default namespace `/ns` with `*` capturing `foo` and replacement name `/ns/foo/bar`.
+The substitution operators (`~` and ``) are replaced first. Afterwards the reference operators are replaced with the matched content. Then if the replacment name does not begin with `/` it is automatically prefixed with the node's default namespace to make it a FQN. Finally the name is replaced with the replacement. For example, `/bar/*:=\1/bar` matches the name `/bar/foo` use by a node with default namespace `/ns` with `*` capturing `foo` and replacement name `/ns/foo/bar`.
 
-> 替换运算符（“~”和“｛｝”）首先被替换。然后，引用运算符被匹配的内容替换。然后，如果 replacment 名称不是以“/”开头，则会自动以节点的默认名称空间为前缀，使其成为 FQN。最后，名称被替换。例如，“/bar/_：=\1/bar”将具有默认名称空间“/ns”的节点使用的名称“/bar/foo”与“_”捕获“foo”和替换名称“/ns/foo/bar”相匹配。
+> 替换运算符(“~”和“｛｝”)首先被替换。然后，引用运算符被匹配的内容替换。然后，如果 replacment 名称不是以“/”开头，则会自动以节点的默认名称空间为前缀，使其成为 FQN。最后，名称被替换。例如，“/bar/_：=\1/bar”将具有默认名称空间“/ns”的节点使用的名称“/bar/foo”与“_”捕获“foo”和替换名称“/ns/foo/bar”相匹配。
 
 #### Special Rule for Changing the Default Namespace
 
@@ -444,7 +444,7 @@ The syntax here can be passed to a node via the command line. The syntax has bee
 
 This isn't really a remapping rule, but the syntax is similar. In ROS 1 the argument `__ns:=` could change the default namespace. Here the syntax is the same, and additionally it can be prefixed with a node's name. The replacement side must have a FQN with no special operators. All relative names are expanded to the new namespace before any remapping rules are applied to them.
 
-> 这实际上不是一个重新映射规则，但语法是相似的。在 ROS 1 中，参数“\_\_ns:=”可以更改默认名称空间。这里的语法是相同的，另外它可以以节点的名称为前缀。更换侧必须有一个 FQN，没有特殊的操作员。在对所有相对名称应用任何重新映射规则之前，所有相对名称都将扩展到新的名称空间。
+> 这实际上不是一个重新映射规则，但语法是相似的。在 ROS 1 中，参数“__ns:=”可以更改默认名称空间。这里的语法是相同的，另外它可以以节点的名称为前缀。更换侧必须有一个 FQN，没有特殊的操作员。在对所有相对名称应用任何重新映射规则之前，所有相对名称都将扩展到新的名称空间。
 
 _Examples:_
 
@@ -496,7 +496,7 @@ The syntax doesn't have a way to specify that a rule should be applied Prior to 
 
 A syntax like fnmatch is being considered. The character for the wild card `*` was chosen to match fnmatch. Because remapping needs to capture text to use during replacement, the C function `fnmatch()` cannot be used as the implementation. The extra wildcards `?` and `[]` don't appear to enable more uses cases above. Fnmatch syntax may or may not match text with slashes depending on the option `FNM_PATHNAME`.
 
-> 正在考虑使用类似 fnmatch 的语法。通配符“\*”的字符被选择为匹配 fnmatch。因为重映射需要捕获文本以在替换过程中使用，所以不能将 C 函数“fnmatch（）”用作实现。额外的通配符 `？` 和“[]”似乎无法启用以上更多的用例。Fnmatch 语法可能匹配带斜线的文本，也可能不匹配，具体取决于选项“FNM_PATHNAME”。
+> 正在考虑使用类似 fnmatch 的语法。通配符“\*”的字符被选择为匹配 fnmatch。因为重映射需要捕获文本以在替换过程中使用，所以不能将 C 函数“fnmatch()”用作实现。额外的通配符 `？` 和“[]”似乎无法启用以上更多的用例。Fnmatch 语法可能匹配带斜线的文本，也可能不匹配，具体取决于选项“FNM_PATHNAME”。
 
 ## Static Versus Dynamic Remapping
 

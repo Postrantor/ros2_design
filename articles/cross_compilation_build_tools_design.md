@@ -13,21 +13,19 @@ date_written: 2019-09
 last_modified: 2019-09
 published: true
 ---
-{:toc}
-
-#  {{ page.title }}
+# 
 
 This is a **DRAFT DOCUMENT**.
 
 <div class="abstract" markdown="1">
-{{ page.abstract }}
+
 </div>
 
-Authors: {{ page.author }}
+Authors:
 
-Date Written: {{ page.date_written }}
+Date Written:
 
-Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
+Last Modified:
 
 ## Background
 

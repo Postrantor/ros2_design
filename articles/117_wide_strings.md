@@ -10,9 +10,9 @@ author: '[Chris Lalancette](https://github.com/clalancette)'
 date_written: 2019-05
 last_modified: 2020-07
 published: true
-Authors: {{ page.author }}
-Date Written: {{ page.date_written }}
-Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
+Authors: 
+Date Written: 
+Last Modified:
 ---
 ## Background
 
@@ -124,7 +124,7 @@ if __name__ == '__main__':
 
     msg = WStrings()
     msg.wstring_value = 'Hello Wörld'
-    print('Publishing: "{0}"'.format(msg.wstring_value))
+    print('Publishing: ""'.format(msg.wstring_value))
     chatter_pub.publish(msg)
     node.destroy_node()
   rclpy.shutdown()
@@ -134,7 +134,7 @@ if __name__ == '__main__':
 
 In C++ wstring `wchar_t` has different sizes on different platforms (2 bytes on Windows, 4 bytes on Linux). Instead ROS 2 will use `char16_t` for characters of wide strings, and `std::u16string` for wide strings themselves.
 
-> 在 C++ 的 wstring 中，wchar_t 在不同的平台上有不同的大小（在 Windows 上是 2 个字节，在 Linux 上是 4 个字节）。ROS 2 将使用 char16_t 来表示宽字符串的字符，并使用 std::u16string 来表示宽字符串本身。
+> 在 C++ 的 wstring 中，wchar_t 在不同的平台上有不同的大小(在 Windows 上是 2 个字节，在 Linux 上是 4 个字节)。ROS 2 将使用 char16_t 来表示宽字符串的字符，并使用 std::u16string 来表示宽字符串本身。
 
 **Example**
 

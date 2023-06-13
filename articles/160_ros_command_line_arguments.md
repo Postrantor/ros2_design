@@ -8,19 +8,19 @@ author: "[Michel Hidalgo](https://github.com/hidmic)"
 date_written: 2019-09
 last_modified: 2021-08
 published: true
-Authors: {{ page.author }}
-Date Written: {{ page.date_written }}
-Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
+Authors: 
+Date Written: 
+Last Modified:
 ---
 ## Overview
 
 As it was the case in ROS 1, ROS 2 nodes allow configuration via command line arguments to a certain degree. In ROS 2, this interface had to become more complex to cope with a larger set of configuration options, an ambiguity in remapping rules and parameter assignment syntax (as a result of the leading underscore name convention for hidden resources), a one-to-many relationship between executables and nodes, to name a few.
 
-> 在 ROS 1 中，ROS 2 节点允许通过命令行参数进行配置，在一定程度上。在 ROS 2 中，这个接口必须变得更加复杂，以应对更大范围的配置选项，重映射规则和参数分配语法（由于隐藏资源的前导下划线命名约定）之间的歧义，可执行文件与节点之间的一对多关系，等等。
+> 在 ROS 1 中，ROS 2 节点允许通过命令行参数进行配置，在一定程度上。在 ROS 2 中，这个接口必须变得更加复杂，以应对更大范围的配置选项，重映射规则和参数分配语法(由于隐藏资源的前导下划线命名约定)之间的歧义，可执行文件与节点之间的一对多关系，等等。
 
 Because of this, increasingly precise addressing mechanisms as well as leading double underscores (`__`) in some positional arguments, both natural extensions of existing ROS 1 command line features, are combined with ROS 2 specific command line flags. Flags, in contrast with other custom syntax alternatives, are:
 
-> 因此，将越来越精确的地址机制以及一些位置参数中的双下划线（`__`）（ROS 1 命令行功能的自然扩展）与 ROS 2 特定的命令行标志结合起来。与其他自定义语法替代方案相比，标志是：
+> 因此，将越来越精确的地址机制以及一些位置参数中的双下划线(`__`)(ROS 1 命令行功能的自然扩展)与 ROS 2 特定的命令行标志结合起来。与其他自定义语法替代方案相比，标志是：
 
 - Widely known and used.
 - Explicit and less error prone.
@@ -36,7 +36,7 @@ Unfortunately, since these flags coexist with user-defined ones, additional guar
 
 To prevent ROS specific command line flags from colliding with user-defined ones, the former are scoped using the `--ros-args` flag and a trailing double dash token (`--`):
 
-> 为了防止 ROS 特定的命令行标志与用户定义的标志发生冲突，前者使用 `--ros-args` 标志和一个尾随双短划线令牌（`--`）进行范围限定：
+> 为了防止 ROS 特定的命令行标志与用户定义的标志发生冲突，前者使用 `--ros-args` 标志和一个尾随双短划线令牌(`--`)进行范围限定：
 
 ```sh
 ros2 run some_package some_node [<user-defined-arg-0>...<user-defined-arg-N>] \
@@ -47,7 +47,7 @@ ros2 run some_package some_node [<user-defined-arg-0>...<user-defined-arg-N>] \
 
 If no user defined arguments are provided after ROS specific arguments are, the double dash token (`--`) may be elided:
 
-> 如果在 ROS 特定参数之后没有提供用户定义参数，可以省略双破折号（`--`）。
+> 如果在 ROS 特定参数之后没有提供用户定义参数，可以省略双破折号(`--`)。
 
 ```sh
 ros2 run some_package some_node [<user-defined-arg-0>...] --ros-args [<ros-specific-arg-0>...]
@@ -89,7 +89,7 @@ As a quick summary of ROS command line capabilities:
 
 For name remapping and parameter assignment, specific nodes can be targeted by prepending the option value with the node name followed by a colon `:`, as in `--remap my_node:from:=to` and `--param my_node:name:=value`.
 
-> 为了重新映射名称和分配参数，可以在选项值前面加上节点名称，后面跟一个冒号（:），如 `--remap my_node:from:=to` 和 `--param my_node:name:=value`。
+> 为了重新映射名称和分配参数，可以在选项值前面加上节点名称，后面跟一个冒号(:)，如 `--remap my_node:from:=to` 和 `--param my_node:name:=value`。
 
 #### Name remapping rules
 
@@ -196,7 +196,7 @@ another_node:
 
 Wildcards can be used for node names and namespaces as described in [Remapping Names](static_remapping.html#match-part-of-a-rule). `*` matches a single token delimeted by slashes (`/`). `**` matches zero or more tokens delimeted by slashes. Partial matches are not allowed (e.g. `foo*`).
 
-> 通配符可以用于节点名称和命名空间，如[重映射名称](static_remapping.html#match-part-of-a-rule)所述。`*` 匹配由斜杠（`/`）分隔的单个标记。`**` 匹配由斜杠分隔的零个或多个标记。不允许部分匹配（例如 `foo*`）。
+> 通配符可以用于节点名称和命名空间，如[重映射名称](static_remapping.html#match-part-of-a-rule)所述。`*` 匹配由斜杠(`/`)分隔的单个标记。`**` 匹配由斜杠分隔的零个或多个标记。不允许部分匹配(例如 `foo*`)。
 
 For example,
 
@@ -260,7 +260,7 @@ The minimum logging level of a specific logger will override the globally specif
 
 External logging may be configured using the `--log-config-file` option. This option takes a single configuration file, whose format depends on the actual external logging library being used. As an example, to pass `some_log.config` configuration file to `some_ros_executable`, one may execute:
 
-> 外部日志可以使用 `--log-config-file` 选项进行配置。 该选项需要一个配置文件，其格式取决于实际使用的外部日志库。
+> 外部日志可以使用 `--log-config-file` 选项进行配置。该选项需要一个配置文件，其格式取决于实际使用的外部日志库。
 > 举个例子，要将 `some_log.config` 配置文件传递给 `some_ros_executable`，可以执行：
 
 ```sh
@@ -314,13 +314,13 @@ As is, this enclave assignment applies to each and every Domain Participant that
 
 Command line argument extraction happens within `rcl`. When an instance of the `--ros-args` flag is found in `argv`, until either a double dash token (`--`) is found or the end of the argument array is reached, all arguments that follow are taken as ROS specific arguments to be parsed as such. Remaining arguments can still be accessed by the user via `rcl` API.
 
-> 当在 argv 中发现 `--ros-args` 标志的实例时，命令行参数提取发生在 rcl 中。直到发现双破折号标记（`--`）或到达参数数组的末尾，所有随后的参数都被视为 ROS 特定参数，并按此解析。用户仍可通过 rcl API 访问剩余参数。
+> 当在 argv 中发现 `--ros-args` 标志的实例时，命令行参数提取发生在 rcl 中。直到发现双破折号标记(`--`)或到达参数数组的末尾，所有随后的参数都被视为 ROS 特定参数，并按此解析。用户仍可通过 rcl API 访问剩余参数。
 
 ### Parsing
 
 At the time of writing, most ROS specific arguments target and are thus parsed by `rcl`. This is the case for name remapping rules or parameter assignments flags, to name a few. However, to support ROS specific arguments that target upper ROS layers e.g. a ROS client library like `rclcpp`, arguments unknown to `rcl` are left unparsed but accessible by these layers, which in turn can continue parsing or eventually warn the user if unknown arguments remain.
 
-> 在写作的时候，大多数 ROS 特定的参数都是针对 `rcl` 的，因此由其解析。例如，名称重映射规则或参数分配标志等。但是，为了支持针对更高层的 ROS 层（例如 ROS 客户端库 `rclcpp`）的 ROS 特定参数，`rcl` 未知的参数将保持未解析，但这些层可以访问它们，然后继续解析，或者最终如果未知参数仍然存在则警告用户。
+> 在写作的时候，大多数 ROS 特定的参数都是针对 `rcl` 的，因此由其解析。例如，名称重映射规则或参数分配标志等。但是，为了支持针对更高层的 ROS 层(例如 ROS 客户端库 `rclcpp`)的 ROS 特定参数，`rcl` 未知的参数将保持未解析，但这些层可以访问它们，然后继续解析，或者最终如果未知参数仍然存在则警告用户。
 
 ## Alternative designs
 
@@ -344,4 +344,4 @@ Rely on full name addressing to disambiguate operator significance e.g. `rospara
 
 Remove the need for double dash tokens (`--`), conventionally used to signify the end of CLI options for a command, by adding the `--ros-` prefix to all ROS specific command line flags e.g. `--ros-remap`, `--ros-param`, etc. In exchange, it makes argument extraction slightly more difficult as all options must be known ahead of time, whereas `--ros-args`-based namespacing can achieve the same with a couple rules. It also increases command line verbosity.
 
-> 移除对双破折号令牌（`--`）的需求，这种令牌通常用于表示命令行选项的结束，通过在所有 ROS 特定的命令行标志前加上 `--ros-` 前缀，例如 `--ros-remap`，`--ros-param` 等。作为交换，它使参数提取变得更加困难，因为所有选项必须提前知道，而基于 `--ros-args` 的命名空间可以通过几条规则达到同样的效果。它也会增加命令行的冗长度。
+> 移除对双破折号令牌(`--`)的需求，这种令牌通常用于表示命令行选项的结束，通过在所有 ROS 特定的命令行标志前加上 `--ros-` 前缀，例如 `--ros-remap`，`--ros-param` 等。作为交换，它使参数提取变得更加困难，因为所有选项必须提前知道，而基于 `--ros-args` 的命名空间可以通过几条规则达到同样的效果。它也会增加命令行的冗长度。

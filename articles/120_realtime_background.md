@@ -8,9 +8,9 @@ published: true
 author: Jackie Kay
 date_written: 2016-01
 last_modified: 2016-05
-Authors: {{ page.author }}
-Date Written: {{ page.date_written }}
-Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
+Authors: 
+Date Written: 
+Last Modified:
 ---
 This document seeks to summarize the requirements of real-time computing and the challenges of implementing real-time performance. It also lays out options for how ROS 2 could be structured to enforce real-time compatibility.
 
@@ -155,7 +155,7 @@ The default allocator on most operating systems is not optimized for real-time s
 
 One such alternative allocator is TLSF (Two-Level Segregate Fit). It is also called the O(1) allocator, since the time cost of `malloc`, `free`, and `align` operations under TLSF have a constant upper bound. It creates a low level of fragmentation. The disadvantages of TLSF are that it is not thread safe and that its current implementation is architecture specific: it assumes the system can make 4-byte aligned accesses.
 
-> 一种替代分配器是 TLSF(双级分离适配器)。它也被称为 O(1)分配器，因为 TLSF 下的 malloc，free 和 align 操作的时间成本具有恒定的上限。它可以产生低水平的碎片。 TLSF 的缺点是它不是线程安全的，而且它的当前实现是特定于架构的：它假设系统可以进行 4 字节对齐的访问。
+> 一种替代分配器是 TLSF(双级分离适配器)。它也被称为 O(1)分配器，因为 TLSF 下的 malloc，free 和 align 操作的时间成本具有恒定的上限。它可以产生低水平的碎片。TLSF 的缺点是它不是线程安全的，而且它的当前实现是特定于架构的：它假设系统可以进行 4 字节对齐的访问。
 
 Pros:
 
@@ -327,7 +327,7 @@ Collecting these statistics gives an indication of what events could cause the l
 
 With judicious application of the performance patterns and benchmarking tests proposed in this document, implementing real-time code in C/C++ is feasible. The question of how ROS 2 will achieve real-time compatibility remains.
 
-> 通过明智地应用本文档中提出的性能模式和基准测试，实现 C/C++ 中的实时代码是可行的。 ROS 2 如何实现实时兼容性的问题仍然存在。
+> 通过明智地应用本文档中提出的性能模式和基准测试，实现 C/C++ 中的实时代码是可行的。ROS 2 如何实现实时兼容性的问题仍然存在。
 
 It is acceptable for the setup and teardown stages of the ROS node lifecycle to not be real-time safe. However, interacting with ROS interfaces, particularly within an intra-process context, should be real-time safe, since these actions could be on the real-time code path of a process.
 

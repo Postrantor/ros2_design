@@ -9,9 +9,9 @@ author: '[Michel Hidalgo](https://github.com/hidmic)'
 date_written: 2019-09
 last_modified: 2021-06
 published: true
-Authors: {{ page.author }}
-Date Written: {{ page.date_written }}
-Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
+Authors: 
+Date Written: 
+Last Modified:
 ---
 # ROS 2 Launch XML Format v0.1.0
 
@@ -19,7 +19,7 @@ Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ p
 
 As an alternative to a programmatic approach to the ROS 2 launch system's API, a declarative description features a WYSIWYG approach, easier to read, audit and maintain. This is the preferred approach for ROS 1 `roslaunch` launch files, thus some degree of familiarity is expected (and relied upon).
 
-> 作为 ROS 2 启动系统 API 的编程方法的替代方案，声明式描述具有 WYSIWYG 方法，更容易阅读，审计和维护。这是 ROS 1 `roslaunch` 启动文件的首选方法，因此有一定程度的熟悉度是期望的（并依赖于）。
+> 作为 ROS 2 启动系统 API 的编程方法的替代方案，声明式描述具有 WYSIWYG 方法，更容易阅读，审计和维护。这是 ROS 1 `roslaunch` 启动文件的首选方法，因此有一定程度的熟悉度是期望的(并依赖于)。
 
 The body of such a description is mainly comprised of statically declared launch actions with a prescribed configuration. To that, runtime value substitution is added in order to fullfill common dynamic (re)configuration needs like conditional execution, resource lookups, etc. It is intended for these entities to map to those of the underlying implementation, reducing support to file parsing.
 
@@ -34,7 +34,7 @@ This article describes XML aiming to ease the bridge between ROS and ROS 2 launc
 ### Schema Definition
 
 ```xml
-    {% include_relative specs/launch.0.1.1.xsd %}
+    
 ```
 
 ### Tags Semantics
@@ -57,7 +57,7 @@ Root tag of any launch file. There must only be one `<launch>` tag on a given la
 
 The `<include>` tag allows for bringing a launch file description into another, enabling re-use of hierarchical launch layouts. The included launch file description has its own scope for launch configurations. The included launch file description is not necessarily written in this format nor a declarative one (i.e. a programmatic description).
 
-> “＜ include ＞”标记允许将启动文件描述引入另一个文件中，从而实现分层启动布局的重用。所包含的启动文件描述有其自己的启动配置范围。所包含的启动文件描述不一定是以这种格式编写的，也不一定是声明性的（即编程描述）。
+> “＜ include ＞”标记允许将启动文件描述引入另一个文件中，从而实现分层启动布局的重用。所包含的启动文件描述有其自己的启动配置范围。所包含的启动文件描述不一定是以这种格式编写的，也不一定是声明性的(即编程描述)。
 
 ##### Examples
 
@@ -107,7 +107,7 @@ The `<let>` tags allows for definition of scoped launch file configuration varia
 
 The `<arg>` tag allows for launch file configuration via the command-line or when including it via an `<include>` tag. Arguments are launch configuration variables just like the ones defined by `<let>` tags. Arguments are limited to the scope of their definition and thus have to be explictly passed to included files if any.
 
-> “＜ arg ＞”标记允许通过命令行或通过“＜ include ＞”标签包含启动文件配置。参数是启动配置变量，与“＜ let ＞”标记定义的变量一样。参数仅限于其定义的范围，因此必须明确地传递给包含的文件（如果有的话）。
+> “＜ arg ＞”标记允许通过命令行或通过“＜ include ＞”标签包含启动文件配置。参数是启动配置变量，与“＜ let ＞”标记定义的变量一样。参数仅限于其定义的范围，因此必须明确地传递给包含的文件(如果有的话)。
 
 ##### Examples
 
@@ -246,7 +246,7 @@ The `<unset_env>` tag allows for deleting an OS process environment variable. It
 
 All substitutions are enclosed by `$(...)`.
 
-> 所有替换都用“$（…）”括起来。
+> 所有替换都用“$(…)”括起来。
 
 ### Built-in Substitutions
 

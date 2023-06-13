@@ -12,9 +12,9 @@ author: '[William Woodall](https://github.com/wjwwood)'
 date_written: 2014-06
 last_modified: 2019-05
 
-Authors: {{ page.author }}
-Date Written: {{ page.date_written }}
-Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
+Authors: 
+Date Written: 
+Last Modified:
 ---
 While this article covers proposals and related experiments for building a new middleware specifically around ZeroMQ, it also generally captures the idea of building a new middleware out of a few component libraries. This strategy of composing existing libraries into a middleware is in contrast to wrapping up an existing end-to-end middleware which provides most if not all of the middleware needs for ROS out of the box.
 
@@ -24,17 +24,17 @@ While this article covers proposals and related experiments for building a new m
 
 In order to meet the needs of ROS, a middleware needs to provide a few key services. First it needs to provide a way for parts of the system to discover each other and make connections dynamically at run time. Then the middleware needs to provide one or more transport paradigms for moving information between parts of the system, and for ROS specifically the publish-subscribe pattern is required at a minimum. Additional communication patterns (such as request-response) can be implemented on top of publish-subscribe. Finally, the middleware should provide a means of defining messages and then preparing them for transport, i.e. serialization. However, if the middleware lacks a serialization mechanism, this can be provided by an external component. Since ROS 1 was designed, there have been several new libraries in these component fields to gain popularity.
 
-> 为了满足 ROS 的需求，中间件需要提供几项关键服务。首先，它需要提供一种方法，让系统的各个部分在运行时相互发现并建立动态连接。然后，中间件需要提供一种或多种传输范式，用于在系统的各个部分之间传递信息，对于 ROS 来说，至少需要实现发布-订阅模式。可以在发布-订阅模式之上实现其他的通信模式（如请求-响应）。最后，中间件应该提供定义消息并准备它们进行传输（即序列化）的方法。但是，如果中间件缺乏序列化机制，可以由外部组件提供。自从 ROS 1 被设计以来，这些组件领域出现了几个新的库来获得普及。
+> 为了满足 ROS 的需求，中间件需要提供几项关键服务。首先，它需要提供一种方法，让系统的各个部分在运行时相互发现并建立动态连接。然后，中间件需要提供一种或多种传输范式，用于在系统的各个部分之间传递信息，对于 ROS 来说，至少需要实现发布-订阅模式。可以在发布-订阅模式之上实现其他的通信模式(如请求-响应)。最后，中间件应该提供定义消息并准备它们进行传输(即序列化)的方法。但是，如果中间件缺乏序列化机制，可以由外部组件提供。自从 ROS 1 被设计以来，这些组件领域出现了几个新的库来获得普及。
 
 ### Discovery
 
 For discovery the first solution that was investigated was [Zeroconf](http://en.wikipedia.org/wiki/Zero_configuration_networking) with Avahi/Bonjour. Some simple experiments were conducted which used [pybonjour](https://code.google.com/p/pybonjour/) to try out using the Zeroconf system for discovery. The core technology here is `mDNSresponder`, which is provided by Apple as free software, and is used by both Bonjour (OS X and Windows) and Avahi (Linux, specifically avahi-compat).
 
-> 为了发现第一个解决方案，我们研究了 [Zeroconf](http://en.wikipedia.org/wiki/Zero_configuration_networking)，使用 Avahi/Bonjour。我们进行了一些简单的实验，使用 [pybonjour](https://code.google.com/p/pybonjour/) 来尝试使用 Zeroconf 系统进行发现。这里的核心技术是 `mDNSresponder`，由苹果免费提供，被 Bonjour（OS X 和 Windows）和 Avahi（Linux，特别是 avahi-compat）所使用。
+> 为了发现第一个解决方案，我们研究了 [Zeroconf](http://en.wikipedia.org/wiki/Zero_configuration_networking)，使用 Avahi/Bonjour。我们进行了一些简单的实验，使用 [pybonjour](https://code.google.com/p/pybonjour/) 来尝试使用 Zeroconf 系统进行发现。这里的核心技术是 `mDNSresponder`，由苹果免费提供，被 Bonjour(OS X 和 Windows)和 Avahi(Linux，特别是 avahi-compat)所使用。
 
 These Zeroconf implementations, however, proved to not be so reliable with respect to keeping a consistent graph between machines. Adding and removing more than about twenty items at a time from subprocesses typically resulted in inconsistent state on at least one of the computers on the network. One particularly bad case was the experiment of removing items from Zeroconf, where in several "nodes" were registered on machine A and then after a few seconds shutdown cleanly. The observed behavior on remote machines B and C was that the Zeroconf browser would show all "nodes" as registered, but then after being shutdown only some would be removed from the list, resulting in "zombie nodes". Worse still is that the list of "zombie nodes" were different on B and C. This problem was only observed between machines using avahi as a compatibility layer, which lead into a closer look into avahi and its viability as a core dependency. This closer look at avahi raised some concerns about the quality of the implementation with respect to the [Multicast DNS](http://en.wikipedia.org/wiki/Multicast_DNS) and [DNS Service Discovery (DNS-SD)](http://en.wikipedia.org/wiki/Zero_configuration_networking#Service_discovery) technology.
 
-> 这些 Zeroconf 实现，然而，在保持机器之间一致的图表方面证明并不那么可靠。从子进程中添加和删除超过 20 个项目通常会导致网络上至少一台计算机的不一致状态。一个特别糟糕的情况是从 Zeroconf 中删除项目的实验，在几个“节点”在机器 A 上注册，然后在几秒钟内干净地关闭。在远程机器 B 和 C 上观察到的行为是，Zeroconf 浏览器会显示所有“节点”都已注册，但是关闭后只有一些会从列表中删除，导致“僵尸节点”。更糟糕的是，B 和 C 上的“僵尸节点”列表是不同的。这个问题只在使用 avahi 作为兼容层的机器之间观察到，这导致了对 avahi 及其作为核心依赖项的可行性的更仔细的观察。这种对 avahi 的仔细观察引发了一些关于[多播 DNS](http://en.wikipedia.org/wiki/Multicast_DNS) 和 [DNS 服务发现（DNS-SD）](http://en.wikipedia.org/wiki/Zero_configuration_networking#Service_discovery)技术实现质量的担忧。
+> 这些 Zeroconf 实现，然而，在保持机器之间一致的图表方面证明并不那么可靠。从子进程中添加和删除超过 20 个项目通常会导致网络上至少一台计算机的不一致状态。一个特别糟糕的情况是从 Zeroconf 中删除项目的实验，在几个“节点”在机器 A 上注册，然后在几秒钟内干净地关闭。在远程机器 B 和 C 上观察到的行为是，Zeroconf 浏览器会显示所有“节点”都已注册，但是关闭后只有一些会从列表中删除，导致“僵尸节点”。更糟糕的是，B 和 C 上的“僵尸节点”列表是不同的。这个问题只在使用 avahi 作为兼容层的机器之间观察到，这导致了对 avahi 及其作为核心依赖项的可行性的更仔细的观察。这种对 avahi 的仔细观察引发了一些关于[多播 DNS](http://en.wikipedia.org/wiki/Multicast_DNS) 和 [DNS 服务发现(DNS-SD)](http://en.wikipedia.org/wiki/Zero_configuration_networking#Service_discovery)技术实现质量的担忧。
 
 Furthermore, DNS-SD seems to prefer the trade-off of light networking load for eventual consistency. This works reasonably well for something like service name look up, but it did not work well for quickly and reliably discovering the proto-ROS graph in the experiments. This led to the development of a custom discovery system which is implemented in a few languages as part of the prototype here:
 
@@ -54,7 +54,7 @@ This system, though simple, was quite effective and was sufficient to prove that
 
 For transporting bytes between processes, a popular library is [ZeroMQ](http://zeromq.org/), but there are also libraries like [nanomsg](http://nanomsg.org/) and [RabbitMQ](http://www.rabbitmq.com/). In all of those cases the goal of the library is to allow you to establish connections, explicitly, to other participants and then send strings or bytes according to some communication pattern. ZeroMQ is an LGPL licensed library which has recently become very popular, is written in C++ with a C API, and has bindings to many languages. nanomsg is a new MIT licensed library which was created by one of the original authors of ZeroMQ, is written in C with a C API, but is far less mature than ZeroMQ. RabbitMQ is a broker that implements several messaging protocols, mainly AMQP, but also provides gateways for ZeroMQ, STOMP and MQTT. By being a broker, it meets some of the discovery needs as well as the transport needs for ROS. Although ZeroMQ is usually used in brokerless deployments, it can also be used in conjunction with RabbitMQ to provide persitence and durability of messages. RabbitMQ is licensed under the Mozilla Public License. All of these libraries could probably be used to replace the ROSTCP transport, but for the purposes of this article we will use ZeroMQ in a brokerless deployment.
 
-> 为了在进程之间传输字节，一个流行的库是 [ZeroMQ](http://zeromq.org/)，但也有像 [nanomsg](http://nanomsg.org/) 和 [RabbitMQ](http://www.rabbitmq.com/) 的库。在所有这些情况下，库的目标是允许您明确地建立到其他参与者的连接，然后根据某种通信模式发送字符串或字节。ZeroMQ 是一个以 LGPL 许可的库，最近变得非常流行，用 C++ 编写，有 C API，并且有绑定到许多语言。 nanomsg 是由 ZeroMQ 的原始作者之一创建的新的 MIT 许可库，用 C 编写，但比 ZeroMQ 要不成熟得多。 RabbitMQ 是一个实现多种消息协议的代理，主要是 AMQP，但也提供 ZeroMQ，STOMP 和 MQTT 的网关。通过作为代理，它满足了 ROS 的一些发现需求以及传输需求。虽然 ZeroMQ 通常用于无代理部署，但也可以与 RabbitMQ 结合使用，以提供消息的持久性和可靠性。 RabbitMQ 根据 Mozilla 公共许可证授权。所有这些库都可以用来替换 ROSTCP 传输，但是在本文中，我们将在无代理部署中使用 ZeroMQ。
+> 为了在进程之间传输字节，一个流行的库是 [ZeroMQ](http://zeromq.org/)，但也有像 [nanomsg](http://nanomsg.org/) 和 [RabbitMQ](http://www.rabbitmq.com/) 的库。在所有这些情况下，库的目标是允许您明确地建立到其他参与者的连接，然后根据某种通信模式发送字符串或字节。ZeroMQ 是一个以 LGPL 许可的库，最近变得非常流行，用 C++ 编写，有 C API，并且有绑定到许多语言。nanomsg 是由 ZeroMQ 的原始作者之一创建的新的 MIT 许可库，用 C 编写，但比 ZeroMQ 要不成熟得多。RabbitMQ 是一个实现多种消息协议的代理，主要是 AMQP，但也提供 ZeroMQ，STOMP 和 MQTT 的网关。通过作为代理，它满足了 ROS 的一些发现需求以及传输需求。虽然 ZeroMQ 通常用于无代理部署，但也可以与 RabbitMQ 结合使用，以提供消息的持久性和可靠性。RabbitMQ 根据 Mozilla 公共许可证授权。所有这些库都可以用来替换 ROSTCP 传输，但是在本文中，我们将在无代理部署中使用 ZeroMQ。
 
 In this prototype:
 
@@ -72,13 +72,13 @@ After making discoveries using the above described simple discovery system, conn
 
 Additionally, ZeroMQ, in particular, relies on reliable transports like TCP or [PGM (Pragmatic General Multicast)](http://en.wikipedia.org/wiki/Pragmatic_General_Multicast), so it makes it unsuitable for soft real-time scenarios.
 
-> 此外，ZeroMQ 特别依赖可靠的传输协议，如 TCP 或 PGM（Pragmatic General Multicast），因此不适合软实时场景。
+> 此外，ZeroMQ 特别依赖可靠的传输协议，如 TCP 或 PGM(Pragmatic General Multicast)，因此不适合软实时场景。
 
 ### Message Serialization
 
 In ROS 1, messages are defined in `.msg` files and code is generated at build time for each of the supported languages. ROS 1 generated code can instantiate and then later serialize the data in a message as a mechanism for exchanging information. Since ROS was created, several popular libraries which take care of this responsibility have come about. Google's [Protocol Buffers (Protobuf)](https://code.google.com/p/protobuf/), [MessagePack](http://msgpack.org/), [BSON](http://bsonspec.org/), and [Cap'n Proto](http://kentonv.github.io/capnproto/) are all examples of serialization libraries which have come to popularity since ROS was originally written. An entire article could be devoted to the pros and cons of different message definition formats, serialization libraries, and their wire formats, but for the purposes of this prototype we worked with either plain strings or Protobuf.
 
-> 在 ROS 1 中，消息定义在 `.msg` 文件中，并且为每种支持的语言在构建时生成代码。ROS 1 生成的代码可以实例化，然后再序列化消息中的数据，以作为交换信息的机制。自 ROS 创建以来，已经出现了几个处理这项职责的流行库。Google 的 [Protocol Buffers（Protobuf）](https://code.google.com/p/protobuf/)，[MessagePack](http://msgpack.org/)，[BSON](http://bsonspec.org/) 和 [Cap'n Proto](http://kentonv.github.io/capnproto/) 都是自 ROS 最初编写以来流行起来的序列化库的例子。可以花一篇文章来讨论不同消息定义格式，序列化库及其线路格式的优缺点，但是为了本次原型的目的，我们使用普通字符串或 Protobuf。
+> 在 ROS 1 中，消息定义在 `.msg` 文件中，并且为每种支持的语言在构建时生成代码。ROS 1 生成的代码可以实例化，然后再序列化消息中的数据，以作为交换信息的机制。自 ROS 创建以来，已经出现了几个处理这项职责的流行库。Google 的 [Protocol Buffers(Protobuf)](https://code.google.com/p/protobuf/)，[MessagePack](http://msgpack.org/)，[BSON](http://bsonspec.org/) 和 [Cap'n Proto](http://kentonv.github.io/capnproto/) 都是自 ROS 最初编写以来流行起来的序列化库的例子。可以花一篇文章来讨论不同消息定义格式，序列化库及其线路格式的优缺点，但是为了本次原型的目的，我们使用普通字符串或 Protobuf。
 
 ## Conclusions
 

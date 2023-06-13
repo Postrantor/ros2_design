@@ -8,15 +8,15 @@ author: "[Michel Hidalgo](https://github.com/hidmic) [William Woodall](https://g
 date_written: 2019-09
 last_modified: 2020-07
 published: true
-Authors: {{ page.author }}
-Date Written: {{ page.date_written }}
-Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
+Authors: 
+Date Written: 
+Last Modified:
 ---
 ## Context
 
 Static launch descriptions are an integral part to ROS 2 launch system, and the natural path to transition from predominant ROS 1 `roslaunch` XML description. This document describes parsing and integration approaches of different front ends i.e. different markup languages, with a focus on extensibility and scalability.
 
-> 静态发射描述是 ROS 2 发射系统不可分割的一部分，也是从主要的 ROS 1“roslaunch”XML 描述过渡的自然路径。本文档描述了不同前端（即不同的标记语言）的解析和集成方法，重点是可扩展性和可扩展性。
+> 静态发射描述是 ROS 2 发射系统不可分割的一部分，也是从主要的 ROS 1“roslaunch”XML 描述过渡的自然路径。本文档描述了不同前端(即不同的标记语言)的解析和集成方法，重点是可扩展性和可扩展性。
 
 ## Proposed approaches
 
@@ -36,13 +36,13 @@ It's worth noting some things they all have in common:
 
 How that registry is populated and provided to the parser may vary. For instance, in Python class decorators may populate a global dict or even its import mechanism may be used if suitable, while in C++ convenience macros may expand into demangled registration hooks that can later be looked up by a dynamic linker (assuming launch entities libraries are shared libraries).
 
-> 注册表的填充方式和提供给解析器的方式可能会有所不同。例如，在 Python 类中，decorator 可以填充全局 dict，或者如果合适的话，甚至可以使用其导入机制，而在 C++ 中，方便宏可以扩展为非映射的注册挂钩，稍后可以由动态链接器查找（假设启动实体库是共享库）。
+> 注册表的填充方式和提供给解析器的方式可能会有所不同。例如，在 Python 类中，decorator 可以填充全局 dict，或者如果合适的话，甚至可以使用其导入机制，而在 C++ 中，方便宏可以扩展为非映射的注册挂钩，稍后可以由动态链接器查找(假设启动实体库是共享库)。
 
 ### Forward Description Mapping (FDM)
 
 In FDM, the parser relies on a schema and well-known rules to map a static description (markup) to implementation specific instances (objects). The parser instantiates each launch entity by parsing and collecting the instantiations of the launch entities that make up the former description.
 
-> 在 FDM 中，解析器依赖于模式和众所周知的规则来将静态描述（标记）映射到特定于实现的实例（对象）。解析器通过解析和收集组成前一个描述的启动实体的实例来实例化每个启动实体。
+> 在 FDM 中，解析器依赖于模式和众所周知的规则来将静态描述(标记)映射到特定于实现的实例(对象)。解析器通过解析和收集组成前一个描述的启动实体的实例来实例化每个启动实体。
 
 #### Description Markup
 
@@ -104,7 +104,7 @@ _+_ Straightforward to implement.
 
 _+_ Launch implementations are completely unaware of the existence of the static description formats and their parsing process (to the extent that type agnostic instantiation mechanisms are available).
 
-> *+*启动实现完全不知道静态描述格式及其解析过程的存在（在某种程度上，类型不可知的实例化机制是可用的）。
+> *+*启动实现完全不知道静态描述格式及其解析过程的存在(在某种程度上，类型不可知的实例化机制是可用的)。
 
 _-_ Statically typed launch system implementations may require variant objects to deal with actions.
 
@@ -116,7 +116,7 @@ _-_ Care must be exercised to avoid coupling static descriptions with a given im
 
 A variation on FDM that allows launch entities to supply markup language specific helpers to do their own parsing. The parser may thus delegate entire description sections to these helpers, which may or may not delegate back to the parser (e.g. for nested arbitrary launch entities).
 
-> FDM 的一种变体，允许启动实体提供标记语言特定的帮助程序来进行自己的解析。因此，解析器可以将整个描述部分委托给这些助手，这些助手可以委托也可以不委托回解析器（例如，对于嵌套的任意启动实体）。
+> FDM 的一种变体，允许启动实体提供标记语言特定的帮助程序来进行自己的解析。因此，解析器可以将整个描述部分委托给这些助手，这些助手可以委托也可以不委托回解析器(例如，对于嵌套的任意启动实体)。
 
 #### Description Markup
 
@@ -324,14 +324,14 @@ _C++_
       const std::vector<Entity> & children() const;
 
       template<typename T>
-      const T & get(const std::string& name) const { ... }
+      const T & get(const std::string& name) const 
 
-      const Entity & get(const std::string& name) const { ... }
+      const Entity & get(const std::string& name) const 
 
       template<typename T>
-      bool has(const std::string & name) const { ... }
+      bool has(const std::string & name) const 
 
-      bool has(const std::string & name) const { ... }
+      bool has(const std::string & name) const 
     };
     }  // namespace parsing
 ```
@@ -399,7 +399,7 @@ _C++_
 
 Inherent ambiguities will arise from the mapping described above, e.g. nested tags in an XML description may be understood either as children (as it'd be the case for a grouping/scoping action) or attributes of the enclosing tag associated entity (as it's the case in the example above). It is up to the parsing procedures to disambiguate them.
 
-> 上述映射将产生固有的模糊性，例如，XML 描述中的嵌套标签可以被理解为子级（如分组/作用域动作的情况）或封闭标签相关实体的属性（如上例中的情况）。这取决于解析过程来消除它们的歧义。
+> 上述映射将产生固有的模糊性，例如，XML 描述中的嵌套标签可以被理解为子级(如分组/作用域动作的情况)或封闭标签相关实体的属性(如上例中的情况)。这取决于解析过程来消除它们的歧义。
 
 #### Parsing Delegation
 
@@ -470,7 +470,7 @@ _C++_
 
 As can be seen above, procedures inspect the description through the given parsing entity, delegating further parsing to the parser recursively. To deal with substitutions, and variant values in general, the concept of a 'value' is introduced. Note that a value _may be_ an entity, but it isn't necessarily one.
 
-> 如上所述，过程通过给定的解析实体检查描述，递归地将进一步的解析委托给解析器。为了处理替换和一般的变量值，引入了“值”的概念。请注意，值\_ma 可能是一个实体，但不一定是一个。
+> 如上所述，过程通过给定的解析实体检查描述，递归地将进一步的解析委托给解析器。为了处理替换和一般的变量值，引入了“值”的概念。请注意，值_ma 可能是一个实体，但不一定是一个。
 
 #### Procedure Provisioning
 
@@ -484,7 +484,7 @@ In the simplest case, the user may explicitly provide their own parsing procedur
 
 If accurate type information is somehow available (e.g.: type annotations in constructor), reflection mechanisms can aid derivation of a parsing procedure with no user intervention.
 
-> 如果以某种方式可以获得准确的类型信息（例如：构造函数中的类型注释），则反射机制可以帮助推导解析过程，而无需用户干预。
+> 如果以某种方式可以获得准确的类型信息(例如：构造函数中的类型注释)，则反射机制可以帮助推导解析过程，而无需用户干预。
 
 #### Advantages & Disadvantages
 
@@ -502,7 +502,7 @@ _-_ No markup language specific sugars are possible.
 
 REVISIT(hidmic): IMHO explicitly disallowing this is a good thing, it makes for more homogeneus descriptions and avoids proliferation of multiple representation of the same concepts (e.g. a list of strings).
 
-> 修订（隐藏）：IMHO 明确禁止这是一件好事，它有助于更同质的描述，并避免相同概念的多种表示形式（例如字符串列表）的扩散。
+> 修订(隐藏)：IMHO 明确禁止这是一件好事，它有助于更同质的描述，并避免相同概念的多种表示形式(例如字符串列表)的扩散。
 
 _+_ The transfer function nature of the parsing procedure precludes the need for a rooted object type hierarchy in statically typed launch system implementations.
 

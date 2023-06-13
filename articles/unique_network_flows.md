@@ -8,9 +8,9 @@ author: '[Ananya Muddukrishna, Ericsson AB](https://github.com/anamud)'
 date_written: 2021-05
 last_modified: 2021-05
 published: true
-Authors: {{ page.author }}
-Date Written: {{ page.date_written }}
-Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
+Authors: 
+Date Written: 
+Last Modified:
 ---
 # Unique Network Flows
 
@@ -40,7 +40,7 @@ Streams of IP packets from a given source to destination are called _packet flow
 
 The _5-tuple_ is a traditional unique identifier for flows. The 5-tuple consists of five parameters: source IP address, source port, destination IP address, destination port, and the transport protocol (example, TCP/UDP).
 
-> 5 元组是流的传统唯一标识符。5 元组由五个参数组成：源 IP 地址、源端口、目的 IP 地址、目的端口和传输协议（例如 TCP/UDP）。
+> 5 元组是流的传统唯一标识符。5 元组由五个参数组成：源 IP 地址、源端口、目的 IP 地址、目的端口和传输协议(例如 TCP/UDP)。
 
 IPv6 specifies a _3-tuple_ for uniquely identifying flows. The IPv6 3-tuple consists of the source IP address, destination IP address, and the Flow Label. The Flow Label [2] is a 20-bit field in the IPv6 header. It is typically set by the source of the flow. The default Flow Label is zero.
 
@@ -58,7 +58,7 @@ We briefly discuss two relevant explicit QoS specification methods for applicati
 
 - Differentiated Services (DS) [3] is a widely-used QoS architecture for IP networks. The required DS-based QoS is set by the application in the 6-bit DS Code Point (DSCP) sub-field of the 8-bit DS field in the IP packet header. For example, DSCP set to 0x2E specifies expedited forwarding as the required QoS. Expedited forwarding is typically used for real-time data such as voice and video.
 
-> 不同服务（DS）[3]是一种广泛使用的 IP 网络的 QoS 架构。所需的基于 DS 的 QoS 由应用程序在 IP 数据包头部的 8 位 DS 字段的 6 位 DS 代码点（DSCP）子字段中设置。例如，DSCP 设置为 0x2E 指定加急转发作为所需的 QoS。加急转发通常用于实时数据，如语音和视频。
+> 不同服务(DS)[3]是一种广泛使用的 IP 网络的 QoS 架构。所需的基于 DS 的 QoS 由应用程序在 IP 数据包头部的 8 位 DS 字段的 6 位 DS 代码点(DSCP)子字段中设置。例如，DSCP 设置为 0x2E 指定加急转发作为所需的 QoS。加急转发通常用于实时数据，如语音和视频。
 
 ROS2 lacks an API to specify DS-based QoS for publishers and subscriptions. The DSCP value in their flows is therefore set to 0x00. This specifies default forwarding as the required QoS from the network. However, DDS provides the Transport Priority QoS policy to specify DS-based QoS.
 
@@ -70,7 +70,7 @@ A frustrating problem with DS-based QoS is that intermediate routers can reset o
 
 - 5G network 5QI: The Network Exposure Function (NEF) [4] in the 5G core network provides robust and secure API for QoS specification. This API enables applications to programmatically (HTTP-JSON) specify required QoS by associating 5G QoS Identifiers (5QIs) to flow identifers, as shown in the figure next.
 
-> 5G 网络 5QI：5G 核心网络中的网络暴露功能（NEF）[4]提供了强大且安全的 API，用于 QoS 规范。此 API 可以通过将 5G QoS 标识符（5QIs）与流标识符相关联，以编程（HTTP-JSON）的方式指定所需的 QoS，如下图所示。
+> 5G 网络 5QI：5G 核心网络中的网络暴露功能(NEF)[4]提供了强大且安全的 API，用于 QoS 规范。此 API 可以通过将 5G QoS 标识符(5QIs)与流标识符相关联，以编程(HTTP-JSON)的方式指定所需的 QoS，如下图所示。
 
 ![ROS2 Application 5GS Network Programmability](./ros2-app-5gs-network-programmability.png)
 
@@ -97,11 +97,11 @@ The 5G network also has the ability to sensibly infer 5QI QoS from DS-based QoS 
 
 All publishers and subscriptions in communicating nodes have the same flow identifers (5-tuple or 3-tuple). This disables explicit network QoS differentiation for publishers and subscriptions in communicating nodes. In other words, publishers and subscriptions in communicating nodes can only be assigned the same network QoS.
 
-> 所有在通信节点上的发布者和订阅者都具有相同的流标识（5 元组或 3 元组）。这使得在通信节点上的发布者和订阅者不能显式地进行网络 QoS 分类。**换句话说，在通信节点上的发布者和订阅者只能被分配相同的网络 QoS。**
+> 所有在通信节点上的发布者和订阅者都具有相同的流标识(5 元组或 3 元组)。这使得在通信节点上的发布者和订阅者不能显式地进行网络 QoS 分类。**换句话说，在通信节点上的发布者和订阅者只能被分配相同的网络 QoS。**
 
 We believe the problem occurs by design. For performance reasons, RMW implementations are likely to associate IP address, port, and transport protocol to nodes and not to individual publishers/subscriptions. This is true for all the tier-1 RMW implementations today (Foxy Fitzroy at the time of writing). None of the tier-1 RMW implementations set the IPv6 flow label to differentiate flows of publisher/subscriptions.
 
-> 我们相信这个问题是由设计引起的。出于性能原因，**RMW 实现很可能将 IP 地址、端口和传输协议关联到节点，而不是个别发布者/订阅者。目前所有一级 RMW 实现都是如此（写作时为 Foxy Fitzroy）。没有一级 RMW 实现设置 IPv6 流标签来区分发布者/订阅者的流量。**
+> 我们相信这个问题是由设计引起的。出于性能原因，**RMW 实现很可能将 IP 地址、端口和传输协议关联到节点，而不是个别发布者/订阅者。目前所有一级 RMW 实现都是如此(写作时为 Foxy Fitzroy)。没有一级 RMW 实现设置 IPv6 流标签来区分发布者/订阅者的流量。**
 
 ### Example
 
@@ -143,12 +143,12 @@ Our proposal to solve the problem is to make the flows of publishers and subscri
 - Flow label (publisher only)
 
 > - _网络流_：RMW 实现从发布者到订阅者传输消息时选择的网络资源元组。考虑的网络资源包括：
-> - 传输协议 UDP 或 TCP（发布者和订阅者）
-> - 运输端口（发布者和订阅者）
-> - 网络协议 IPv4 或 IPv6（发布者和订阅者）
-> - 网络地址（出版商和订阅）
+> - 传输协议 UDP 或 TCP(发布者和订阅者)
+> - 运输端口(发布者和订阅者)
+> - 网络协议 IPv4 或 IPv6(发布者和订阅者)
+> - 网络地址(出版商和订阅)
 > - 只限发布者的 DSCP
-> - 流标签（仅限发布者）
+> - 流标签(仅限发布者)
 
 Network flows are defined for UDP/TCP and IP-based RMW implementations only. It is not a limiting definition since these are the majority protocols used today. The definition can be later extended to include relevant non-IP networks such as deterministic ethernet.
 
@@ -159,7 +159,7 @@ Network flows are defined for UDP/TCP and IP-based RMW implementations only. It 
 - _Unique NFE_: A NFE is unique if it is dissimilar to all other NFEs.
 - _Strongly and weakly unique network flow_: A network flow is strongly unique if both publisher and subscription NFEs are unique. A weakly unique network flow either has a publisher NFE or a subscriber NFE that is unique.
 
-> 网络流端点（NFE）：特定于发布者或订阅的网络流的一部分。换句话说，每个网络流都有两个 NFE；一个是发布者，另一个是订阅者。
+> 网络流端点(NFE)：特定于发布者或订阅的网络流的一部分。换句话说，每个网络流都有两个 NFE；一个是发布者，另一个是订阅者。
 > 两个 NFE 不相似，如果它们的一个或多个网络资源不同。
 > _唯一的 NFE_：如果 NFE 与所有其他 NFE 不同，则它是唯一的。
 > 强唯一网络流和弱唯一网络流：如果发布者和订阅者 NFE 都是唯一的，则网络流是强唯一的。弱唯一网络流要么有一个唯一的发布者 NFE，要么有一个唯一的订阅者 NFE。
@@ -244,13 +244,13 @@ We list few candidate alternatives next for RMW implementations to implement the
 - If the node is communicating using IPv6, then the RMW implementation can write a unique value (such as a suitable derivative of the RTPS entity ID) in the Flow Label field.
 - If the node is communicating via IPv4, then the RMW implementation can write a unique value in the DSCP field. This option should only be considered as a last resort since re-purposing the DSCP as an identifier is prone to misinterpretation, is limited to 64 entries, and requires careful configuration of intermediate routers.
 
-> 一个适用于 IPv6 和 IPv4 的简单选项是选择一个唯一的传输端口（UDP/TCP），并相应地更新传输协议头中的端口字段。
-> 如果节点使用 IPv6 进行通信，那么 RMW 实现可以在流标签字段中写入一个唯一的值（比如 RTPS 实体 ID 的合适衍生值）。
+> 一个适用于 IPv6 和 IPv4 的简单选项是选择一个唯一的传输端口(UDP/TCP)，并相应地更新传输协议头中的端口字段。
+> 如果节点使用 IPv6 进行通信，那么 RMW 实现可以在流标签字段中写入一个唯一的值(比如 RTPS 实体 ID 的合适衍生值)。
 > 如果节点通过 IPv4 进行通信，那么 RMW 实现可以在 DSCP 字段中写入唯一值。应该将此选项作为最后的手段，因为将 DSCP 重新用作标识符容易被误解，仅限于 64 个条目，并需要对中间路由器进行精确配置。
 
 Both DDS and non-DDS RMW implementations can trivially set fields in IP or transport protocol headers using native socket API on all ROS2 platforms (Linux, Windows, MacOS).
 
-> 两种 DDS 和非 DDS RMW 实现都可以在所有 ROS2 平台（Linux、Windows、MacOS）上使用本地套接字 API 轻松设置 IP 或传输协议头中的字段。
+> 两种 DDS 和非 DDS RMW 实现都可以在所有 ROS2 平台(Linux、Windows、MacOS)上使用本地套接字 API 轻松设置 IP 或传输协议头中的字段。
 
 ### Get Network Flow Endpoints
 
@@ -280,7 +280,7 @@ The proposed method `get_network_flow_endpoints()` requires RMW implementations 
 
 To reiterate, the NFEs returned by `get_network_flow_endpoints()` for a publisher represents the NFEs created on the publisher-side only (local). It does not contain information about NFEs of matched subscriptions. Similarly, the NFEs returned by `get_network_flow_endpoints()` for a subscription are localized with no information about matched publishers.
 
-> 重申一下，`get_network_flow_endpoints()` 返回的 NFEs 仅代表发布者端（本地）创建的 NFEs。它不包含匹配订阅的 NFEs 的信息。同样，`get_network_flow_endpoints()` 返回的 NFEs 只是本地化的，没有匹配发布者的信息。
+> 重申一下，`get_network_flow_endpoints()` 返回的 NFEs 仅代表发布者端(本地)创建的 NFEs。它不包含匹配订阅的 NFEs 的信息。同样，`get_network_flow_endpoints()` 返回的 NFEs 只是本地化的，没有匹配发布者的信息。
 
 DDS-based RMW implementations can obtain required information using the DDS-standard `Locator_t` structure when `get_network_flow_endpoints()` is called.
 
@@ -306,7 +306,7 @@ Our proposal has the following advantages:
 
 - If the RMW implementation decides to create a NFE using the IPv4 DSCP field, then only up to 64 (2^6) publishers and subscriptions can be uniquely identified assuming all other resources in the NFE remain constant. In addition, network administration processes should be notified that the DSCP field is re-purposed as an identifier to prevent misinterpretation and erasure.
 
-> 如果 RMW 实施决定使用 IPv4 DSCP 字段创建 NFE，那么假设其他资源保持不变，最多只能唯一标识 64（2^6）个发布者和订阅者。此外，应通知网络管理过程，DSCP 字段被重新用作标识符，以防止误解和抹去。
+> 如果 RMW 实施决定使用 IPv4 DSCP 字段创建 NFE，那么假设其他资源保持不变，最多只能唯一标识 64(2^6)个发布者和订阅者。此外，应通知网络管理过程，DSCP 字段被重新用作标识符，以防止误解和抹去。
 
 ## Alternative Solutions
 
@@ -320,7 +320,7 @@ We list a few alternative solutions to the problem that are limited and dissatis
 
 2. Custom 6-tuple using side-loaded DDS Transport Priority QoS policies: Conceptually, a custom 6-tuple can be constructed by side-loading unique values into the Transport Priority QoS policy of the DDS RMW implementation. In practice, however, this is difficult to implement for several reasons. First, it expects DDS RMW side-loading competence from application programmers which is inconvenient. Second, re-purposing DSCP values as unique identifiers is limited to 64 identifiers and requires careful network administration as mentioned before. Third, side-loading support varies across DDS RMW implementations. To the best of our knowledge, none of the tier-1 DDS implementations for ROS2 today (Foxy) support side-loading Transport Priority QoS policies for _select few_ publishers and subscriptions in a node due to lack of fine-grained interfaces. A glaring limitation is that this alternative ignores non-DDS RMW.
 
-> 使用侧载 DDS 传输优先级 QoS 策略构建自定义 6 元组：从概念上讲，可以通过在 DDS RMW 实现的传输优先级 QoS 策略中侧载独特的值来构建自定义 6 元组。但是从实践上讲，由于几点原因，这很难实现。首先，它期望应用程序程序员具备 DDS RMW 侧载能力，这很不方便。其次，将 DSCP 值重新用作唯一标识符仅限于 64 个标识符，并且需要仔细进行网络管理，如前所述。第三，DDS RMW 实现的侧载支持各不相同。据我们所知，由于缺乏细粒度接口，ROS2 今天的第一级 DDS 实现（Foxy）不支持在节点上为*选择的少数*发布者和订阅者侧载传输优先级 QoS 策略。一个明显的局限性是，这种替代方案忽略了非 DDS RMW。
+> 使用侧载 DDS 传输优先级 QoS 策略构建自定义 6 元组：从概念上讲，可以通过在 DDS RMW 实现的传输优先级 QoS 策略中侧载独特的值来构建自定义 6 元组。但是从实践上讲，由于几点原因，这很难实现。首先，它期望应用程序程序员具备 DDS RMW 侧载能力，这很不方便。其次，将 DSCP 值重新用作唯一标识符仅限于 64 个标识符，并且需要仔细进行网络管理，如前所述。第三，DDS RMW 实现的侧载支持各不相同。据我们所知，由于缺乏细粒度接口，ROS2 今天的第一级 DDS 实现(Foxy)不支持在节点上为*选择的少数*发布者和订阅者侧载传输优先级 QoS 策略。一个明显的局限性是，这种替代方案忽略了非 DDS RMW。
 
 3. DS-based QoS using side-loaded DDS Transport Priority QoS policies: This gets ahead of the problem by directly specifying the required DS-based QoS through side-loaded Transport Priority QoS policies. However, this suffers from similar impracticalities as the previous alternative. It ignores non-DDS RMW, expects DS competence from programmers, and is not supported by tier-1 RMW implementations.
 

@@ -9,9 +9,9 @@ author: '[Alberto Soragna](https://github.com/alsora) [Juan Oxoby](https://githu
 date_written: 2020-03
 last_modified: 2020-03
 
-Authors: {{ page.author }}
-Date Written: {{ page.date_written }}
-Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
+Authors: 
+Date Written: 
+Last Modified:
 ---
 ## Introduction
 
@@ -123,7 +123,7 @@ The DDS specification provides ways for potentially fixing this problem, i.e. wi
 > DDS 规范提供了解决这个问题的方法，即使用 `ignore_participant`、`ignore_publication` 和 `ignore_subscription` 操作。每个操作都可以用来忽略远程参与者或实体，从而可以表现得就像远程参与者不存在一样。
 
 > [!NOTE]
-> 在 pub/sub_option 结构中确实存在类似的定义，`ignore\_\*`
+> 在 pub/sub_option 结构中确实存在类似的定义，`ignore_\*`
 
 The current intra-process communication uses meta-messages that are sent through the RMW between nodes in the same process. This has two consequences: first it does not allow to directly "ignore" participants in the same process, because they still have to communicate in order to send and receive meta-messages, thus requiring a more fine-grained control ignoring specific `Publisher` s and `Subscription` s.
 
@@ -406,7 +406,7 @@ Late-joiner `Subscription` s will have to extract messages from this buffer once
 3. If at least 1 message was present, trigger the `rcl_guard_condition_t` member of the `SubscriptionIntraProcessWaitable` associated with the new `Subscription`.
 
 > 1. 调用 `IntraProcessManager::find_matching_publishers(SubscriptionInfo sub_info)`，返回一组存储的 PublisherInfo，它们具有与发送消息给新 Subscription 的 QoS 兼容。这些将是所有的瞬态本地发布者，因此它们具有环形缓冲区。
-> 2. 将所有找到的环形缓冲区中的消息复制到新的 `Subscription` 环形缓冲区中。 **待办事项：** 检索旧消息的顺序有任何限制吗？(即，一个发布者一次; 所有发布者的第一个，然后是所有的第二个...)。
+> 2. 将所有找到的环形缓冲区中的消息复制到新的 `Subscription` 环形缓冲区中。**待办事项：** 检索旧消息的顺序有任何限制吗？(即，一个发布者一次; 所有发布者的第一个，然后是所有的第二个...)。
 > 3. 如果至少有 1 条消息存在，触发与新的订阅相关联的 `SubscriptionIntraProcessWaitable` 的 `rcl_guard_condition_t` 成员。
 
 However, this is not enough as it does not allow to handle the scenario in which a `transient local` `Publisher` has only intra-process `Subscription` s when it is created, but, eventually, a `transient local` `Subscription` in a different process joins. Initially, published messages are not passed to the middleware, since all the `Subscription` s are in the same process. This means that the middleware is not able to store old messages for eventual late-joiners.
@@ -529,7 +529,7 @@ colcon build --cmake-args  -DCMAKE_CXX_FLAGS="-O2" -DCMAKE_C_FLAGS="-O2"
 
 The first test has been carried out using the `intra_process_demo` package contained in the [ROS 2 demos repository](https://github.com/ros2/demos). A first application, called `image_pipeline_all_in_one`, is made of 3 nodes, where the fist one publishes a `unique_ptr<Image>` message. A second node subscribes to the topic and republishes the image after modifying it on a new topic. A third node subscribes to to this last topic.
 
-> 第一次测试使用 [ROS 2 demos repository](https://github.com/ros2/demos) 中包含的 `intra_process_demo` 包进行了测试。第一个应用程序，称为 `image_pipeline_all_in_one`，由 3 个节点组成，其中第一个节点发布 `unique_ptr<Image>` 消息。第二个节点订阅该主题，并在新主题上修改图像后重新发布图像。第三个节点订阅此最后一个主题。
+> 第一次测试使用 [ROS 2 demos repository](https://github.com/ros2/demos) 中包含的 `intra_process_demo` 包进行了测试。第一个应用程序，称为 `image_pipeline_all_in_one`，由 3 个节点组成，其中第一个节点发布 `unique_ptr<Image>` 消息。第二个节点订阅该主题，并在新主题上修改镜像后重新发布镜像。第三个节点订阅此最后一个主题。
 
 Also a variant of the application has been tested: it's `image_pipeline_with_two_image_view`, where there are 2 consumers at the end of the pipeline.
 
@@ -537,7 +537,7 @@ Also a variant of the application has been tested: it's `image_pipeline_with_two
 
 In these tests the latency is computed as the total pipeline duration, i.e. the time from when the first node publishes the image to when the last node receives it. The CPU usage and the latency have been obtained from `top` command and averaged over the experiment duration.
 
-> 在这些测试中，延迟被计算为总管道持续时间，即从第一个节点发布图像到最后一个节点接收图像的时间。**CPU 使用率和延迟是从 `top` 命令获得的**，并在实验持续时间内平均。
+> 在这些测试中，延迟被计算为总管道持续时间，即从第一个节点发布镜像到最后一个节点接收镜像的时间。**CPU 使用率和延迟是从 `top` 命令获得的**，并在实验持续时间内平均。
 
 Performance evaluation on a laptop computer with Intel i7-6600U CPU @ 2.60GHz.
 
@@ -590,7 +590,7 @@ A detailed description and the source code for these application and topologies 
 
 A similar behavior can be observed also running the application on resource constrained platforms. The following results have been obtained on a RaspberryPi 2.
 
-> 在资源受限的平台上运行应用程序也可以观察到类似的行为。 在 RaspberryPi 2 上获得了以下结果。
+> 在资源受限的平台上运行应用程序也可以观察到类似的行为。在 RaspberryPi 2 上获得了以下结果。
 
 ```
     | ROS 2 system  | IPC      | RMW       | Latency [us] | CPU [%] | RAM [Mb] |

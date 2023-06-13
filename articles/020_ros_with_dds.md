@@ -17,9 +17,9 @@ categories: Middleware
   本文是在决定使用DDS和RTP作为ROS2的基础通信标准之前写的。有关ROS 2的实施方式，请参见[核心文档]
 </div>
 
-Authors: {{ page.author }}
-Date Written: {{ page.date_written }}
-Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
+Authors: 
+Date Written: 
+Last Modified:
 ---
 Terminology:
 
@@ -90,11 +90,11 @@ and many other equally important and varied scenarios. These successful use case
 
 Not only has DDS met the needs of these use cases, but after talking with users of DDS (in this case government and NASA employees who are also users of ROS), they have all praised its reliability and flexibility. Those same users will note that the flexibility of DDS comes at the cost of complexity. The complexity of the API and configuration of DDS is something that ROS would need to address.
 
-> 不仅 DDS 满足了这些用例的需求，而且在与 DDS 用户(在这种情况下是政府和 NASA 雇员，也是 ROS 用户)交谈后，他们都赞扬了它的可靠性和灵活性。同样的用户会注意到，**DDS 的灵活性是以复杂性为代价的**。 DDS 的 API 和配置的复杂性是 ROS 需要解决的问题。
+> 不仅 DDS 满足了这些用例的需求，而且在与 DDS 用户(在这种情况下是政府和 NASA 雇员，也是 ROS 用户)交谈后，他们都赞扬了它的可靠性和灵活性。同样的用户会注意到，**DDS 的灵活性是以复杂性为代价的**。DDS 的 API 和配置的复杂性是 ROS 需要解决的问题。
 
 The DDS wire specification ([DDSI-RTPS](http://www.omg.org/spec/DDSI-RTPS/)) is extremely flexible, allowing it to be used for reliable, high level systems integration as well as real-time applications on embedded devices. Several of the DDS vendors have special implementations of DDS for embedded systems which boast specs related to library size and memory footprint on the scale of tens or hundreds of kilobytes. Since DDS is implemented, by default, on UDP, it does not depend on a reliable transport or hardware for communication. This means that DDS has to reinvent the reliability wheel (basically TCP plus or minus some features), but in exchange DDS gains portability and control over the behavior. Control over several parameters of reliability, what DDS calls Quality of Service (QoS), gives maximum flexibility in controlling the behavior of communication. For example, if you are concerned about latency, like for soft real-time, you can basically tune DDS to be just a UDP blaster. In another scenario you might need something that behaves like TCP, but needs to be more tolerant to long dropouts, and with DDS all of these things can be controlled by changing the QoS parameters.
 
-> DDS 线路规范([DDSI-RTPS](http://www.omg.org/spec/DDSI-RTPS/))非常灵活，可用于可靠的高级系统集成以及嵌入式设备上的实时应用程序。 DDS 的几个供应商都有专门为嵌入式系统设计的 DDS 实现，其规格与库大小和内存占用量相关，达到数十或数百 KB 的规模。由于 **DDS 默认采用 UDP 实现**，因此不依赖于可靠的传输或硬件进行通信。**这意味着 DDS 必须重新发明可靠性的轮子(基本上是加上或减去一些功能的 TCP)，但作为交换，DDS 获得了可移植性和对行为的控制**。对可靠性的几个参数的控制，即 DDS 所称的服务质量(QoS)，可以最大限度地控制通信行为。例如，如果您关注延迟，如软实时，则可以通过更改 QoS 参数将 DDS 调整为仅 UDP 发射器。在另一种情况下，您可能需要行为类似于 TCP 的东西，但需要对长时间的断开更加宽容，而使用 DDS，所有这些都可以通过更改 QoS 参数来控制。
+> DDS 线路规范([DDSI-RTPS](http://www.omg.org/spec/DDSI-RTPS/))非常灵活，可用于可靠的高级系统集成以及嵌入式设备上的实时应用程序。DDS 的几个供应商都有专门为嵌入式系统设计的 DDS 实现，其规格与库大小和内存占用量相关，达到数十或数百 KB 的规模。由于 **DDS 默认采用 UDP 实现**，因此不依赖于可靠的传输或硬件进行通信。**这意味着 DDS 必须重新发明可靠性的轮子(基本上是加上或减去一些功能的 TCP)，但作为交换，DDS 获得了可移植性和对行为的控制**。对可靠性的几个参数的控制，即 DDS 所称的服务质量(QoS)，可以最大限度地控制通信行为。例如，如果您关注延迟，如软实时，则可以通过更改 QoS 参数将 DDS 调整为仅 UDP 发射器。在另一种情况下，您可能需要行为类似于 TCP 的东西，但需要对长时间的断开更加宽容，而使用 DDS，所有这些都可以通过更改 QoS 参数来控制。
 
 Though the default implementation of DDS is over UDP, and only requires that level of functionality from the transport, OMG also added support for DDS over TCP in version 1.2 of their specification. Only looking briefly, two of the vendors (RTI and ADLINK Technologies) both support DDS over TCP.
 
@@ -126,7 +126,7 @@ The OMG defined the DDS specification with several companies which are now the m
 
 Amongst these vendors is an array of reference implementations with different strategies and licenses. The OMG maintains an active [list](http://dds-directory.omg.org/vendor/list.htm) of DDS vendors.
 
-> 在这些供应商中，有各种不同策略和许可证的参考实现。 OMG 维护着一份活跃的 DDS 供应商[列表](http://dds-directory.omg.org/vendor/list.htm)。
+> 在这些供应商中，有各种不同策略和许可证的参考实现。OMG 维护着一份活跃的 DDS 供应商[列表](http://dds-directory.omg.org/vendor/list.htm)。
 
 In addition to vendors providing implementations of the DDS specification's API, there are software vendors which provide an implementation with more direct access to the DDS wire protocol, RTPS. For example:
 
@@ -254,7 +254,7 @@ There is a great deal of value in the current ROS message definitions. The forma
 
 Therefore, the ROS 1 `.msg` files would continue to be used and the `.msg` files would be converted into `.idl` files so that they could be used with the DDS transport. Language specific files would be generated for both the `.msg` files and the `.idl` files as well as conversion functions for converting between ROS and DDS in-memory instances. The ROS 2 API would work exclusively with the `.msg` style message objects in memory and would convert them to `.idl` objects before publishing.
 
-> 因此，ROS 1 的 `.msg` 文件将继续使用，**`.msg` 文件将被转换成 `.idl` 文件**，以便它们可以与 DDS 传输一起使用。将为 `.msg` 文件和 `.idl` 文件生成特定于语言的文件，以及用于在 ROS 和 DDS 内存实例之间转换的转换函数。 ROS 2 API 将专门使用 `.msg` 样式的消息对象在内存中工作，并**在发布前将它们转换为 `.idl` 对象**。
+> 因此，ROS 1 的 `.msg` 文件将继续使用，**`.msg` 文件将被转换成 `.idl` 文件**，以便它们可以与 DDS 传输一起使用。将为 `.msg` 文件和 `.idl` 文件生成特定于语言的文件，以及用于在 ROS 和 DDS 内存实例之间转换的转换函数。ROS 2 API 将专门使用 `.msg` 样式的消息对象在内存中工作，并**在发布前将它们转换为 `.idl` 对象**。
 
 ![Message Generation Diagram](/img/ros_on_dds/message_generation.png "Message Generation Diagram")
 

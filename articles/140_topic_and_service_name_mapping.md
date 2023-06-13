@@ -14,21 +14,21 @@ The special single character token `~` will be replaced with a namespace snippet
 
 ### Substitutions
 
-The bracket syntax (`{substitution_name}`) may be used in non-fully qualified names to substitute useful contextual information into the name. The set of substitution keys (names) are not set in this document, but some reasonable examples might be: `{node}` expands to the current node's name or `{ns}` expands to the current node's namespace.
+The bracket syntax (`` expands to the current node's namespace.
 
-> 括号语法(`{substitution_name}`)可以在非完全限定名称中使用，以将有用的上下文信息替换为名称。本文档中没有设置替换键(名称)集，但一些合理的示例可能是：“｛node｝”扩展到当前节点的名称或“｛ns｝”展开到当前节点名称空间。
+> 括号语法(``)可以在非完全限定名称中使用，以将有用的上下文信息替换为名称。本文档中没有设置替换键(名称)集，但一些合理的示例可能是：“｛node｝”扩展到当前节点的名称或“｛ns｝”展开到当前节点名称空间。
 
-Substitutions are expanded after the private namespace substitution character is expanded. Therefore a substitution may not contain the private namespace substitution character, i.e. `~`. For example, given the name `{private}foo` and a substitution called `{private}` which expands to `~/_`, you will get an error because the `~/_` will end up in the expanded name as `/my_ns/~/_foo` which is is not allowed to have a `~` in it.
+Substitutions are expanded after the private namespace substitution character is expanded. Therefore a substitution may not contain the private namespace substitution character, i.e. `~`. For example, given the name `` which expands to `~/_`, you will get an error because the `~/_` will end up in the expanded name as `/my_ns/~/_foo` which is is not allowed to have a `~` in it.
 
 > 在展开私有命名空间替换字符之后，将展开替换。因此，替换可能不包含私有命名空间替换字符，即“~”。例如，给定名称“｛private｝foo”和一个扩展为“~/_”的名为“｛private｝”的替换，您将得到一个错误，因为“~/_'”将在扩展名称中以“/my_ns/~/\ufoo”结尾，而扩展名称中不允许有“~”。
 
-Substitutions are expanded in a single pass, so substitutions should not expand to contain substitutions themselves. For example, given the name `/foo/{bar_baz}` where `{bar_baz}` expands to `{bar}/baz` and where `{bar}` in turn expands to `bar`, you will get `/foo/{bar}/baz` as the final result, which is invalid, and not `/foo/bar/baz` as you might expect.
+Substitutions are expanded in a single pass, so substitutions should not expand to contain substitutions themselves. For example, given the name `/foo//baz` as the final result, which is invalid, and not `/foo/bar/baz` as you might expect.
 
 > 换人是在一次传球中扩大的，所以换人不应该扩大到包含换人本身。例如，给定名称“/foo/｛bar_baz｝”，其中“｛bar_blaz｝”扩展为“｛bar｝/baz”，而“｛bar｝”又扩展为“bar”，则最终结果为“/foo/{bar｝/baz”。
 
-Substitutions are also not allowed to be nested, i.e. substitutions may not contain other substitutions in their names. This is implicitly enforced by the rules above that say substitution names may only contain alphanumerics and underscores (`_`). For example, given the name `{% raw %}/foo/{{bar}_baz}{% endraw %}` would result in an error because `{` and `}` are not allowed in a substitution names and the substitution name `{bar}_baz` does contain them.
+Substitutions are also not allowed to be nested, i.e. substitutions may not contain other substitutions in their names. This is implicitly enforced by the rules above that say substitution names may only contain alphanumerics and underscores (`_`). For example, given the name `_baz` does contain them.
 
-> 替换也不允许嵌套，即替换的名称中不能包含其他替换。这是由上面的规则隐含地强制执行的，即替换名称只能包含字母数字和下划线(`_`)。例如，给定名称“｛%raw%｝/foo/｛｛bar｝\_baz｝｛%endraw%｝”将导致错误，因为在替换名称中不允许使用“｛”和“｝”，而替换名称“{bar｝\_baz”确实包含它们。
+> 替换也不允许嵌套，即替换的名称中不能包含其他替换。这是由上面的规则隐含地强制执行的，即替换名称只能包含字母数字和下划线(`_`)。例如，给定名称“｛%raw%｝/foo/｛｛bar｝_baz｝｛%endraw%｝”将导致错误，因为在替换名称中不允许使用“｛”和“｝”，而替换名称“{bar｝_baz”确实包含它们。
 
 ### Hidden Topic or Service Names
 
@@ -38,9 +38,9 @@ Any topic or service name that contains any tokens (either namespaces or a topic
 
 ## Mapping of ROS 2 Topic and Service Names to DDS Concepts
 
-The ROS topic and service name constraints allow more types of characters than the DDS topic names because ROS additionally allows the forward slash (`/`), the tilde (`~`), and the balanced curly braces (`{}`). These must be substituted or otherwise removed during the process of converting the topic or service name to DDS concepts. Since ROS 2 topic and service names are expanded to fully qualified names, any balanced bracket (`{}`) substitutions and tildes (`~`) will have been expanded. Additionally any URL related syntax, e.g. the `rostopic://` prefix, will be removed once parsed. Previously forward slashes (`/`) were disallowed in DDS topic names, now the restriction has been lifted (see [issue](https://issues.omg.org/issues/lists/dds-rtf5#issue-42236) on omg.org) and therefore the ROS topic names are first prefixed with ROS Specific Namespace prefix (described below) are then mapped directly into DDS topic names.
+The ROS topic and service name constraints allow more types of characters than the DDS topic names because ROS additionally allows the forward slash (`/`), the tilde (`~`), and the balanced curly braces (``) substitutions and tildes (`~`) will have been expanded. Additionally any URL related syntax, e.g. the `rostopic://` prefix, will be removed once parsed. Previously forward slashes (`/`) were disallowed in DDS topic names, now the restriction has been lifted (see [issue](https://issues.omg.org/issues/lists/dds-rtf5#issue-42236) on omg.org) and therefore the ROS topic names are first prefixed with ROS Specific Namespace prefix (described below) are then mapped directly into DDS topic names.
 
-> ROS 主题和服务名称约束允许比 DDS 主题名称更多类型的字符，因为 ROS 还允许正斜杠(`/`)、波浪号(`~`)和平衡大括号(`{}`)。在将主题或服务名称转换为 DDS 概念的过程中，必须替换或删除这些内容。由于 ROS 2 主题和服务名称被扩展为完全限定名称，任何平衡括号(“｛｝”)替换和波浪号(“~”)都将被扩展。此外，任何与 URL 相关的语法，例如“rostopic://”前缀，一旦解析就会被删除。以前 DDS 主题名称中不允许使用正斜杠(`/`)，现在取消了限制(请参阅[问题](https://issues.omg.org/issues/lists/dds-rtf5#issue-42236)，因此 ROS 主题名称首先加上 ROS 特定命名空间前缀(如下所述)，然后直接映射到 DDS 主题名称中。
+> ROS 主题和服务名称约束允许比 DDS 主题名称更多类型的字符，因为 ROS 还允许正斜杠(`/`)、波浪号(`~`)和平衡大括号(``)。在将主题或服务名称转换为 DDS 概念的过程中，必须替换或删除这些内容。由于 ROS 2 主题和服务名称被扩展为完全限定名称，任何平衡括号(“｛｝”)替换和波浪号(“~”)都将被扩展。此外，任何与 URL 相关的语法，例如“rostopic://”前缀，一旦解析就会被删除。以前 DDS 主题名称中不允许使用正斜杠(`/`)，现在取消了限制(请参阅[问题](https://issues.omg.org/issues/lists/dds-rtf5#issue-42236)，因此 ROS 主题名称首先加上 ROS 特定命名空间前缀(如下所述)，然后直接映射到 DDS 主题名称中。
 
 ### ROS Specific Namespace Prefix
 
@@ -97,7 +97,7 @@ While testing our implementation with Connext, we encountered some additional li
 
 Since all ROS topics are prefixed when being converted to DDS topic names, it makes it impossible to subscribe to existing DDS topics which do not follow the same naming pattern. For example, if an existing DDS program is publishing on the `image` topic (and is using the DDS equivalent to the ROS message type) then a ROS program could not subscribe to it because of the name mangling produced by the implicit ROS specific namespace. Therefore to allow ROS programs to interoperate with "native" DDS topic names the API should provide a way to skip the ROS specific prefixing.
 
-> 由于所有 ROS 主题在转换为 DDS 主题名称时都带有前缀，因此无法订阅不遵循相同命名模式的现有 DDS 主题。例如，如果一个现有的 DDS 程序正在“图像”主题上发布(并且使用相当于 ROS 消息类型的 DDS)，那么 ROS 程序就无法订阅它，因为隐含的 ROS 特定命名空间产生了名称篡改。因此，为了允许 ROS 程序与“本机”DDS 主题名进行互操作，API 应该提供一种跳过 ROS 特定前缀的方法。
+> 由于所有 ROS 主题在转换为 DDS 主题名称时都带有前缀，因此无法订阅不遵循相同命名模式的现有 DDS 主题。例如，如果一个现有的 DDS 程序正在“镜像”主题上发布(并且使用相当于 ROS 消息类型的 DDS)，那么 ROS 程序就无法订阅它，因为隐含的 ROS 特定命名空间产生了名称篡改。因此，为了允许 ROS 程序与“本机”DDS 主题名进行互操作，API 应该提供一种跳过 ROS 特定前缀的方法。
 
 There is an option in the API, a boolean `avoid_ros_namespace_convention` in the qos_profile which can be set to `false` to use ROS prefix and `true` to not using ROS namespace prefixing.
 
@@ -132,7 +132,7 @@ In order to support a mapping to the - slightly more - restrictive DDS topic nam
 - must separate the tilde (`~`) from the rest of the name with a forward slash (`/`)
 
   - This is done to avoid inconsistency with how `~foo` works in filesystem paths versus when used in a ROS name.
-- may contain substitutions which are delimited with balanced curly braces (`{}`)
+- may contain substitutions which are delimited with balanced curly braces (``)
 
   - This is a more generic extension of the idea behind the tilde (`~`).
 - have length limits
@@ -166,19 +166,19 @@ This was rejected because it was complicated to explain and did not behave the s
 
 #### Alternative Substitution Syntax
 
-There were some alternative syntaxes proposed for substitutions in the names before the plain balanced curly braces syntax (`{}`) was selected:
+There were some alternative syntaxes proposed for substitutions in the names before the plain balanced curly braces syntax (``) was selected:
 
 > 在选择纯平衡大括号语法(“｛｝”)之前，有一些替代语法被提议用于名称中的替换：
 
-- `%{sub}`
-- `${sub}`
+- `%`
+- `$`
 - `$sub`
 
-The most serious alternatives considered were the "bash-like" syntax of `${sub}` and `$sub`. The `$sub` style syntax has the downside of being difficult to process and making it impossible to express some kinds of concatenation. The `${sub}` was a strong candidate, but ultimately was rejected because it would collide with use in shell scripts. For example, you can imagine a shell script that runs a node and remaps a topic name would contain these substitutions, but they would need to be escaped to prevent bash itself from trying to expand them. The `{}` syntax avoids this problem but is also easy to parse.
+The most serious alternatives considered were the "bash-like" syntax of `$` syntax avoids this problem but is also easy to parse.
 
-> 考虑的最严重的替代方案是“${sub}”和“$sub”的“类似 bash”语法。“$sub”风格的语法的缺点是难以处理，并且无法表达某些类型的串联。“${sub}”是一个强有力的候选者，但最终被拒绝，因为它会与 shell 脚本中的使用相冲突。例如，您可以想象一个运行节点并重新映射主题名称的 shell 脚本将包含这些替换，但需要对它们进行转义，以防止 bash 本身试图扩展它们。“｛｝”语法避免了这个问题，但也很容易解析。
+> 考虑的最严重的替代方案是“$”是一个强有力的候选者，但最终被拒绝，因为它会与 shell 脚本中的使用相冲突。例如，您可以想象一个运行节点并重新映射主题名称的 shell 脚本将包含这些替换，但需要对它们进行转义，以防止 bash 本身试图扩展它们。“｛｝”语法避免了这个问题，但也很容易解析。
 
-The `{}` syntax will collide with Python String substitution, but since that is an explicit action (unlike shell substitution which will implicitly always occur) it's less of an issue.
+The `` syntax will collide with Python String substitution, but since that is an explicit action (unlike shell substitution which will implicitly always occur) it's less of an issue.
 
 > “｛｝”语法将与 Python 字符串替换发生冲突，但由于这是一个显式操作(与总是隐式发生的 shell 替换不同)，所以问题不大。
 
@@ -271,7 +271,7 @@ Preventing users from using capital letters was too constraining for the added b
 
 This is another variation that was proposed in the context of the alternative described in the above section called "Alternative Substitute the Namespace Delimiter". This alternative differs only in that it uses a single underscore in the prefix, i.e. `rt_` rather than `rt__` (`rt` + the leading `/`).
 
-> 这是在上一节“替换命名空间分隔符的替代方案”中描述的替代方案的背景下提出的另一个变体。这种替代方案的不同之处在于，它在前缀中使用了一个下划线，即“rt\_”而不是“rt\_\_”(“rt”+ 前导“/”)。
+> 这是在上一节“替换命名空间分隔符的替代方案”中描述的替代方案的背景下提出的另一个变体。这种替代方案的不同之处在于，它在前缀中使用了一个下划线，即“rt_”而不是“rt__”(“rt”+ 前导“/”)。
 
 Trade-offs:
 
@@ -350,7 +350,7 @@ Rationale:
 
 This alternative was not selected over the prefix solution because of a lack of advantages over the prefix solution. Also, it typically took one more character to express (`rt` versus `_rt_`; unless you also drop the implicit first namespace `/` then it's `rt__` versus `_rt_`) and the potential issues with ambiguity when the DDS implementation handles Request-Reply (added suffixes).
 
-> 由于与前缀解决方案相比缺乏优势，因此没有选择此替代方案而不是前缀解决方案。此外，它通常还需要一个字符来表达(“rt”与“_rt_”；除非您也删除隐式的第一个命名空间“/”，否则它是“rt\__”与“\_rt_”)，以及 DDS 实现处理请求回复(添加后缀)时的潜在模糊问题。
+> 由于与前缀解决方案相比缺乏优势，因此没有选择此替代方案而不是前缀解决方案。此外，它通常还需要一个字符来表达(“rt”与“_rt_”；除非您也删除隐式的第一个命名空间“/”，否则它是“rt__”与“_rt_”)，以及 DDS 实现处理请求回复(添加后缀)时的潜在模糊问题。
 
 #### Limited Suffix Alternative
 

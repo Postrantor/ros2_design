@@ -8,9 +8,9 @@ published: true
 author: Jackie Kay
 date_written: 2016-01
 last_modified: 2016-01
-Authors: {{ page.author }}
-Date Written: {{ page.date_written }}
-Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
+Authors: 
+Date Written: 
+Last Modified:
 ---
 ## Requirements and Implementation of Real-Time Systems
 

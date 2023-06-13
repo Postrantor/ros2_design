@@ -13,9 +13,9 @@ last_modified: 2017-09
 published: true
 categories: Middleware
 
-Authors: {{ page.author }}
-Date Written: {{ page.date_written }}
-Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
+Authors: 
+Date Written: 
+Last Modified:
 ---
 ## The _middleware interface_
 
@@ -166,7 +166,7 @@ DDS has two different ways to use and interact with messages.
 
 On the one hand the message can be specified in an IDL file from which usually a DDS implementation specific program will generate source code. The generated code for C++, e.g., contains types specifically generated for the message.
 
-> 一方面，消息可以在 IDL 文件中指定，通常 DDS 实现的特定程序将生成源代码。 例如，为 C ++ 生成的代码包含专门为消息生成的类型。
+> 一方面，消息可以在 IDL 文件中指定，通常 DDS 实现的特定程序将生成源代码。例如，为 C ++ 生成的代码包含专门为消息生成的类型。
 
 On the other hand the message can be specified programmatically using the DynamicData API of the [XTypes](http://www.omg.org/spec/DDS-XTypes/) specification. Neither an IDL file nor a code generation step is necessary for this case.
 

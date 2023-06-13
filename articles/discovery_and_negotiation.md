@@ -13,9 +13,9 @@ last_modified: 2019-03
   For context, this article explores the ideal and theoretical aspects of discovery and negotiation. It does not aim to answer all implementation questions or suggest implementation strategies. It simply tries to capture the concepts in the design space and identify trade-offs and relationships between design elements.
   对于上下文，本文探讨了发现和谈判的理想和理论方面。它并不是要回答所有实施问题或建议实施策略。它只是试图捕获设计空间中的概念，并确定设计元素之间的权衡和关系。
 
-Authors: {{ page.author }}
-Date Written: {{ page.date_written }}
-Last Modified: {% if page.last_modified %}{{ page.last_modified }}{% else %}{{ page.date_written }}{% endif %}
+Authors: 
+Date Written: 
+Last Modified:
 ---
 > [!NOTE]
 > 这里主要谈到的是 graph 的概念，实际上 ros2 中有 rqt_graph 的工具，可以查看当前 node 组成的 graph 之间的连接关系
