@@ -3,24 +3,24 @@ tip: translate by openai@2023-05-30 22:55:57
 layout: default
 title: Remapping Names
 permalink: articles/static_remapping.html
-abstract:
-  Topics, parameters, and services are identified by [Names](http://wiki.ros.org/Names). Names are hard coded in ROS nodes, but they can be changed at runtime through remapping. Without remapping every instance of a node would require changes in code. This article describes the requirements, rationale, and mechanisms for remapping names in ROS 2.
-author: '[Shane Loretz](https://github.com/sloretz)'
+abstract: Topics, parameters, and services are identified by [Names](http://wiki.ros.org/Names). Names are hard coded in ROS nodes, but they can be changed at runtime through remapping. Without remapping every instance of a node would require changes in code. This article describes the requirements, rationale, and mechanisms for remapping names in ROS 2.
+> 摘要：主题，参数和服务由[名称]（http://wiki.ros.org/names）标识。名称在ROS节点中进行了硬编码，但是可以通过重新映射在运行时更改它们。不重建节点的每个实例，都需要更改代码。本文介绍了ROS 2中重新命名的要求，理由和机制。
+author: "[Shane Loretz](https://github.com/sloretz)"
 date_written: 2017-03
 last_modified: 2020-03
 published: true
-
-Authors: 
-Date Written: 
+Authors:
+Date Written:
 Last Modified:
 ---
+
 ## Why remap names
 
 Remapping names allows reusing the same node executable in different parts of the system. A robot that has multiple sensors of the same type could launch multiple instances of the same node with outputs remapped to different topics.
 
 > 重新映射名称可以在系统的不同部分重复使用相同的节点可执行文件。一个拥有**多个相同类型传感器的机器人可以启动多个相同节点的实例**，并将输出重新映射到不同的主题上。
 
-```
+```bash
           +-------------+
 (Lidar 1)--> node inst 1 +-->/head_scan
           +-------------+
@@ -34,13 +34,13 @@ Remapping names allows reusing the same node executable in different parts of th
 
 The complete definition of a name is [here](http://design.ros2.org/articles/topic_and_service_names.html). It should be read before reading this article.
 
-> 完整的名称定义在[这里](http://design.ros2.org/articles/topic_and_service_names.html)。在阅读本文之前应该先阅读它。
+> 完整的名称定义在[topic_and_service_names]。在阅读本文之前应该先阅读它。
 
 ### Quick Summary
 
 If a name begins with `/` it is called a **Fully Qualified Name** (FQN) otherwise it is called a **relative name**. The strings between slashes are called **tokens**. Names are conceptually divided into two pieces: **namespace** and **basename**. The basename is the last token in a name. The namespace is everything prior to the basename.
 
-> 如果一个名称以“/”开头，它就被称为**完全限定名称**(FQN)，否则就称为**相对名称**。斜杠之间的字符串被称为**令牌**。概念上将名称分为两部分：**命名空间**和**基本名**。基本名是名称中的最后一个令牌。命名空间是基本名之前的所有内容。
+> 如果一个名称以`/`开头，它就被称为**完全限定名称**(FQN)，否则就称为**相对名称**。斜杠之间的字符串被称为**令牌**。概念上将名称分为两部分：**命名空间**和**基本名**。基本名是名称中的最后一个令牌。命名空间是基本名之前的所有内容。
 
 ### Example names
 
@@ -78,7 +78,7 @@ These use cases are being considered for remapping in ROS 2:
 
 This is the ability to apply remap rules to one node in a process without affecting the other nodes. Because processes in ROS 2 can contain multiple nodes, it is possible multiple nodes in a process may use the same name for different purposes. A user may want to change a name used in one node without affecting the rest.
 
-> 这是一种能够将重映射规则应用于进程中的一个节点而不会影响其他节点的能力。由于 ROS 2 中的进程可以包含多个节点，因此可能有多个节点在进程中使用相同的名称用于不同的目的。用户可能想要更改一个节点中使用的名称而不影响其余节点。
+> 这是一种能够**将重映射规则应用于进程中的一个节点而不会影响其他节点的能力**。由于 ROS 2 中的进程可以包含多个节点，因此可能有多个节点在进程中使用相同的名称用于不同的目的。用户可能想要更改一个节点中使用的名称而不影响其余节点。
 
 ### Change a Namespace
 
@@ -88,7 +88,7 @@ Nodes are said to be in a namespace or have a **default namespace**. This namesp
 
 A popular ROS 1 package [actionlib](http://wiki.ros.org/actionlib) creates 5 topics with the same namespace. In ROS 1 remapping an actionlib client or server means creating 5 remapping rules. In ROS 2 just one rule could remap them all.
 
-> 一个流行的 ROS 1 包 [actionlib](http://wiki.ros.org/actionlib) 创建了 5 个具有相同命名空间的主题。在 ROS 1 中，重新映射 actionlib 客户端或服务器意味着创建 5 个重新映射规则。在 ROS 2 中，只需一条规则就可以重新映射它们。
+> 一个流行的 ROS 1 包 [actionlib] 创建了 5 个具有相同命名空间的主题。在 ROS 1 中，重新映射 actionlib 客户端或服务器意味着创建 5 个重新映射规则。在 ROS 2 中，只需一条规则就可以重新映射它们。
 
 _Example:_
 
@@ -113,7 +113,7 @@ _Example:_
 
 This is the ability to change a token in multiple names regardless of where it appears. It is possible a token is used throughout an interface, but is undesirable to the end user. This means it should be possible to make a rule that replaces all uses of this token.
 
-> 这是一种能力，可以将一个标记改变为多个名称，而不管它出现在哪里。有可能一个标记被用在整个界面上，但对最终用户来说是不受欢迎的。这意味着应该有可能制定一条规则，替换掉所有使用这个标记的地方。
+> 这是一种能力，**可以将一个标记改变为多个名称**，而不管它出现在哪里。有可能一个标记被用在整个界面上，但对最终用户来说是不受欢迎的。这意味着应该有可能制定一条规则，替换掉所有使用这个标记的地方。
 
 _Example:_
 
@@ -121,6 +121,11 @@ _Example:_
 - The driver uses lots of names with the company's name in it: `UmbrellaCorp`
 - Another company incorporates the base into their product, and their customers want a ROS 2 interface
 - The second company doesn't want their interface to contain `UmbrellaCorp`, so they remap the token to `mobile_base` when launching the driver
+
+> - 一家公司出售带有 ROS 2 驱动程序的通用移动机器人基地
+> - 驾驶员在其中使用了很多名称：`umbrellacorp`
+> - 另一家公司将基础纳入他们的产品，他们的客户想要 ROS 2 接口
+> - 第二家公司不希望其界面包含`iMbrellAcorp`，因此在启动驱动程序时，它们将令牌重新映射到`mobile_base`
 
 ### Pre-FQN Remapping
 
@@ -277,9 +282,11 @@ The URL schemes `rosservice://` and `rostopic://` may only be given to topic or 
 
 `*`, and `**` match whole tokens only. `*bar` looks like it would match `foobar`, but that would mean matching a partial token. To avoid confusion they are required to be separated from tokens, substitutions, and each other by a `/`. For example `*/bar` `**/*` `~/*` are allowed, but `*bar` `***` `~*` are invalid.
 
-Matching works on FQN only. When a name is to be tested the substitution operators (`~` and ``) in the name and in the rule are replaced with the content they stand for. Then the name is expanded to a FQN. If the match part of a rule does not begin with `/`, `*`, or `**` it is prefixed with `/namespace/` to make it a FQN. Finally the name is compared against the match part of the rule. If the name matches it is remapped.
+> `*`与`**`仅匹配整个令牌。`*bar`看起来与`foobar`相匹配，但这意味着要匹配部分令牌。为了避免混乱，要求它们与代币，替换和彼此之间的分离。例如，允许``**/*'〜/*'被允许，但是*bar`_\*\*` `~_`
 
-> 匹配仅适用于 FQN。当要测试名称时，名称和规则中的替换运算符(“~”和“｛｝”)将替换为它们所代表的内容。然后将名称扩展为 FQN。如果规则的匹配部分不是以“/”、“\*”或“\*\*”开头，则会以“/namespace/”为前缀，使其成为 FQN。最后，将名称与规则的匹配部分进行比较。如果名称匹配，则会重新映射。
+Matching works on FQN only. When a name is to be tested the substitution operators (`~` and ``) in the name and in the rule are replaced with the content they stand for. Then the name is expanded to a FQN. If the match part of a rule does not begin with `/`, `\*`, or `\*\*`it is prefixed with`/namespace/` to make it a FQN. Finally the name is compared against the match part of the rule. If the name matches it is remapped.
+
+> 匹配仅适用于 FQN。当要测试名称时，名称和规则中的替换运算符(`~`和`｛｝`)将替换为它们所代表的内容。然后将名称扩展为 FQN。如果规则的匹配部分不是以`/`、`\*`或`\*\*`开头，则会以`/namespace/`为前缀，使其成为 FQN。最后，将名称与规则的匹配部分进行比较。如果名称匹配，则会重新映射。
 
 #### Replacement Part of a rule
 
@@ -291,31 +298,31 @@ These special operators are unique to the replacement part of a rule:
 
 The syntax for `\1` through `\9` was taken from backreferences in POSIX BRE. However, parenthesis are not used; the wild cards always capture.
 
-> 从“\1”到“\9”的语法取自 POSIX BRE 中的反向引用。但是，不使用括号；外卡总是能抓住。
+> 从`\1`到`\9`的语法取自 POSIX BRE 中的反向引用。但是，不使用括号；外卡总是能抓住。
 
 These references are required to be separated from tokens by a `/`. When this creates a name with `//` one slash is automatically deleted. For example `**/bar:=/bar/\1` matches the name `/foo/bar` with `**` capturing `/foo`, but the new name is `/bar/foo`.
 
-> 这些引用需要与标记用“/”分隔。当创建一个带有“//”的名称时，会自动删除一个斜线。例如，“**/bar:=/bar/\1”将名称“/foo/bar”与“**` 捕获“/foo”匹配，但新名称为“/bar/foo”。
+> 这些引用需要与标记用`/`分隔。当创建一个带有`//`的名称时，会自动删除一个斜线。例如，`**/bar:=/bar/\1`将名称`/foo/bar`与`**` 捕获`/foo`匹配，但新名称为`/bar/foo`。
 
 The replacement part of a rule may not have a URL scheme. This is to avoid a mismatch between the scheme type of the match side and of the replacement side.
 
 > 规则的替换部分可能没有 URL 方案。这是为了避免匹配侧和替换侧的方案类型之间的不匹配。
 
-The substitution operators (`~` and ``) are replaced first. Afterwards the reference operators are replaced with the matched content. Then if the replacment name does not begin with `/` it is automatically prefixed with the node's default namespace to make it a FQN. Finally the name is replaced with the replacement. For example, `/bar/*:=\1/bar` matches the name `/bar/foo` use by a node with default namespace `/ns` with `*` capturing `foo` and replacement name `/ns/foo/bar`.
+The substitution operators (`~` and ``) are replaced first. Afterwards the reference operators are replaced with the matched content. Then if the replacment name does not begin with `/`it is automatically prefixed with the node's default namespace to make it a FQN. Finally the name is replaced with the replacement. For example,`/bar/_:=\1/bar`matches the name`/bar/foo`use by a node with default namespace`/ns`with`_`capturing`foo`and replacement name`/ns/foo/bar`.
 
-> 替换运算符(“~”和“｛｝”)首先被替换。然后，引用运算符被匹配的内容替换。然后，如果 replacment 名称不是以“/”开头，则会自动以节点的默认名称空间为前缀，使其成为 FQN。最后，名称被替换。例如，“/bar/_：=\1/bar”将具有默认名称空间“/ns”的节点使用的名称“/bar/foo”与“_”捕获“foo”和替换名称“/ns/foo/bar”相匹配。
+> 替换运算符(`~`和`{}`)首先被替换。然后，引用运算符被匹配的内容替换。然后，如果 replacment 名称不是以`/`开头，则会自动以节点的默认名称空间为前缀，使其成为 FQN。最后，名称被替换。例如，`/bar/_：=\1/bar`将具有默认名称空间`/ns`的节点使用的名称`/bar/foo`与`_`捕获`foo`和替换名称`/ns/foo/bar`相匹配。
 
 #### Special Rule for Changing the Default Namespace
 
 The string `__ns` can be given on the match part of a rule to signal a change of the default namespace. On the match side `__ns` must be used by itself or with a `nodename:` prefix. The replacement side of a rule must have a FQN which will become the new default namespace.
 
-> 字符串“**ns”可以在规则的匹配部分给出，以表示默认名称空间的更改。在匹配方面，“**ns”必须单独使用或带有“nodename:”前缀。规则的替换端必须有一个 FQN，该 FQN 将成为新的默认命名空间。
+> 字符串`**ns`可以在规则的匹配部分给出，以表示默认名称空间的更改。在匹配方面，`**ns`必须单独使用或带有`nodename:`前缀。规则的替换端必须有一个 FQN，该 FQN 将成为新的默认命名空间。
 
 #### Special Rule for Changing the Node Name
 
 The strings `__name` or `__node` can be given on the match part of a rule to signal a change of the node's name. On the match side it may be used by itself or with a `nodename:` prefix. The replacement must be a single token which will become the node's new name.
 
-> 字符串“**name”或“**node”可以在规则的匹配部分给出，以表示节点名称的更改。在匹配方面，它可以自己使用，也可以带有“nodename:”前缀。替换必须是将成为节点新名称的单个令牌。
+> 字符串`**name`或`**node`可以在规则的匹配部分给出，以表示节点名称的更改。在匹配方面，它可以自己使用，也可以带有`nodename:`前缀。替换必须是将成为节点新名称的单个令牌。
 
 #### Order of Applying Remapping Rules
 
@@ -324,16 +331,12 @@ Remapping rules are applied in the following order:
 > 重新映射规则按以下顺序应用：
 
 1. Node name remapping
-
-> 1.节点名称重映射
-
 2. Namespace remapping
-
-> 2.命名空间重映射
-
 3. All other rules
 
-> 3.所有其他规则
+> 1. 节点名称重映射
+> 2. 命名空间重映射
+> 3. 所有其他规则
 
 Within each category, the rules are applied in the order in which the user gave them.
 
@@ -341,23 +344,17 @@ Within each category, the rules are applied in the order in which the user gave 
 
 **Example of topic/service remapping order:**
 
-> **主题/服务重新映射顺序示例：**
-
 - a node uses a name `/foo/bar`
 - a user gives the node a rule `/*/*:=/asdf` and then `/foo/bar:=fizzbuzz`
 - the final name is `/asdf` because the name did not match the second rule after being remapped by the first rule
 
 **Example of node/namespace remapping order:**
 
-> **节点/命名空间重新映射顺序示例：**
-
 - A node has name `talker`
 - A user gives the rules `talker:__ns:=/my_namespace` then `talker:__node:=foo`
 - The final namespace is the default `/` because the node name remap is applied before the namespace remap
 
 **Example of a default and node specific namespace remap:**
-
-> **默认和特定于节点的命名空间重映射示例：**
 
 - A node has name `talker`
 - A user gives the rules `talker:__ns:=/foo` then `__ns:=/bar`
@@ -373,7 +370,7 @@ The following sections explain how the syntax enables the use cases above.
 
 Remapping a node in a process requires a way to uniquely identify a node. Assuming the node's name is unique in a process, a rule can be prefixed with the name of the target node and a `:`. If the node name is not prefixed, the rule will be applied to all nodes in the process.
 
-> 重新映射流程中的节点需要一种唯一标识节点的方法。假设节点的名称在进程中是唯一的，则可以在规则前面加上目标节点的名称和“：”。如果节点名称没有加前缀，则该规则将应用于进程中的所有节点。
+> 重新映射流程中的节点需要一种唯一标识节点的方法。假设节点的名称在进程中是唯一的，则可以在规则前面加上目标节点的名称和`：`。如果节点名称没有加前缀，则该规则将应用于进程中的所有节点。
 
 _Example:_
 
@@ -403,7 +400,7 @@ _Example of full namespace replacement:_
 
 Changing a basename requires a wildcard which matches the entire namespace. The wildcard `**` is useful because it matches every possible namespace when combined with a slash.
 
-> 更改基名称需要一个与整个命名空间匹配的通配符。通配符“\*\*”很有用，因为它与斜杠组合时匹配所有可能的命名空间。
+> 更改基名称需要一个与整个命名空间匹配的通配符。通配符`\*\*`很有用，因为它与斜杠组合时匹配所有可能的命名空间。
 
 _Example:_
 
@@ -438,13 +435,13 @@ _Example rules:_
 
 The syntax here can be passed to a node via the command line. The syntax has been chosen to not conflict with special shell characters in bash. For example in bash, the character `*` only has special behavior if it is surrounded by whitespace, but remap rules don't contain whitespace. This character may still be difficult on other shells, like zsh.
 
-> 这里的语法可以通过命令行传递给节点。语法的选择是为了不与 bash 中的特殊 shell 字符冲突。例如，在 bash 中，字符“\*”只有在被空白包围时才具有特殊行为，但重映射规则不包含空白。这个角色在其他 shell 上可能仍然很难，比如 zsh。
+> 这里的语法可以通过命令行传递给节点。语法的选择是为了不与 bash 中的特殊 shell 字符冲突。例如，在 bash 中，字符`\*`只有在被空白包围时才具有特殊行为，但重映射规则不包含空白。这个角色在其他 shell 上可能仍然很难，比如 zsh。
 
 #### Supporting: Change the Default Namespace
 
 This isn't really a remapping rule, but the syntax is similar. In ROS 1 the argument `__ns:=` could change the default namespace. Here the syntax is the same, and additionally it can be prefixed with a node's name. The replacement side must have a FQN with no special operators. All relative names are expanded to the new namespace before any remapping rules are applied to them.
 
-> 这实际上不是一个重新映射规则，但语法是相似的。在 ROS 1 中，参数“__ns:=”可以更改默认名称空间。这里的语法是相同的，另外它可以以节点的名称为前缀。更换侧必须有一个 FQN，没有特殊的操作员。在对所有相对名称应用任何重新映射规则之前，所有相对名称都将扩展到新的名称空间。
+> 这实际上不是一个重新映射规则，但语法是相似的。在 ROS 1 中，参数`__ns:=`可以更改默认名称空间。这里的语法是相同的，另外它可以以节点的名称为前缀。更换侧必须有一个 FQN，没有特殊的操作员。在对所有相对名称应用任何重新映射规则之前，所有相对名称都将扩展到新的名称空间。
 
 _Examples:_
 
@@ -455,7 +452,7 @@ _Examples:_
 
 This also isn't a true remapping rule, but the syntax is similar. In ROS 1 the argument `__name:=` could change the node's name. Here the syntax is the same, and additionally it can be prefixed with a node's current name. The argument `__node:=` has the same effect. The replacement side must have a single token. Log messages use the new name immediately. All private names are expanded to the new name before any remapping rules are applied to them.
 
-> 这也不是一个真正的重映射规则，但语法是相似的。在 ROS 1 中，参数“**name:=”可能会更改节点的名称。这里的语法是相同的，此外，它可以以节点的当前名称为前缀。参数“**node:=”具有相同的效果。替换方必须有一个令牌。日志消息立即使用新名称。在对所有私有名称应用任何重新映射规则之前，所有私有名称都将扩展为新名称。
+> 这也不是一个真正的重映射规则，但语法是相似的。在 ROS 1 中，参数`**name:=`可能会更改节点的名称。这里的语法是相同的，此外，它可以以节点的当前名称为前缀。参数`**node:=`具有相同的效果。替换方必须有一个令牌。日志消息立即使用新名称。在对所有私有名称应用任何重新映射规则之前，所有私有名称都将扩展为新名称。
 
 _Examples:_
 
@@ -496,10 +493,10 @@ The syntax doesn't have a way to specify that a rule should be applied Prior to 
 
 A syntax like fnmatch is being considered. The character for the wild card `*` was chosen to match fnmatch. Because remapping needs to capture text to use during replacement, the C function `fnmatch()` cannot be used as the implementation. The extra wildcards `?` and `[]` don't appear to enable more uses cases above. Fnmatch syntax may or may not match text with slashes depending on the option `FNM_PATHNAME`.
 
-> 正在考虑使用类似 fnmatch 的语法。通配符“\*”的字符被选择为匹配 fnmatch。因为重映射需要捕获文本以在替换过程中使用，所以不能将 C 函数“fnmatch()”用作实现。额外的通配符 `？` 和“[]”似乎无法启用以上更多的用例。Fnmatch 语法可能匹配带斜线的文本，也可能不匹配，具体取决于选项“FNM_PATHNAME”。
+> 正在考虑使用类似 fnmatch 的语法。通配符`\*`的字符被选择为匹配 fnmatch。因为重映射需要捕获文本以在替换过程中使用，所以不能将 C 函数`fnmatch()`用作实现。额外的通配符 `？` 和`[]`似乎无法启用以上更多的用例。Fnmatch 语法可能匹配带斜线的文本，也可能不匹配，具体取决于选项`FNM_PATHNAME`。
 
 ## Static Versus Dynamic Remapping
 
 Static remapping is giving a node remapping rules at the time it is launched. Dynamic remapping is the ability to remap a name while a node is running. It may be useful for a developer who has started a node and wants to connect it to a different source. Because the user will see the name after it has been remapped by static rules, dynamic rules should be applied after static ones. This way the new rule matches against the name the user sees with introspection tools rather than the original name used in code.
 
-> 静态重映射是在节点启动时为其提供重映射规则。动态重新映射是在节点运行时重新映射名称的功能。对于已经启动节点并希望将其连接到不同源的开发人员来说，这可能很有用。因为用户将在名称被静态规则重新映射后看到该名称，所以应该在静态规则之后应用动态规则。这样，新规则将与用户使用内省工具看到的名称相匹配，而不是与代码中使用的原始名称相匹配。
+> **静态重映射是在节点启动时为其提供重映射规则。动态重新映射是在节点运行时重新映射名称的功能。** 对于已经启动节点并希望将其连接到不同源的开发人员来说，这可能很有用。因为用户将在名称被静态规则重新映射后看到该名称，所以应该在静态规则之后应用动态规则。这样，新规则将与用户使用内省工具看到的名称相匹配，而不是与代码中使用的原始名称相匹配。

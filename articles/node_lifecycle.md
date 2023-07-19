@@ -5,14 +5,15 @@ title: Managed nodes
 abstract:
   This article describes the concept of a node with a managed life cycle. It aims to document some of the options for supporting manage d-life cycle nodes in ROS 2. It has been written with consideration for the existing design of the ROS 2 C++ client library, and in particular the current design of executors.
   本文描述了具有托管生命周期的节点的概念。它旨在记录ROS2中支持管理D寿命周期节点的一些选项。它已被考虑在ROS 2 C ++客户库库的现有设计中，尤其是当前的执行者设计。
-author: '[Geoffrey Biggs](https://github.com/gbiggs) [Tully Foote](https://github.com/tfoote)'
+author: "[Geoffrey Biggs](https://github.com/gbiggs) [Tully Foote](https://github.com/tfoote)"
 date_written: 2015-06
 last_modified: 2021-02
 published: true
-Authors: 
-Date Written: 
+Authors:
+Date Written:
 Last Modified:
 ---
+
 > [!NOTE]
 > 在 action 中也有提到这类 `Introspection tools`，考虑也实现一套，还是 ros2 中已经具备？
 > 用于对 error 状态的节点进行检查，可以用于调试，而不是直接销毁。
@@ -88,7 +89,7 @@ This is the life cycle state the node is in immediately after being instantiated
 > 节点可以通过 `configure` 转换进入 `Inactive` 状态。
 > 节点可以通过 `shutdown` 转换进入 `Finalized` 状态。
 
-### Primary State: Inactive
+### Primary State: `Inactive`
 
 This state represents a node that is not currently performing any processing.
 
@@ -120,9 +121,9 @@ While in this state, the node will not receive any execution time to read topics
 - A node may transition to the `Unconfigured` state via the `cleanup` transition.
 - A node may transition to the `Active` state via the `activate` transition.
 
-> 一个节点可以通过“关机”转换来进入“已完成”状态。
-> 一个节点可以通过“清理”转换来进入“未配置”状态。
-> 一个节点可以通过“激活”转换进入“活动”状态。
+> 一个节点可以通过`shutdown` 转换来进入`Finalized`状态。
+> 一个节点可以通过`cleanup` 转换来进入`Unconfigured`状态。
+> 一个节点可以通过`activate`转换进入`Active`状态。
 
 > [!NOTE]
 > 这些状态之间的切换感觉就像线程(进程)状态一样...
@@ -138,8 +139,8 @@ This is the main state of the node's life cycle. While in this state, the node p
 - A node may transition to the `Inactive` state via the `deactivate` transition.
 - A node may transition to the `Finalized` state via the `shutdown` transition.
 
-> 一个节点可以通过“deactivate”转换进入“Inactive”状态。
-> 一个节点可以通过“关机”转换来进入“已完成”状态。
+> 一个节点可以通过`deactivate` 转换进入`Inactive`状态。
+> 一个节点可以通过`shutdown` 转换来进入`Finalized`状态。
 
 ### Primary State: `Finalized`
 
