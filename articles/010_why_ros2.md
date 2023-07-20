@@ -3,17 +3,17 @@ tip: translate by openai@2023-05-30 09:15:15
 layout: default
 title: Why ROS 2?
 permalink: articles/why_ros2.html
-abstract:
-  This article captures the reasons for making breaking changes to the ROS API, hence the 2.0.
+abstract: This article captures the reasons for making breaking changes to the ROS API, hence the 2.0.
 published: true
 author: Brian Gerkey
 date_written: 2014-06
 last_modified: 2022-05
 categories: Overview
-Authors: 
-Date Written: 
+Authors:
+Date Written:
 Last Modified:
 ---
+
 We started work on ROS in November 2007. A lot has happened since then and we believe that it is now time to build the next generation ROS platform. In this article we will explain why.
 
 > 我们于 2007 年 11 月开始使用 ROS。从那以后发生了很多事情，我们相信现在是时候构建下一代 ROS 平台了。在本文中，我们将解释原因。
@@ -35,7 +35,7 @@ S. Macenski, T. Foote, B. Gerkey, C. Lalancette, W. Woodall, “Robot Operating 
     pages = ,
     year = ,
     doi = ,
-    URL = 
+    URL =
 }
 ```
 
@@ -80,12 +80,13 @@ Of specific interest to us for the ongoing and future growth of the ROS communit
 - Non-ideal networks: we want ROS to behave as well as is possible when network connectivity degrades due to loss and/or delay, from poor-quality WiFi to ground-to-space communication links.
 - Production environments: while it is vital that ROS continue to be the platform of choice in the research lab, we want to ensure that ROS-based lab prototypes can evolve into ROS-based products suitable for use in real-world applications.
 - Prescribed patterns for building and structuring systems: while we will maintain the underlying flexibility that is the hallmark of ROS, we want to provide clear patterns and supporting tools for features such as life cycle management and static configurations for deployment.
-- 多个机器人的团队：虽然今天可以使用 ROS 构建多机器人系统，但没有标准的方法，并且它们在 ROS 的单主结构之上都有些骇客。
-- 小型嵌入式平台：我们希望小型计算机(包括“裸机”微控制器)成为 ROS 环境中的一流参与者，而不是由设备驱动程序隔离 ROS。
-- 实时系统：我们希望直接支持 ROS 中的实时控制，包括过程间和机间通信(假设适当的操作系统和/或硬件支持)。
-- 非理想网络：当网络连通性因损失和/或延迟而导致的网络连通性降低时，我们希望 ROS 的行为和可能，从质量不高的 wifi 到地面通信链接。
-- 生产环境：虽然 ROS 继续成为研究实验室的首选平台至关重要，但我们希望确保基于 ROS 的实验室原型可以演变为基于 ROS 的产品，适用于用于现实世界中应用程序。
-- 建筑和结构系统的规定模式：虽然我们将维护 ROS 的标志的基本灵活性，但我们希望为诸如生命周期管理和部署静态配置等功能提供清晰的模式和支持工具。
+
+> - 多个机器人的团队：虽然今天可以使用 ROS 构建多机器人系统，但没有标准的方法，并且它们在 ROS 的单主结构之上都有些骇客。
+> - 小型嵌入式平台：我们希望小型计算机(包括“裸机”微控制器)成为 ROS 环境中的一流参与者，而不是由设备驱动程序隔离 ROS。
+> - 实时系统：我们希望直接支持 ROS 中的实时控制，包括过程间和机间通信(假设适当的操作系统和/或硬件支持)。
+> - 非理想网络：当网络连通性因损失和/或延迟而导致的网络连通性降低时，我们希望 ROS 的行为和可能，从质量不高的 wifi 到地面通信链接。
+> - 生产环境：虽然 ROS 继续成为研究实验室的首选平台至关重要，但我们希望确保基于 ROS 的实验室原型可以演变为基于 ROS 的产品，适用于用于现实世界中应用程序。
+> - 建筑和结构系统的规定模式：虽然我们将维护 ROS 的标志的基本灵活性，但我们希望为诸如生命周期管理和部署静态配置等功能提供清晰的模式和支持工具。
 
 ## New technologies
 

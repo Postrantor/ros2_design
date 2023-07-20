@@ -23,7 +23,7 @@ Last Modified:
 
 This article specifies the mapping between ROS interface types defined in the [interface definition article](interface_definition.html) and DDS types defined in the [Interface Definition Language](https://www.omg.org/spec/IDL/3.5).
 
-> 本文指定了 [Interface 定义文章](Interface_definition.html)中定义的 ROS 接口类型与 [Interface 定义语言](<%5Bhttps://www.omg.org/spec/spec/spec/idl/3.5%5D(https://www.omg.org/spec/spec/spec/idl/3.5)>)中定义的 ROS 接口类型之间的映射。。
+> 本文指定了 [Interface 定义文章]中定义的 ROS 接口类型与 [Interface 定义语言](中定义的 ROS 接口类型之间的映射。。
 
 ## Mapping of primitive types
 

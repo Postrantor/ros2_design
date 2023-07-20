@@ -21,10 +21,11 @@ Authors:
 Date Written: 
 Last Modified:
 ---
+
 Terminology:
 
 - [Data Distribution Service (DDS)](http://en.wikipedia.org/wiki/Data_Distribution_Service)
-- [Real-Time Publish Subscribe (RTPS)](https://en.wikipedia.org/wiki/Real-Time_Publish-Subscribe_(RTPS)_Protocol)
+- [Real-Time Publish Subscribe (RTPS)](<https://en.wikipedia.org/wiki/Real-Time_Publish-Subscribe_(RTPS)_Protocol>)
 - The [Object Management Group (OMG)](http://www.omg.org/)
 - OMG [Interface Description Language (IDL)](http://www.omg.org/gettingstarted/omg_idl.htm) | [Formal description](http://www.omg.org/cgi-bin/doc?formal/2014-03-01)
 
@@ -48,7 +49,7 @@ The drawback of using an end-to-end middleware is that ROS must work within that
 
 DDS provides a publish-subscribe transport which is very similar to ROS's publish-subscribe transport. DDS uses the "Interface Description Language (IDL)" as defined by the [Object Management Group (OMG)](http://www.omg.org/) for message definition and serialization. DDS has a request-response style transport, which would be like ROS's service system, in beta 2 as of June 2016 (called [DDS-RPC](http://www.omg.org/spec/DDS-RPC/)).
 
-> DDS 提供了一种发布-订阅传输，它与 ROS 的发布-订阅传输非常相似。DDS 使用由 [Object Management Group(OMG)](http://www.omg.org/)定义的“接口描述语言(IDL)”来定义消息和序列化。**DDS 有一种请求-响应式传输，就像 ROS 的服务系统**，在 2016 年 6 月的 beta 2 版本(称为 [DDS-RPC](http://www.omg.org/spec/DDS-RPC/))。
+> DDS 提供了一种发布-订阅传输，它与 ROS 的发布-订阅传输非常相似。DDS 使用由 [Object Management Group(OMG)]定义的“接口描述语言(IDL)”来定义消息和序列化。**DDS 有一种请求-响应式传输，就像 ROS 的服务系统**，在 2016 年 6 月的 beta 2 版本(称为 [DDS-RPC])。
 
 The default discovery system provided by DDS, which is required to use DDS's publish-subscribe transport, is a distributed discovery system. This allows any two DDS programs to communicate without the need for a tool like the ROS master. This makes the system more fault tolerant and flexible. It is not required to use the dynamic discovery mechanism, however, as multiple DDS vendors provide options for static discovery.
 
@@ -94,7 +95,7 @@ Not only has DDS met the needs of these use cases, but after talking with users 
 
 The DDS wire specification ([DDSI-RTPS](http://www.omg.org/spec/DDSI-RTPS/)) is extremely flexible, allowing it to be used for reliable, high level systems integration as well as real-time applications on embedded devices. Several of the DDS vendors have special implementations of DDS for embedded systems which boast specs related to library size and memory footprint on the scale of tens or hundreds of kilobytes. Since DDS is implemented, by default, on UDP, it does not depend on a reliable transport or hardware for communication. This means that DDS has to reinvent the reliability wheel (basically TCP plus or minus some features), but in exchange DDS gains portability and control over the behavior. Control over several parameters of reliability, what DDS calls Quality of Service (QoS), gives maximum flexibility in controlling the behavior of communication. For example, if you are concerned about latency, like for soft real-time, you can basically tune DDS to be just a UDP blaster. In another scenario you might need something that behaves like TCP, but needs to be more tolerant to long dropouts, and with DDS all of these things can be controlled by changing the QoS parameters.
 
-> DDS 线路规范([DDSI-RTPS](http://www.omg.org/spec/DDSI-RTPS/))非常灵活，可用于可靠的高级系统集成以及嵌入式设备上的实时应用程序。DDS 的几个供应商都有专门为嵌入式系统设计的 DDS 实现，其规格与库大小和内存占用量相关，达到数十或数百 KB 的规模。由于 **DDS 默认采用 UDP 实现**，因此不依赖于可靠的传输或硬件进行通信。**这意味着 DDS 必须重新发明可靠性的轮子(基本上是加上或减去一些功能的 TCP)，但作为交换，DDS 获得了可移植性和对行为的控制**。对可靠性的几个参数的控制，即 DDS 所称的服务质量(QoS)，可以最大限度地控制通信行为。例如，如果您关注延迟，如软实时，则可以通过更改 QoS 参数将 DDS 调整为仅 UDP 发射器。在另一种情况下，您可能需要行为类似于 TCP 的东西，但需要对长时间的断开更加宽容，而使用 DDS，所有这些都可以通过更改 QoS 参数来控制。
+> DDS 线路规范([DDSI-RTPS])非常灵活，可用于可靠的高级系统集成以及嵌入式设备上的实时应用程序。DDS 的几个供应商都有专门为嵌入式系统设计的 DDS 实现，其规格与库大小和内存占用量相关，达到数十或数百 KB 的规模。由于 **DDS 默认采用 UDP 实现**，因此不依赖于可靠的传输或硬件进行通信。**这意味着 DDS 必须重新发明可靠性的轮子(基本上是加上或减去一些功能的 TCP)，但作为交换，DDS 获得了可移植性和对行为的控制**。对可靠性的几个参数的控制，即 DDS 所称的服务质量(QoS)，可以最大限度地控制通信行为。例如，如果您关注延迟，如软实时，则可以通过更改 QoS 参数将 DDS 调整为仅 UDP 发射器。在另一种情况下，您可能需要行为类似于 TCP 的东西，但需要对长时间的断开更加宽容，而使用 DDS，所有这些都可以通过更改 QoS 参数来控制。
 
 Though the default implementation of DDS is over UDP, and only requires that level of functionality from the transport, OMG also added support for DDS over TCP in version 1.2 of their specification. Only looking briefly, two of the vendors (RTI and ADLINK Technologies) both support DDS over TCP.
 
@@ -260,7 +261,7 @@ Therefore, the ROS 1 `.msg` files would continue to be used and the `.msg` files
 
 At first, the idea of converting a message field-by-field into another object type for each call to publish seems like a huge performance problem, but experimentation has shown that the cost of this copy is insignificant when compared to the cost of serialization. This ratio between the cost of converting types and the cost of serialization, which was found to be at least one order of magnitude, holds true with every serialization library that we tried, except [Cap'n Proto](http://kentonv.github.io/capnproto/) which doesn't have a serialization step. Therefore, if a field-by-field copy will not work for your use case, neither will serializing and transporting over the network, at which point you will have to utilize an intraprocess or zero-copy interprocess communication. The intraprocess communication in ROS would not use the DDS in-memory representation so this field-by-field copy would not be used unless the data is going to the wire. Because this conversion is only invoked in conjunction with a more expensive serialization step, the field-by-field copy seems to be a reasonable trade-off for the portability and abstraction provided by preserving the ROS `.msg` files and in-memory representation.
 
-> 首先，把每个发布调用中的消息字段逐个转换成另一种对象类型的想法似乎是一个巨大的性能问题，但实验表明，**与序列化的成本相比，这种复制的成本是微不足道的**。我们尝试的每个序列化库都发现，**类型转换和序列化成本之间的比率至少是一个数量级**，除了 [Cap'n Proto](http://kentonv.github.io/capnproto/)，它没有序列化步骤。因此，如果字段逐个复制不适用于您的用例，那么也不会序列化并通过网络传输，此时您将不得不使用进程内或零复制进程间通信。**ROS 中的进程内通信不会使用 DDS 内存表示**，因此除非数据要发送到线路，否则不会使用字段逐个复制。由于此转换仅在更昂贵的序列化步骤中调用，因此字段逐个复制似乎是一个合理的折衷，以保留 ROS 的 `.msg` 文件和内存表示，从而提供可移植性和抽象性。
+> 首先，把每个发布调用中的消息字段逐个**转换**成另一种对象类型的想法似乎**是一个巨大的性能问题**，但实验表明，**与序列化的成本相比，这种复制的成本是微不足道的**。我们尝试的每个序列化库都发现，**类型转换和序列化成本之间的比率至少是一个数量级**，除了 [Cap'n Proto](http://kentonv.github.io/capnproto/)，它没有序列化步骤。因此，如果字段逐个复制不适用于您的用例，那么也不会序列化并通过网络传输，此时您将不得不使用进程内或零复制进程间通信。**ROS 中的进程内通信不会使用 DDS 内存表示**，因此除非数据要发送到线路，否则不会使用字段逐个复制。由于此转换仅在更昂贵的序列化步骤中调用，因此字段逐个复制似乎是一个合理的折衷，以保留 ROS 的 `.msg` 文件和内存表示，从而提供可移植性和抽象性。
 
 This does not preclude the option to improve the `.msg` file format with things like default values and optional fields. But this is a different trade-off which can be decided later.
 

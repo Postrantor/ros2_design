@@ -18,6 +18,7 @@ Authors:
 Date Written: 
 Last Modified:
 ---
+
 ## Scope
 
 This article specifies the generated C++ code for ROS interface types defined in the [interface definition article](interface_definition.html).
@@ -62,7 +63,7 @@ For each message two files are being generated:
 
 This allows to add additional files besides the one with the suffix `__struct` to provide additional functionality. For each additional functionality it can be decided to include it from the first header file.
 
-> 这允许添加除具有后缀“__struct”的文件之外的其他文件，以提供额外的功能。对于每个额外的功能，可以从第一个标头文件中进行选择性包含。
+> 这允许添加除具有后缀“\_\_struct”的文件之外的其他文件，以提供额外的功能。对于每个额外的功能，可以从第一个标头文件中进行选择性包含。
 
 <div class="alert alert-warning" markdown="1">
   <b>TODO:</b> specify content of <code>&lt;my_message_name&gt;__traits.hpp</code> file

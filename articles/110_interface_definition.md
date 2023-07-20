@@ -3,10 +3,9 @@ tip: translate by openai@2023-05-30 08:35:24
 layout: default
 title: Interface definition
 permalink: articles/interface_definition.html
-abstract:
-  This article specifies the file format describing the data structures exchanged by ROS 2 components to interact with each other.
+abstract: This article specifies the file format describing the data structures exchanged by ROS 2 components to interact with each other.
 published: true
-author: '[Dirk Thomas](https://github.com/dirk-thomas)'
+author: "[Dirk Thomas](https://github.com/dirk-thomas)"
 date_written: 2015-06
 last_modified: 2020-02
 categories: Interfaces
@@ -15,10 +14,11 @@ categories: Interfaces
   With the transition to use ``IDL`` for specifying interfaces in ROS 2 Dashing this article has been superseded by the [Interface definition using .msg / .srv / .action files](legacy_interface_definition.html) article.
   </div>
 
-Authors: 
-Date Written: 
+Authors:
+Date Written:
 Last Modified:
 ---
+
 ## Scope
 
 This article specifies the file format describing the data structures which are being used to exchange information between components. The data structures are defined in a programming language agnostic way. Please see other articles for the mappings to programming language specific types and API.
@@ -240,21 +240,27 @@ Depending on the type the following values are valid:
 
   - `true`, `1`
   - `false`, `0`
+
 - `byte`:
 
   - an unsigned integer value in the following interval `[0, 255]`
+
 - `char`:
 
   - an integer value in the following interval `[-128, 127]`
+
 - `float32` and `float64`:
 
   - a decimal number using a dot (`.`) as the separator between the integer-part and fractional-part.
+
 - `int8`, `int16`, `int32` and `int64`:
 
   - an integer value in the following interval `[- 2 ^ (N - 1), 2 ^ (N - 1) - 1]` where `N` is the number of bits behind `int`
+
 - `uint8`, `uint16`, `uint32` and `uint64`:
 
   - an unsigned integer value in the following interval `[0, 2 ^ N - 1]` where `N` is the number of bits behind `uint`
+
 - `string`:
 
   - a string value which can optionally be quoted with either single quotes (`'`) or double quotes (`"`)

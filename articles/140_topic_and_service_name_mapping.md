@@ -192,7 +192,7 @@ This compromise was made so that when more work is done on substitutions, it wou
 
 Previously the usage of forward slashes (`/`) was disallowed in DDS topic name and hence a strategy was proposed which used DDS partitions to address the forward slashes (`/`) which are present in ROS names. The main idea was to separate the ROS name into the "namespace" and the "base name", and then place the namespace, stripped of leading and trailing forward slashes (`/`), into a single DDS partition entry and the remaining base name into the DDS topic name. This addressed the issue because the ROS name's base name will not contain any forward slashes (`/`) by definition and so there are no longer any disallowed characters in the DDS topic name. The DDS partition would contain the ROS name's namespace, including any forward slashes (`/`) that made up the namespace and were not at the beginning or the end of the namespace. That is acceptable because DDS partitions are allowed to contain forward slashes (`/`) unlike the DDS topics previously but now DDS topic names allow forward slashes (`/`).
 
-> 以前，DDS 主题名称中不允许使用前向斜线（`/`）的使用，因此提出了一种策略，该策略使用 DDS 分区来解决 ROS 名称中存在的前向斜线（`/`）。主要的想法是将ROS名称分离为“名称空间”和“基本名称”，然后将命名空间剥离，剥夺了前进和前进的斜线（`/`），将单个DDS分区条目和其余的基础放置名称为DDS主题名称。这解决了问题，因为ROS名称的基本名称将不包含任何正向斜线（`/`），因此 DDS 主题名称中不再有任何不允许字符。DDS 分区将包含 ROS 名称的名称空间，包括组成名称空间的任何前向斜线（`/`），并且不在名称空间的开始或结束时。这是可以接受的，因为与之前的 DDS 主题不同，允许 DDS 分区包含前向斜线（`/`），但现在DDS主题名称允许前向斜线（`/`）。
+> 以前，DDS 主题名称中不允许使用前向斜线（`/`）的使用，因此提出了一种策略，该策略使用 DDS 分区来解决 ROS 名称中存在的前向斜线（`/`）。主要的想法是将 ROS 名称分离为“名称空间”和“基本名称”，然后将命名空间剥离，剥夺了前进和前进的斜线（`/`），将单个 DDS 分区条目和其余的基础放置名称为 DDS 主题名称。这解决了问题，因为 ROS 名称的基本名称将不包含任何正向斜线（`/`），因此 DDS 主题名称中不再有任何不允许字符。DDS 分区将包含 ROS 名称的名称空间，包括组成名称空间的任何前向斜线（`/`），并且不在名称空间的开始或结束时。这是可以接受的，因为与之前的 DDS 主题不同，允许 DDS 分区包含前向斜线（`/`），但现在 DDS 主题名称允许前向斜线（`/`）。
 
 DDS partitions are implemented as an array of strings within the `DDS::Publisher` and `DDS::Subscriber` QoS settings and have no hierarchy or order, Each entry in the partition array is directly combined with the DDS topic and they are not sequentially combined. If a publisher has two partition entries, e.g. `foo` and `bar` with a base name of `baz`, this would be equivalent to having two different publishers on these topics: `/foo/baz` and `/bar/baz`. Therefore this proposal used only one of the strings in the partitions array to hold the entire ROS name's namespace.
 
@@ -223,8 +223,7 @@ Trade-offs (in comparison to using the whole ROS name along with the namespaces)
 > 新一代的标准，如[DDS-XRCE](https://www.omg.org/spec/DDS-XRCE)可能根本不需要分区。
 
 - Using the complete ROS name in the later strategy will cause a tighter length limit on base name because the DDS topic name would contain ROS prefix, namespace along with the base name which should not exceed DDS topic name limitation which is 256 characters.
-
-> 使用后续策略中的完整 ROS 名称会导致基本名称的长度限制更紧，因为 DDS Topic 名称将包含 ROS 前缀、命名空间以及基本名称，它们的总长度不应超过 DDS Topic 名称的限制，即 256 个字符。
+  > - 使用后续策略中的完整 ROS 名称会导致基本名称的长度限制更紧，因为 DDS Topic 名称将包含 ROS 前缀、命名空间以及基本名称，它们的总长度不应超过 DDS Topic 名称的限制，即 256 个字符。
 
 Rationale:
 
@@ -267,12 +266,10 @@ This is another alternative that was proposed in the context of the alternative 
 Trade-offs:
 
 - Uses one fewer character per namespace and makes it easier to calculate the maximum length of a ROS topic or service name.
-
-> 使用每个命名空间少一个字符，可以更容易计算 ROS Topic 或服务名称的最大长度。
-
 - Prevents users from using capital letters in their names, which is constraining and might be a problem for backwards compatibility with ROS 1 topics and services.
 
-> 阻止用户在其名称中使用大写字母，这是限制性的，可能会对 ROS 1 Topic 和服务的向后兼容性造成问题。
+> - 使用每个命名空间少一个字符，可以更容易计算 ROS Topic 或服务名称的最大长度。
+> - 阻止用户在其名称中使用大写字母，这是限制性的，可能会对 ROS 1 Topic 和服务的向后兼容性造成问题。
 
 Rationale:
 
@@ -347,19 +344,13 @@ This alternative would:
 Trade-offs:
 
 - more difficult to distinguish ROS created DDS topics from normal or built-in DDS topics when listing them using DDS tools because they are not sorted by a ROS specific prefix
-
-> 查看 DDS 工具中的 Topic 时，由于没有 ROS 特定的前缀，因此很难区分 ROS 创建的 DDS Topic 和普通或内置的 DDS Topic。
-
 - if the service name is suffixed again by the DDS vendor (like in Connext's implementation of Request-Reply) then it would be potentially difficult to differentiate from a user's topic name
-
-> 如果服务名称被 DDS 供应商(如 Connext 的 Request-Reply 实现)再次后缀，那么很可能很难从用户的 Topic 名称中区分开来。
-
 - e.g. service `/foo` might become topics: `foo_s_Request` and `foo_s_Reply` and the user could create a topic called `/foo_s_Request` too.
-
-> 例如，服务`/foo`可能会变成 Topic：`foo_s_Request`和`foo_s_Reply`，用户也可以创建一个名为`/foo_s_Request`的 Topic。
-
 - this also applies to any other similar transformations that an RMW implementation might make to the topic
 
+> 查看 DDS 工具中的 Topic 时，由于没有 ROS 特定的前缀，因此很难区分 ROS 创建的 DDS Topic 和普通或内置的 DDS Topic。
+> 如果服务名称被 DDS 供应商(如 Connext 的 Request-Reply 实现)再次后缀，那么很可能很难从用户的 Topic 名称中区分开来。
+> 例如，服务`/foo`可能会变成 Topic：`foo_s_Request`和`foo_s_Reply`，用户也可以创建一个名为`/foo_s_Request`的 Topic。
 > 这也适用于 RMW 实施中可能对 Topic 进行的任何其他类似变换。
 
 Rationale:
